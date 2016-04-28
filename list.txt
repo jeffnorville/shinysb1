@@ -1,0 +1,7 @@
+1. build dropdown boxes from DB 
+2. query default plot
+3. user can change axes on plot
+4. add or filter by LT? Other?
+
+Compare two plots?
+
