@@ -1,0 +1,9 @@
+name: sbdtest1
+account: jnorville
+server: shinyapps.io
+appId: 94708
+bundleId: 420780
+url: https://jnorville.shinyapps.io/sbdtest1/
+when: 1460730474.04788
+asMultiple: FALSE
+asStatic: FALSE
