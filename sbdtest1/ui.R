@@ -18,6 +18,7 @@ library(ggplot2)
 shinyUI(fluidPage(
   
   # Application title
+  img(src = "imprex.png", height = 100),
   titlePanel("Scoreboard"),
 
   fluidRow(

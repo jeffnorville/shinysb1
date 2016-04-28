@@ -8,7 +8,7 @@ db <- src_postgres('postgres',
                    password = hiddenpassword)
 tbl_scores <- tbl(db, "tblScores")
 
-fulldb <- collect(tbl_scores, n=Inf)
+#fulldb <- collect(tbl_scores, n=Inf)
 db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
 
 # scoreTypeList <- distinct(tbl_scores$scoreType)
@@ -36,3 +36,12 @@ db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
 #  
 #  stuff = ident(scores, dplyr::sql('SELECT distinct("scoreType") FROM tblScores'))
 #  
+
+# 
+  #    sm <- subset(fulldb, locationID %in% c(ctlLocid))
+  sm <- subset(db2005, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
+  #sm2 <- subset(sm, dateValue > "2005-01-01" & dateValue < "2005-12-31")
+  ggplot(sm,aes(x = LT / 7, y = dateValue)) +
+    geom_point(aes(color = scoreValue), size=3) +
+    scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
+    scale_color_gradient(low="yellow", high="darkgreen")
