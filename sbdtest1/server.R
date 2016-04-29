@@ -1,11 +1,3 @@
-#
-# This is the server logic of a Shiny web application. You can run the 
-# application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-# 
-#    http://shiny.rstudio.com/
-#
 
 library(shiny)
 #connect to db
@@ -43,6 +35,7 @@ shinyServer(function(input, output) {
       # Year <= maxyear,
     ) %>%
     arrange(locationID)
+
 #    sm <- subset(fulldb, locationID %in% c(ctlLocid))
     #sm <- subset(fulldb, locationID %in% c('S2242510'))
 #    sm2 <- subset(sm, dateValue > "2005-01-01" & dateValue < "2005-12-31")
@@ -56,13 +49,8 @@ shinyServer(function(input, output) {
       scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
       scale_color_gradient(low="yellow", high="darkgreen")
     
-  }) #end reactive bit
+    }) #end reactive bit
 
-    
-    # x    <- faithful[, 2]  # Old Faithful Geyser data
-    # bins <- seq(min(x), max(x), length.out = input$bins * 7 + 1)
-    # # draw the histogram with the specified number of bins
-    # hist(x, breaks = bins, col = 'darkgray', border = 'white')
   })
   
     #db
@@ -84,13 +72,6 @@ shinyServer(function(input, output) {
 
   })
 
-  # generate sampling based on input$leadtimes from ui.R
-  # x    <- scores[, 2] 
-  # bins <- seq(min(x), max(x), length.out = (input$leadtimes + 1)/7)
-  
-  
-
-
-#on unload type of disonnect???
+#on unload --- disonnect???
 
 
