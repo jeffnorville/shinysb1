@@ -9,7 +9,7 @@
 
 library(shiny)
 #connect to db
-#library(dplyr)
+library(dplyr)
 library(RPostgreSQL)
 library(lazyeval)
 library(ggplot2)
