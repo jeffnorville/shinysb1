@@ -8,7 +8,7 @@
 #
 
 library(shiny)
-#library(dplyr)
+library(dplyr)
 library(RPostgreSQL)
 library(lazyeval)
 library(ggplot2)
