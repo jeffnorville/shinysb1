@@ -1,15 +1,27 @@
+#ini file
+readRenviron("~/R/shinysb1/.Renviron")
+REdbname = Sys.getenv('pgdb')
+REuser = Sys.getenv('api_user')
+REpassword = Sys.getenv('pgpassword')
+
 #db connections
 library(dplyr)
+library(ggplot2)
 
 db <- src_postgres('postgres',
                    host = 'localhost',
                    port = 5432,
-                   user = 'postgres',
-                   password = hiddenpassword)
+                   user = REuser,
+                   password = REpassword)
 tbl_scores <- tbl(db, "tblScores")
 
-fulldb <- collect(tbl_scores, n=Inf)
-db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
+#this is dumb
+#fulldb <- collect(tbl_scores, n=Inf)
+#db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
+
+dbsub <- select(filter(tbl_scores, dateValue > "2005-01-01" & dateValue < "2005-12-31"), :4)
+
+db2005 <- collect(dbsub)
 
 # scoreTypeList <- distinct(tbl_scores$scoreType)
 # sctp <- collect(scoreTypeList)
@@ -38,10 +50,10 @@ db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
 #  
 
 # 
-  #    sm <- subset(fulldb, locationID %in% c(ctlLocid))
-  sm <- subset(db2005, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
-  #sm2 <- subset(sm, dateValue > "2005-01-01" & dateValue < "2005-12-31")
-  ggplot(sm,aes(x = LT / 7, y = dateValue)) +
-    geom_point(aes(color = scoreValue), size=3) +
-    scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
-    scale_color_gradient(low="yellow", high="darkgreen")
+#sm <- subset(fulldb, locationID %in% c(ctlLocid))
+sm <- subset(db2005, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
+#sm2 <- subset(sm, dateValue > "2005-01-01" & dateValue < "2005-12-31")
+ggplot(sm,aes(x = LT / 7, y = dateValue)) +
+  geom_point(aes(color = scoreValue), size=3) +
+  scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
+  scale_color_gradient(low="yellow", high="darkgreen")
