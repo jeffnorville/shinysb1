@@ -8,8 +8,8 @@ db <- src_postgres('postgres',
                    password = hiddenpassword)
 tbl_scores <- tbl(db, "tblScores")
 
-fulldb <- collect(tbl_scores, n=Inf)
-db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
+#fulldb <- collect(tbl_scores, n=Inf)
+db2005 <- collect(subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31"))
 
 # scoreTypeList <- distinct(tbl_scores$scoreType)
 # sctp <- collect(scoreTypeList)
