@@ -1,0 +1,5 @@
+## Example .Renviron on Windows
+pgdb="postgres"
+api_user="postgres"
+api_language=1
+pgpassword="irstea"

@@ -13,7 +13,6 @@ library(RPostgreSQL)
 library(lazyeval)
 library(ggplot2)
 
-
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
   
@@ -107,6 +106,9 @@ shinyUI(fluidPage(
        # output$mytable1 <- DT::renderDataTable({
        #   DT::datatable(diamonds2[, input$show_vars, drop = FALSE])
        # })
-    ))
+
+        )
+      )
+    )
   )
-))
+)

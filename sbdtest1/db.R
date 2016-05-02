@@ -11,6 +11,13 @@ tbl_scores <- tbl(db, "tblScores")
 fulldb <- collect(tbl_scores, n=Inf)
 db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
 
+#goal tonight -- dplyr working for me
+# when is db queried?
+# types of queries?
+# best to reduce locally or server-side?
+# "windows?
+
+
 # scoreTypeList <- distinct(tbl_scores$scoreType)
 # sctp <- collect(scoreTypeList)
 
