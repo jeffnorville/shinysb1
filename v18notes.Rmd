@@ -1,0 +1,55 @@
+---
+title: "Notes Week 18"
+author: "Jeff"
+date: "2 mai 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+readRenviron("~/R/shinysb1/.Renviron")
+REdbname = Sys.getenv('pgdb')
+REuser = Sys.getenv('api_user')
+REpassword = Sys.getenv('pgpassword')
+#db connections
+library(dplyr)
+library(ggplot2)
+db <- src_postgres('postgres',
+                   host = 'localhost',
+                   port = 5432,
+                   user = REuser,
+                   password = REpassword)
+tbl_scores <- tbl(db, "tblScores")
+```
+
+## R Markdown
+
+This (rather short) week I have these goals:
+* update shiny plot as function with inputs:
+ + this score
+ + average score
+* add query types to shiny interface
+* test with "seasonal" and monthly timescales
+* create "interface tables" to speed interface queries (locations, etc)
+
+
+```{r db}
+dbsub <- filter(tbl_scores, dateValue > "2005-01-01" & dateValue < "2005-12-31")
+db2005 <- collect(dbsub)
+summary(db2005)
+```
+
+## Including Plots
+
+My plot de jour:
+
+```{r lead time plot, echo=FALSE}
+sm <- subset(db2005, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
+ggplot(sm,aes(x = LT / 7, y = dateValue)) +
+  geom_point(aes(color = scoreValue), size=3) +
+  scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
+  scale_color_gradient(low="yellow", high="darkgreen")
+
+```
+
+#Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

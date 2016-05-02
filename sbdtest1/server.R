@@ -34,21 +34,13 @@ shinyServer(function(input, output) {
       Location == input$ctlLocid
       # Year <= maxyear,
     ) %>%
-    arrange(locationID)
+#    arrange(locationID)
 
-#    sm <- subset(fulldb, locationID %in% c(ctlLocid))
-    #sm <- subset(fulldb, locationID %in% c('S2242510'))
-#    sm2 <- subset(sm, dateValue > "2005-01-01" & dateValue < "2005-12-31")
-    #sm2 = subset(sm, dateValue > "2005-07-01" & dateValue < "2005-07-31") #no values???
-    
-    
-  output$distPlot <- renderPlot({
-    
+    output$distPlot <- renderPlot({
     ggplot(sm2,aes(x = LT / 7, y = dateValue)) + 
       geom_point(aes(color = scoreValue), size=5) +
       scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
       scale_color_gradient(low="yellow", high="darkgreen")
-    
     }) #end reactive bit
 
   })

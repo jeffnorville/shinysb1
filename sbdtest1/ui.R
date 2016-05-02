@@ -25,14 +25,23 @@ shinyUI(fluidPage(
     column(4,
         wellPanel( 
           h4("Filter"),
-           selectInput("ctlScrtype",
-                       "Score Type:",
-                       c("Seasonal_EDMD_month",
-                          "Seasonal_EDMD_month_ByWeek",
-                          "Seasonal_LS_month",
-                          "Seasonal_LS_month_ByWeek"
+           selectInput("ctlVariable",
+                       "Variable:",
+                       c("Precipitation",
+                          "Streamflow",
+                          "Temperature"
                         )
                        ),
+          
+          selectInput("ctlScrtype",
+                      "Score Type:",
+                      c("Seasonal_EDMD_month",
+                        "Seasonal_EDMD_month_ByWeek",
+                        "Seasonal_LS_month",
+                        "Seasonal_LS_month_ByWeek"
+                      )
+          ),
+          
           selectInput("ctlLocid",
                       "Location:",
                       c( "A1080330",
