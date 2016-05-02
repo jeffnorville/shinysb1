@@ -28,13 +28,23 @@ lcldb <- collect(dbsub)
 sm <- subset(lcldb, locationID %in% c('S2242510'))
 #sm2 <- subset(sm, dateValue > "2005-01-01" & dateValue < "2005-12-31")
 
-sm2 <- filter(sm, LT==i)
-
-for (i in 1:9)
+#
+for (LeadTime in 1:90)
  {
+  sm2 <- filter(sm, LT==LeadTime)
   ggp <- ggplot(sm2,aes(x = dateValue , y = (scoreValue - mean(scoreValue)))) +
-    geom_line(aes(color = 'red'), size=1) +
-    scale_x_date("Lead Time (weeks)") + scale_y_continuous("CRPS for Lead Time ", i)  
+    geom_line(aes(color = LeadTime), size=1) +
+    scale_x_date("Lead Time (weeks)") + scale_y_continuous("CRPS for Lead Time ", LeadTime)  
     #print(ggp)
 }
-ggp + facet_grid(. ~ sm2)
+ggp + facet_grid(. ~ LT)
+
+
+# sm2 <- filter(sm, LT==LeadTime)
+for (LeadTime in 1:9)
+{ ggp <- ggplot(sm,aes(x = dateValue , y = (scoreValue - mean(scoreValue)))) +
+    geom_point(aes(color = 'red'), size=1) +
+    scale_x_date("Lead Time (weeks)") + scale_y_continuous("CRPS for Lead Time ")  
+  #print(ggp)
+  ggp + facet_grid(. ~ LT)
+}

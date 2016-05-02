@@ -105,7 +105,10 @@ shinyUI(fluidPage(
     mainPanel(
        plotOutput("distPlot") #,
 
-              #subsubtoto has one locationID, one lead time, one scoreType
+
+       
+       
+       #subsubtoto has one locationID, one lead time, one scoreType
        # filtered (timeseries) of scoreValues against dateValues
        # ggplot(data=local,aes(x=dateValue,y=scoreValue)) + geom_point(aes(color=LT),size=1) +
        #   scale_x_date("Month") + scale_y_continuous("Score")
