@@ -34,7 +34,7 @@ shinyUI(fluidPage(
                        ),
           
           selectInput("ctlScrtype",
-                      "Score Type:",
+                      "Analysis Type:",
                       c("Seasonal_EDMD_month",
                         "Seasonal_EDMD_month_ByWeek",
                         "Seasonal_LS_month",
@@ -42,24 +42,13 @@ shinyUI(fluidPage(
                       )
           ),
           
+          selectInput("rtnScoreType",
+                      "Score Type:",
+                      c(structure(ctlScoreType$ObjectItemName))
+          ),
           selectInput("ctlLocid",
                       "Location:",
-                      c( "A1080330",
-                          "B2220010",
-                          "H2342020",
-                          "H4252010",
-                          "H7401010",
-                          "H8212010",
-                          "I5221010",
-                          "J7483010",
-                          "K1321810",
-                          "K6402520",
-                          "L0563010",
-                          "L4411710",
-                          "M0243010",
-                          "M7112410",
-                          "S2242510",
-                          "U4644010"
+                      c( structure(ctlLocationName$ObjectItemName)
                       )
           )
           
@@ -73,7 +62,14 @@ shinyUI(fluidPage(
       #             choices = ls_locations, selected = 1)
       #   ),
     
+      titlePanel("Choose axes"),
 
+      # h4("X axis"),
+      selectInput('xcol', 'X Variable', names(tbl_scores)),
+      selectInput('ycol', 'Y Variable', names(tbl_scores),
+                  selected=names(tbl_scores)[[2]]),
+      
+            
        sliderInput("bins",
                    "Show leadtimes (weeks):",
                    min = 1,

@@ -41,6 +41,13 @@ summary(db2005)
 
 ## Including Plots
 
+Subset of data:
+```{r }
+summary(sm)
+
+```
+
+
 My plot de jour:
 
 ```{r lead time plot, echo=FALSE}
@@ -49,7 +56,23 @@ ggplot(sm,aes(x = LT / 7, y = dateValue)) +
   geom_point(aes(color = scoreValue), size=3) +
   scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
   scale_color_gradient(low="yellow", high="darkgreen")
+```
+
+Sub-subset of data:
+```{r }
+smsub <- filter(sm, )
+summary(smsub)
 
 ```
+
+```{r line plot}
+sm <- subset(db2005, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
+ggplot(sm,aes(x = LT / 7, y = dateValue)) +
+  geom_point(aes(color = scoreValue), size=3) +
+  scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
+  scale_color_gradient(low="yellow", high="darkgreen")
+
+```
+
 
 #Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
