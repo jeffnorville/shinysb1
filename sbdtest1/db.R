@@ -43,11 +43,11 @@ Sys.time()
 print("Collecting: ")
 Sys.time()
 
-allDates <- collect(allDates, n=Inf)
+system.time(allDates <- collect(allDates, n=Inf))
 
 print("Filtering: ")
 Sys.time()
-firstDate <- filter(allDates, rank(dateValue)==1)
+system.time(firstDate <- filter(allDates, rank(dateValue)==1))
 
 print("Ending: ")
 Sys.time()
