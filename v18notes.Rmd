@@ -43,6 +43,7 @@ summary(db2005)
 
 Subset of data:
 ```{r }
+sm <- subset(db2005, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
 summary(sm)
 
 ```
@@ -51,26 +52,45 @@ summary(sm)
 My plot de jour:
 
 ```{r lead time plot, echo=FALSE}
-sm <- subset(db2005, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
 ggplot(sm,aes(x = LT / 7, y = dateValue)) +
   geom_point(aes(color = scoreValue), size=3) +
   scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
   scale_color_gradient(low="yellow", high="darkgreen")
 ```
 
-Sub-subset of data:
-```{r }
-smsub <- filter(sm, )
+Sub-subset of data (lead time = 5 days):
+```{r plot summary 1}
+smsub <- filter(sm, LT==5)
 summary(smsub)
 
 ```
 
-```{r line plot}
-sm <- subset(db2005, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
-ggplot(sm,aes(x = LT / 7, y = dateValue)) +
-  geom_point(aes(color = scoreValue), size=3) +
-  scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
-  scale_color_gradient(low="yellow", high="darkgreen")
+```{r line plot 1}
+#sm <- subset(db2005, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
+ggplot(smsub,aes(y = (smsub$scoreValue-mean(smsub$scoreValue))/mean(smsub$scoreValue), x = dateValue)) +
+  geom_line(aes(color = 'red'), size=1) +
+  scale_y_continuous("scores") + scale_x_date("time")
+
+# +
+#   scale_color_gradient(low="yellow", high="darkgreen")
+
+```
+
+Sub-subset of data (lead time = 10 days):
+```{r plot summary 2}
+smsub <- filter(sm, LT==10)
+summary(smsub)
+
+```
+
+```{r line plot 2}
+#sm <- subset(db2005, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
+ggplot(smsub,aes(y = (smsub$scoreValue-mean(smsub$scoreValue))/mean(smsub$scoreValue), x = dateValue)) +
+  geom_line(aes(color = 'red'), size=1) +
+  scale_y_continuous("scores") + scale_x_date("time")
+
+# +
+#   scale_color_gradient(low="yellow", high="darkgreen")
 
 ```
 

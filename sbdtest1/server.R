@@ -1,3 +1,9 @@
+#ini file
+readRenviron("~/R/shinysb1/.Renviron")
+REdbname =   Sys.getenv('pgdb')
+REuser =     Sys.getenv('api_user')
+RElanguage = Sys.getenv('api_language')
+REpassword = Sys.getenv('pgpassword')
 
 library(shiny)
 #connect to db
@@ -6,13 +12,14 @@ library(RPostgreSQL)
 library(lazyeval)
 library(ggplot2)
 
-# db <- src_postgres('postgres',
-#                    host = 'localhost',
-#                    port = 5432,
-#                    user = 'postgres', 
-#                    password = 'irstea')
-# tbl_scores <- tbl(db, "tblScores")
+db <- src_postgres('postgres',
+                   host = 'localhost',
+                   port = 5432,
+                   user = REuser,
+                   password = REpassword)
+tbl_scores <- tbl(db, "tblScores")
 # print(translate_sql( tbl = tbl_scores, window = TRUE))
+
 
 
 # Define server logic required to draw a histogram
