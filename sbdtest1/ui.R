@@ -4,6 +4,7 @@ REdbname = Sys.getenv('pgdb')
 REuser = Sys.getenv('api_user')
 RElanguage = Sys.getenv('api_language')
 REpassword = Sys.getenv('pgpassword')
+RElanguage <- 1 #for now
 
 library(shiny)
 library(dplyr)
@@ -19,7 +20,8 @@ library(ggplot2)
   qryDernier <- "select distinct(\"dateValue\") from \"tblScores\" order by \"dateValue\" desc limit 1;"
   rsDernier <- dbSendQuery(tmpcon,qryDernier)
   dttLastInDB <- fetch(rsDernier,n=-1)
-  #kill connection
+  
+    #kill connection
   rm(tmpcon)
 
 db <- src_postgres('postgres',
@@ -28,6 +30,24 @@ db <- src_postgres('postgres',
                    user = REuser,
                    password = REpassword)
 tbl_scores <- tbl(db, "tblScores")
+
+#selectInput boxes
+tmpScoreType <- filter(tbl(db, "tblInterface"),ObjectName=="Score Type" & LanguageID == RElanguage)
+ctlScoreType <- collect(tmpScoreType)
+
+tmpModelVariable <- filter(tbl(db, "tblInterface"),ObjectName=="Model Variable" & LanguageID == RElanguage)
+ctlModelVariable <- collect(tmpModelVariable)
+
+tmpLocationName <- filter(tbl(db, "tblInterface"),ObjectName=="Location Name" & LanguageID == RElanguage)
+ctlLocationName <- collect(tmpLocationName)
+
+tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == RElanguage)
+ctlCaseStudy <- collect(tmpCaseStudy)
+# 
+# tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == RElanguage)
+# ctlCaseStudy <- collect(tmpCaseStudy)
+
+
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
@@ -40,33 +60,26 @@ shinyUI(fluidPage(
     column(4,
         wellPanel( 
           h4("Filter"),
-           selectInput("ctlVariable",
+           selectInput("rtnVariable",
                        "Variable:",
-                       c("Precipitation",
-                          "Streamflow",
-                          "Temperature")
+                       c(sort.int(ctlModelVariable$ObjectItemName))
                         ),
           
           selectInput("rtnScoreType",
                       "Score Type:",
-                      c(structure(ctlScoreType$ObjectItemName))
+                      c(sort.int(ctlScoreType$ObjectItemName))
           ),
-          selectInput("ctlLocid",
+          selectInput("rtnLocid",
                       "Location:",
                       c(structure(ctlLocationName$ObjectItemName))
           ),
           
-          h4("Choose axes"),
-          
-          selectInput('xcol', 'X Variable', names(tbl_scores)),
-          selectInput('ycol', 'Y Variable', names(tbl_scores),
-                      selected=names(tbl_scores)[[2]]),
-          
+
+          #does this make any sense as selection criteria?          
           #insert date-picker to change 1e date of analysis
-          start.date <- as.Date(dttFirstInDB$dateValue),
-          end.date <- as.Date(dttLastInDB$dateValue),
-          dateInput("ctlFirstDate", "Start of date range: ", as.Date(start.date)),
-          
+          "Date range: ", start.date <- as.Date(dttFirstInDB$dateValue), 
+          "to: ", end.date <- as.Date(dttLastInDB$dateValue),
+          dateInput("ctlFirstDate", "Startdate: ", as.Date(start.date)),
           sliderInput("timeFrame",
                       "Pick analysis timeframe:",
                       min = start.date,
@@ -76,20 +89,28 @@ shinyUI(fluidPage(
 
     # Show a plot of the generated distribution
     mainPanel(
-       plotOutput("distPlot") #,
+       plotOutput("seriesPlot") ,
 
-       #subsubtoto has one locationID, one lead time, one scoreType
-       # filtered (timeseries) of scoreValues against dateValues
-       # ggplot(data=local,aes(x=dateValue,y=scoreValue)) + geom_point(aes(color=LT),size=1) +
-       #   scale_x_date("Month") + scale_y_continuous("Score")
+       h4("Choose axes"),
+       selectInput('xcol', 'X Variable', (names(tbl_scores$row.names))),
+       selectInput('ycol', 'Y Variable', (names(tbl_scores$row.names)),
+                   selected=names(tbl_scores)[[2]]), #default
+         
+
        
-
-       # choose columns to display
+       verbatimTextOutput("Table stuff to write down here")
+       # include summary table underneath plot:
        # diamonds2 = diamonds[sample(nrow(diamonds), 1000), ],
        # output$mytable1 <- DT::renderDataTable({
        #   DT::datatable(diamonds2[, input$show_vars, drop = FALSE])
        # })
     ) #mainPanel
+
+    # wellPanel(
+    #   span("Records selected:",
+    #        textOutput("n_records")
+    #   )
+      
    ) #sidebarPanel
   ) #sidebarLayout
  )
