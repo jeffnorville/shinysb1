@@ -21,7 +21,6 @@ tbl_scores <- tbl(db, "tblScores")
 # print(translate_sql( tbl = tbl_scores, window = TRUE))
 
 
-
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
@@ -35,19 +34,20 @@ shinyServer(function(input, output) {
     
   
   # Apply filters
-  sm <- db2005 %>%
+  filt1 <- tbl_scores %>%
     filter(
       ScoreType == input$ctlScrtype,
       Location == input$ctlLocid
       # Year <= maxyear,
     ) %>%
 #    arrange(locationID)
-
-    output$distPlot <- renderPlot({
-    ggplot(sm2,aes(x = LT / 7, y = dateValue)) + 
-      geom_point(aes(color = scoreValue), size=5) +
-      scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
-      scale_color_gradient(low="yellow", high="darkgreen")
+    #tbl_scores
+  
+    output$seriesPlot <- renderPlot({
+    # ggplot(filt1,aes(x = LT / 7, y = dateValue)) + 
+    #   geom_point(aes(color = scoreValue), size=5) +
+    #   scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
+    #   scale_color_gradient(low="yellow", high="darkgreen")
     }) #end reactive bit
 
   })
@@ -66,7 +66,7 @@ shinyServer(function(input, output) {
     #                            LT == 4), dateValue, scoreValue:1)
     #remote2 <- collapse(remote) #unimportant for now
     #cached <- compute(remote2)
-    # local  <- collect(remote) #finally hits db with SELECT WHERE
+#    local  <- collect(filt1) #finally hits db with SELECT WHERE
 
 
   })
