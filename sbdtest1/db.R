@@ -1,13 +1,29 @@
+#ini file
+readRenviron("~/R/shinysb1/.Renviron")
+REdbname = Sys.getenv('pgdb')
+REuser = Sys.getenv('api_user')
+RElanguage = Sys.getenv('api_language')
+REpassword = Sys.getenv('pgpassword')
+
 #db connections
 library(dplyr)
+library(ggplot2)
 
+if (is.null(RElanguage) || RElanguage=="")  {
+  language = 1
+  } else {
+  language = RElanguage
+}
+
+  
 db <- src_postgres('postgres',
                    host = 'localhost',
                    port = 5432,
-                   user = 'postgres',
-                   password = hiddenpassword)
+                   user = REuser,
+                   password = REpassword)
 tbl_scores <- tbl(db, "tblScores")
 
+<<<<<<< HEAD
 fulldb <- collect(tbl_scores, n=Inf)
 db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
 
@@ -25,30 +41,86 @@ db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
 
 # flights_postgres <- tbl(src_postgres("nycflights13"), "flights")
 
+=======
+#UI buildup
+#dates
+>>>>>>> 50e9673ab399f0fbc3cfa6905159cd25f2bc28cc
 
+######################################
 # 
-#  scores <- tbl(db, "tblScores")
-#  lScoreTypes <- unique(scores$scoreType)
-#  distinct_df = scores %>% distinct(scoreType)
-# tst1 <- select(filter(scores, locationID == 'M0243010', dateValue == '1981-08-01', LT > 1), scoreValue:1)
+# print("Starting: ")
+# Sys.time()
+# # #allDates <- filter(distinct(tbl_scores, dateValue), rank(dateValue)==1)
+# # allDates <- filter(tbl_scores, !is.null(dateValue))
 # 
-#  select(filter(scores, dateValue > '01/01/2009'), locationID)
-#  
-#  select(filter(scores, scoreType), scoreType)
+# # qry <- tbl_scores %>% 
+# #   filter(locationID %in% c("1","2","3") %>% 
+# #   group_by()  %>% 
+# #   summarise(count = n()) %>%
+# #   collect()
 # 
-#  rmt1 <- select(filter(scores, scoreType))
-#  rmt2 <- collapse(rmt1)
-#  
-# # collect(filter(scores, scoreType != NULL))
-#  
-#  stuff = ident(scores, dplyr::sql('SELECT distinct("scoreType") FROM tblScores'))
-#  
+# print("Collecting: ")
+# Sys.time()
+# 
+# system.time(allDates <- collect(allDates, n=Inf))
+# 
+# print("Filtering: ")
+# Sys.time()
+# system.time(firstDate <- filter(allDates, rank(dateValue)==1))
+# 
+# print("Ending: ")
+# Sys.time()
+# 
+######################################
 
+# #selectInput boxes
+# tmpScoreType <- filter(tbl(db, "tblInterface"),ObjectName=="Score Type" & LanguageID == "1")
+# ctlScoreType <- collect(tmpScoreType)
 # 
-  #    sm <- subset(fulldb, locationID %in% c(ctlLocid))
-  sm <- subset(db2005, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
-  #sm2 <- subset(sm, dateValue > "2005-01-01" & dateValue < "2005-12-31")
-  ggplot(sm,aes(x = LT / 7, y = dateValue)) +
-    geom_point(aes(color = scoreValue), size=3) +
-    scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
-    scale_color_gradient(low="yellow", high="darkgreen")
+# tmpModelVariable <- filter(tbl(db, "tblInterface"),ObjectName=="Model Variable" & LanguageID == "1")
+# ctlModelVariable <- collect(tmpModelVariable)
+# 
+# tmpLocationName <- filter(tbl(db, "tblInterface"),ObjectName=="Location Name" & LanguageID == "1")
+# ctlLocationName <- collect(tmpLocationName)
+# 
+# tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == "1")
+# ctlCaseStudy <- collect(tmpCaseStudy)
+# 
+# tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == "1")
+# ctlCaseStudy <- collect(tmpCaseStudy)
+
+#this is dumb
+#fulldb <- collect(tbl_scores, n=Inf)
+#db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
+
+
+
+# sm <- subset(lcldb, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
+#sm <- subset(lcldb, locationID %in% c('S2242510'))
+#sm2 <- subset(sm, dateValue > "2005-01-01" & dateValue < "2005-12-31")
+# reduced <- filter(tbl_scores, locationID %in% c('S2242510') & dateValue > "2005-01-01" & dateValue < "2005-12-31" ) #%in% works, except this is a multi-cond qry... 
+reduced <- filter(tbl_scores, locationID == c('S2242510') & dateValue > "2005-01-01" & dateValue < "2005-12-31" )
+
+#
+# for (LeadTime in 1:90)
+#  {
+#local <- collect(filter(reduced, LT==LeadTime))
+ local <- collect(reduced)
+  ggp <- ggplot(local,aes(x = dateValue , y = (scoreValue - mean(scoreValue)))) +
+    geom_line(aes(color = LT), size=1) 
+  # +
+  #   scale_x_date("Lead Time (weeks)") + scale_y_continuous("CRPS for Lead Time ", LT)  
+    #print(ggp)
+# }
+
+  ggp + facet_grid(scoreValue ~ LT)
+
+
+# sm2 <- filter(sm, LT==LeadTime)
+for (LeadTime in 1:9)
+{ ggp <- ggplot(sm,aes(x = dateValue , y = (scoreValue - mean(scoreValue)))) +
+    geom_point(aes(color = 'red'), size=1) +
+    scale_x_date("Lead Time (weeks)") + scale_y_continuous("CRPS for Lead Time ")  
+  #print(ggp)
+  ggp + facet_grid(. ~ LT)
+}

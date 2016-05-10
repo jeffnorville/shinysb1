@@ -1,11 +1,10 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-# 
-#    http://shiny.rstudio.com/
-#
+#ini file
+readRenviron("~/R/shinysb1/.Renviron")
+REdbname = Sys.getenv('pgdb')
+REuser = Sys.getenv('api_user')
+RElanguage = Sys.getenv('api_language')
+REpassword = Sys.getenv('pgpassword')
+RElanguage <- 1 #for now
 
 library(shiny)
 library(dplyr)
@@ -13,6 +12,46 @@ library(RPostgreSQL)
 library(lazyeval)
 library(ggplot2)
 
+<<<<<<< HEAD
+=======
+#test db existance and grab 1ere date
+  tmpcon <- dbConnect(PostgreSQL(), user=REuser, password=REpassword, dbname=REdbname) #add error checking here
+  qry1e <- "select distinct(\"dateValue\") from \"tblScores\" order by \"dateValue\" limit 1;"
+  rs1e <- dbSendQuery(tmpcon,qry1e)
+  dttFirstInDB <- fetch(rs1e,n=-1)
+  qryDernier <- "select distinct(\"dateValue\") from \"tblScores\" order by \"dateValue\" desc limit 1;"
+  rsDernier <- dbSendQuery(tmpcon,qryDernier)
+  dttLastInDB <- fetch(rsDernier,n=-1)
+  
+    #kill connection
+  rm(tmpcon)
+
+db <- src_postgres('postgres',
+                   host = 'localhost',
+                   port = 5432,
+                   user = REuser,
+                   password = REpassword)
+tbl_scores <- tbl(db, "tblScores")
+
+#selectInput boxes
+tmpScoreType <- filter(tbl(db, "tblInterface"),ObjectName=="Score Type" & LanguageID == RElanguage)
+ctlScoreType <- collect(tmpScoreType)
+
+tmpModelVariable <- filter(tbl(db, "tblInterface"),ObjectName=="Model Variable" & LanguageID == RElanguage)
+ctlModelVariable <- collect(tmpModelVariable)
+
+tmpLocationName <- filter(tbl(db, "tblInterface"),ObjectName=="Location Name" & LanguageID == RElanguage)
+ctlLocationName <- collect(tmpLocationName)
+
+tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == RElanguage)
+ctlCaseStudy <- collect(tmpCaseStudy)
+# 
+# tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == RElanguage)
+# ctlCaseStudy <- collect(tmpCaseStudy)
+
+
+
+>>>>>>> 50e9673ab399f0fbc3cfa6905159cd25f2bc28cc
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
   
@@ -24,91 +63,66 @@ shinyUI(fluidPage(
     column(4,
         wellPanel( 
           h4("Filter"),
-           selectInput("ctlScrtype",
-                       "Score Type:",
-                       c("Seasonal_EDMD_month",
-                          "Seasonal_EDMD_month_ByWeek",
-                          "Seasonal_LS_month",
-                          "Seasonal_LS_month_ByWeek"
-                        )
-                       ),
-          selectInput("ctlLocid",
-                      "Location:",
-                      c( "A1080330",
-                          "B2220010",
-                          "H2342020",
-                          "H4252010",
-                          "H7401010",
-                          "H8212010",
-                          "I5221010",
-                          "J7483010",
-                          "K1321810",
-                          "K6402520",
-                          "L0563010",
-                          "L4411710",
-                          "M0243010",
-                          "M7112410",
-                          "S2242510",
-                          "U4644010"
-                      )
-          )
+           selectInput("rtnVariable",
+                       "Variable:",
+                       c(sort.int(ctlModelVariable$ObjectItemName))
+                        ),
           
-          )),
+          selectInput("rtnScoreType",
+                      "Score Type:",
+                      c(sort.int(ctlScoreType$ObjectItemName))
+          ),
+          selectInput("rtnLocid",
+                      "Location:",
+                      c(structure(ctlLocationName$ObjectItemName))
+          ),
+          
 
-  # Sidebar with a slider input for number of bins / leadtimes?
-  sidebarLayout(
-    sidebarPanel(
-
-      # selectInput("select", label = h3("Select box"), 
-      #             choices = ls_locations, selected = 1)
-      #   ),
-    
-
-       sliderInput("bins",
-                   "Show leadtimes (weeks):",
-                   min = 1,
-                   max = 90 / 7,
-                   value = 30 / 7)
-       
-    ),
-
-#      ls_locations <- c("A1080330","B2220010", "H2342020"),    
-#    ls_locations <-    c("A1080330" = A1080330,
-#                         "B2220010" = B2220010,
-#                         "H2342020" = H2342020,
-#                         "H4252010" = H4252010,
-#                         "H7401010" = H7401010,
-#                         "H8212010" = H8212010,
-#                         "I5221010" = I5221010,
-#                         "J7483010" = J7483010,
-#                         "K1321810" = K1321810,
-#                         "K6402520" = K6402520,
-#                         "L0563010" = L0563010,
-#                         "L4411710" = L4411710,
-#                         "M0243010" = M0243010,
-#                         "M7112410" = M7112410,
-#                         "S2242510" = S2242510,
-#                         "U4644010" = U4644010
-# ),
+          #does this make any sense as selection criteria?          
+          #insert date-picker to change 1e date of analysis
+          "Date range: ", start.date <- as.Date(dttFirstInDB$dateValue), 
+          "to: ", end.date <- as.Date(dttLastInDB$dateValue),
+          dateInput("ctlFirstDate", "Startdate: ", as.Date(start.date)),
+          sliderInput("timeFrame",
+                      "Pick analysis timeframe:",
+                      min = start.date,
+                      max = end.date,
+                      value = start.date + 90)
+        )),
 
     # Show a plot of the generated distribution
     mainPanel(
-       plotOutput("distPlot") #,
+       plotOutput("seriesPlot") ,
 
-              #subsubtoto has one locationID, one lead time, one scoreType
-       # filtered (timeseries) of scoreValues against dateValues
-       # ggplot(data=local,aes(x=dateValue,y=scoreValue)) + geom_point(aes(color=LT),size=1) +
-       #   scale_x_date("Month") + scale_y_continuous("Score")
+       h4("Choose axes"),
+       selectInput('xcol', 'X Variable', (names(tbl_scores$row.names))),
+       selectInput('ycol', 'Y Variable', (names(tbl_scores$row.names)),
+                   selected=names(tbl_scores)[[2]]), #default
+         
+
        
-
-       # choose columns to display
+       verbatimTextOutput("Table stuff to write down here")
+       # include summary table underneath plot:
        # diamonds2 = diamonds[sample(nrow(diamonds), 1000), ],
        # output$mytable1 <- DT::renderDataTable({
        #   DT::datatable(diamonds2[, input$show_vars, drop = FALSE])
        # })
+<<<<<<< HEAD
 
         )
       )
     )
   )
 )
+=======
+    ) #mainPanel
+
+    # wellPanel(
+    #   span("Records selected:",
+    #        textOutput("n_records")
+    #   )
+      
+   ) #sidebarPanel
+  ) #sidebarLayout
+ )
+>>>>>>> 50e9673ab399f0fbc3cfa6905159cd25f2bc28cc

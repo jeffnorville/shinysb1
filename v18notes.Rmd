@@ -1,0 +1,100 @@
+---
+title: "Notes Week 18"
+author: "Jeff"
+date: "2 mai 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+readRenviron("~/R/shinysb1/.Renviron")
+REdbname = Sys.getenv('pgdb')
+REuser = Sys.getenv('api_user')
+REpassword = Sys.getenv('pgpassword')
+#db connections
+library(dplyr)
+library(ggplot2)
+db <- src_postgres('postgres',
+                   host = 'localhost',
+                   port = 5432,
+                   user = REuser,
+                   password = REpassword)
+tbl_scores <- tbl(db, "tblScores")
+```
+
+## Week 18, 2016 (week 9 of the internship)
+I've finally begun this journal (weekly, actually, or hebdo en français), though as it's taken two months to get "comfortable"" with R it's late in the process. Onward quand même! 
+The idea will be to compile todo lists and accomplishments in a running narration of the work.
+
+This (short 3 day) week I have these goals:
+
+* update shiny plot as function with inputs:
+    + this score
+    + average score
+
+* add query types to shiny interface
+* test with "seasonal" and monthly timescales
+* create "interface tables" to speed interface queries (locations, etc)
+
+
+```{r db}
+dbsub <- filter(tbl_scores, dateValue > "2005-01-01" & dateValue < "2005-12-31")
+db2005 <- collect(dbsub)
+summary(db2005)
+```
+
+## Including Plots
+
+Subset of data:
+```{r }
+sm <- subset(db2005, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
+summary(sm)
+
+```
+
+
+My plot de jour:
+
+```{r lead time plot, echo=FALSE}
+ggplot(sm,aes(x = LT / 7, y = dateValue)) +
+  geom_point(aes(color = scoreValue), size=3) +
+  scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
+  scale_color_gradient(low="yellow", high="darkgreen")
+```
+
+Sub-subset of data (lead time = 5 days):
+```{r plot summary 1}
+smsub <- filter(sm, LT==5)
+summary(smsub)
+
+```
+
+```{r line plot 1, echo=FALSE}
+#sm <- subset(db2005, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
+ggplot(smsub,aes(y = (smsub$scoreValue-mean(smsub$scoreValue))/mean(smsub$scoreValue), x = dateValue)) +
+  geom_line(aes(color = 'red'), size=1) +
+  scale_y_continuous("scores") + scale_x_date("time")
+
+# +
+#   scale_color_gradient(low="yellow", high="darkgreen")
+```
+
+Sub-subset of data (lead time = 10 days):
+```{r plot summary 2}
+smsub <- filter(sm, LT==10)
+summary(smsub)
+
+```
+
+```{r line plot 2, echo=FALSE}
+#sm <- subset(db2005, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
+ggplot(smsub,aes(y = (smsub$scoreValue-mean(smsub$scoreValue))/mean(smsub$scoreValue), x = dateValue)) +
+  geom_line(aes(color = 'red'), size=1) +
+  scale_y_continuous("scores") + scale_x_date("time")
+# +
+#   scale_color_gradient(low="yellow", high="darkgreen")
+```
+
+
+Note - perhaps x axis should be time from start rather than an actual date ?
+
