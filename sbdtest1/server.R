@@ -27,30 +27,33 @@ shinyServer(function(input, output) {
   #using fulldb too big - stick with subset until figure out dplyr issue
   #get the filters to df
   filtInput <- reactive({
-    scoreType <- input$ctlScrtype
-    locationID <- input$ctlLocid
+    locationID <- input$rtnLocid
+    # scoreType <- input$rtnModelVariable
     # minyear <- input$year[1]
     # maxyear <- input$year[2]
-    
-  
-  # Apply filters
-  filt1 <- tbl_scores %>%
-    filter(
-      ScoreType == input$ctlScrtype,
-      Location == input$ctlLocid
-      # Year <= maxyear,
-    ) %>%
-#    arrange(locationID)
-    #tbl_scores
-  
-    output$seriesPlot <- renderPlot({
-    # ggplot(filt1,aes(x = LT / 7, y = dateValue)) + 
-    #   geom_point(aes(color = scoreValue), size=5) +
-    #   scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
-    #   scale_color_gradient(low="yellow", high="darkgreen")
-    }) #end reactive bit
 
-  })
+    # Apply filters
+    filt1 <- tbl_scores %>%
+      filter(
+        Location == input$rtnLocid
+        #ScoreType == input$ctlScrtype,
+        # Year <= maxyear,
+      ) %>%
+
+      #    arrange(locationID)
+      output$summary <- renderPrint({
+        dataset <- filtInput()
+        summary(dataset)
+      })
+  
+      output$seriesPlot <- renderPlot({
+      # ggplot(filt1,aes(x = LT / 7, y = dateValue)) + 
+      #   geom_point(aes(color = scoreValue), size=5) +
+      #   scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
+      #   scale_color_gradient(low="yellow", high="darkgreen")
+      }) 
+
+    }) #end reactive
   
     #db
     # scores <- tbl(db, "tblScores")
@@ -69,8 +72,8 @@ shinyServer(function(input, output) {
 #    local  <- collect(filt1) #finally hits db with SELECT WHERE
 
 
-  })
+  }) # end shinyServer
 
-#on unload --- disonnect???
+#on unload --- disconnect???
 
 
