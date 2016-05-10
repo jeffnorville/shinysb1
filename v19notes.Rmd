@@ -1,0 +1,60 @@
+---
+title: "v19notes"
+author: "Jeff"
+date: "9 mai 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Week 19, 2016
+This is week 10 of   of the internship!
+
+```{r plot il reste}
+thisweek <- 10
+yikes <- c(thisweek, 34-thisweek) / 34
+barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
+
+
+```
+
+Last week I got all our current scores loaded into a local postgres database; poked through a shiny tutorial; switched from RPostgres driver to dplyr (for better or worse); and corrected a first CRPS plot to make a little sense.
+
+It's true, sometimes this geologist struggles to grok the model scores in forecasting!
+
+This week I need to:
+
+* decide if the SOS database format is the way to go forward,
+    + which makes maintenance easier
+    + but dplyr less useful
+    + and I'd learn curl
+* load data to AWS instance
+    + use .Renviron to point at dev / prod databases
+* mysteries to solve
+    + where does dplyr disconnect pooled connections?
+    + strategies for a multi-user app?
+* R fundamentals I still need
+    + difference btw filter() and subset?
+    + ggplot2
+    + facet()
+* Some helpful r debugging links:
+    + http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/
+    + http://shiny.rstudio.com/articles/debugging.html
+    
+    
+    
+
+We need a structure for the scores to import - currently receiving text files and 3D "cubes" depending on source... tidying takes time; should be automated so users may load / arrange their scores (EVS)
+
+Working with "reactive" call today:
+https://gallery.shinyapps.io/003-reactivity/
+
+Confidence Intervals discussed in different context:
+http://learnbayes.org/papers/confidenceIntervalsFallacy/introduction.html
+...with nifty Shiny app to illustrate Figs 1 - 5 from article:
+https://richarddmorey.shinyapps.io/confidenceFallacy/
+http://learnbayes.org/papers/confidenceIntervalsFallacy/
+
