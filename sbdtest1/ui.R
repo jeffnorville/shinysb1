@@ -12,8 +12,6 @@ library(RPostgreSQL)
 library(lazyeval)
 library(ggplot2)
 
-<<<<<<< HEAD
-=======
 #test db existance and grab 1ere date
   tmpcon <- dbConnect(PostgreSQL(), user=REuser, password=REpassword, dbname=REdbname) #add error checking here
   qry1e <- "select distinct(\"dateValue\") from \"tblScores\" order by \"dateValue\" limit 1;"
@@ -45,13 +43,13 @@ ctlLocationName <- collect(tmpLocationName)
 
 tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == RElanguage)
 ctlCaseStudy <- collect(tmpCaseStudy)
-# 
+
+
+
 # tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == RElanguage)
 # ctlCaseStudy <- collect(tmpCaseStudy)
 
 
-
->>>>>>> 50e9673ab399f0fbc3cfa6905159cd25f2bc28cc
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
   
@@ -63,18 +61,19 @@ shinyUI(fluidPage(
     column(4,
         wellPanel( 
           h4("Filter"),
-           selectInput("rtnVariable",
-                       "Variable:",
+          selectInput("rtnLocid",
+                      "Location:",
+                      c(structure(ctlLocationName$ObjectItemName))
+          ),
+          
+          selectInput("rtnModelVariable",
+                       "Model Variable:",
                        c(sort.int(ctlModelVariable$ObjectItemName))
                         ),
           
           selectInput("rtnScoreType",
                       "Score Type:",
                       c(sort.int(ctlScoreType$ObjectItemName))
-          ),
-          selectInput("rtnLocid",
-                      "Location:",
-                      c(structure(ctlLocationName$ObjectItemName))
           ),
           
 
@@ -94,27 +93,21 @@ shinyUI(fluidPage(
     mainPanel(
        plotOutput("seriesPlot") ,
 
+       
+       verbatimTextOutput("summary"),
+       tableOutput("view"),
+
        h4("Choose axes"),
        selectInput('xcol', 'X Variable', (names(tbl_scores$row.names))),
        selectInput('ycol', 'Y Variable', (names(tbl_scores$row.names)),
-                   selected=names(tbl_scores)[[2]]), #default
+                   selected=names(tbl_scores)[[2]]) #default
          
 
-       
-       verbatimTextOutput("Table stuff to write down here")
        # include summary table underneath plot:
        # diamonds2 = diamonds[sample(nrow(diamonds), 1000), ],
        # output$mytable1 <- DT::renderDataTable({
        #   DT::datatable(diamonds2[, input$show_vars, drop = FALSE])
        # })
-<<<<<<< HEAD
-
-        )
-      )
-    )
-  )
-)
-=======
     ) #mainPanel
 
     # wellPanel(
@@ -125,4 +118,3 @@ shinyUI(fluidPage(
    ) #sidebarPanel
   ) #sidebarLayout
  )
->>>>>>> 50e9673ab399f0fbc3cfa6905159cd25f2bc28cc

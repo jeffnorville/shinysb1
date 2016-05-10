@@ -17,11 +17,6 @@ This is week 10 of   of the internship!
 thisweek <- 10
 yikes <- c(thisweek, 34-thisweek) / 34
 barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 50e9673ab399f0fbc3cfa6905159cd25f2bc28cc
 ```
 
 Last week I got all our current scores loaded into a local postgres database; poked through a shiny tutorial; switched from RPostgres driver to dplyr (for better or worse); and corrected a first CRPS plot to make a little sense.
@@ -47,9 +42,6 @@ This week I need to:
     + http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/
     + http://shiny.rstudio.com/articles/debugging.html
     + other ideas?
-    + why isn't this getting picked up by git??
-
-    
 
 We need a structure for the scores to import - currently receiving text files and 3D "cubes" depending on source... tidying takes time; should be automated so users may load / arrange their scores (EVS)
 

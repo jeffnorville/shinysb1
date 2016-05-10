@@ -23,7 +23,7 @@ db <- src_postgres('postgres',
                    password = REpassword)
 tbl_scores <- tbl(db, "tblScores")
 
-<<<<<<< HEAD
+
 fulldb <- collect(tbl_scores, n=Inf)
 db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
 
@@ -41,10 +41,8 @@ db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
 
 # flights_postgres <- tbl(src_postgres("nycflights13"), "flights")
 
-=======
 #UI buildup
 #dates
->>>>>>> 50e9673ab399f0fbc3cfa6905159cd25f2bc28cc
 
 ######################################
 # 
