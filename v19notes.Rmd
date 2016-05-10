@@ -43,7 +43,8 @@ This week I need to:
 * Some helpful r debugging links:
     + http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/
     + http://shiny.rstudio.com/articles/debugging.html
-    
+    + other ideas?
+    + why isn't this getting picked up by git??
     
     
 
