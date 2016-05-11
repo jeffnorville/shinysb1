@@ -1,4 +1,4 @@
-#ini file
+#IMPREX Scoreboard
 readRenviron("~/R/shinysb1/.Renviron")
 REdbname = Sys.getenv('pgdb')
 REuser = Sys.getenv('api_user')
@@ -68,7 +68,7 @@ shinyUI(fluidPage(
           
           selectInput("rtnModelVariable",
                        "Model Variable:",
-                       c(sort.int(ctlModelVariable$ObjectItemName))
+                      c(sort.int(ctlModelVariable$ObjectItemName))
                         ),
           
           selectInput("rtnScoreType",
@@ -78,36 +78,23 @@ shinyUI(fluidPage(
           
 
           #does this make any sense as selection criteria?          
-          #insert date-picker to change 1e date of analysis
           "Date range: ", start.date <- as.Date(dttFirstInDB$dateValue), 
           "to: ", end.date <- as.Date(dttLastInDB$dateValue),
           dateInput("ctlFirstDate", "Startdate: ", as.Date(start.date)),
-          sliderInput("timeFrame",
-                      "Pick analysis timeframe:",
-                      min = start.date,
-                      max = end.date,
-                      value = start.date + 90)
+          sliderInput("lead.times",
+                      "Pick lead times:",
+                      min = 1,
+                      max = 90,
+                      value = 1:10)
         )),
 
     # Show a plot of the generated distribution
     mainPanel(
-       plotOutput("seriesPlot") ,
+       # plotOutput("seriesPlot") ,
 
-       
        verbatimTextOutput("summary"),
-       tableOutput("view"),
+       tableOutput("view")
 
-       h4("Choose axes"),
-       selectInput('xcol', 'X Variable', (names(tbl_scores$row.names))),
-       selectInput('ycol', 'Y Variable', (names(tbl_scores$row.names)),
-                   selected=names(tbl_scores)[[2]]) #default
-         
-
-       # include summary table underneath plot:
-       # diamonds2 = diamonds[sample(nrow(diamonds), 1000), ],
-       # output$mytable1 <- DT::renderDataTable({
-       #   DT::datatable(diamonds2[, input$show_vars, drop = FALSE])
-       # })
     ) #mainPanel
 
     # wellPanel(

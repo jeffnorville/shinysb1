@@ -21,8 +21,11 @@ shinyUI(fluidPage(
                      'Single Quote'="'"),
                    '"')
     ),
+    # sidebarPanel(
+    #   "Load to Database:"
+    #   ),
     mainPanel(
-      tableOutput('contents')
+      tableOutput(head('contents'))
     )
   )
 ))

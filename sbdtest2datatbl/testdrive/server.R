@@ -1,4 +1,5 @@
-readRenviron("~/R/shinysb1/sbdtest/testdrive/.Renviron")
+#Mini DB Testdrive
+readRenviron("~/R/shinysb1/.Renviron")
 REdbname =   Sys.getenv('pgdb')
 REuser =     Sys.getenv('api_user')
 RElanguage = Sys.getenv('api_language')
@@ -30,21 +31,13 @@ shinyServer(function(input, output) {
   #	  (it only executes a single time)
   #
   datasetInput <- reactive({
-    #filter input by selection
-    
-    # #testing
-    remote <- filter(tbl_scores, locationID == "I5221010" && 
-                       LT %in% c(1,2,3,4,5) )
-    remote <- filter(tbl_scores, locationID == input$dataset && 
+    # #for testing
+    # remote <- filter(tbl_scores, locationID == "I5221010" &&
+    #                    LT %in% c(1,2,3,4,5) )
+    remote <- filter(tbl_scores, locationID == input$dataset &&
                LT == input$lead.times )
     getit <- structure(collect(remote))
 
-    
-        
-    # switch(input$dataset,
-    #        "rock" = rock,
-    #        "pressure" = pressure,
-    #        "cars" = cars)
   })
   
   # The output$caption is computed based on a reactive expression
@@ -75,6 +68,7 @@ shinyServer(function(input, output) {
   # The output$view depends on both the databaseInput reactive
   # expression and input$obs, so will be re-executed whenever
   # input$dataset or input$obs is changed. 
+  # note - little bug to do with dates displayed in renderTable({head()}) I think...
   output$view <- renderTable({
     head(datasetInput(), n = input$lead.times)
   })

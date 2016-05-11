@@ -1,4 +1,4 @@
-#ini file
+#IMPREX Scoreboard
 readRenviron("~/R/shinysb1/.Renviron")
 REdbname =   Sys.getenv('pgdb')
 REuser =     Sys.getenv('api_user')
@@ -24,56 +24,41 @@ tbl_scores <- tbl(db, "tblScores")
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
-  #using fulldb too big - stick with subset until figure out dplyr issue
-  #get the filters to df
+  #filter dataframe from db based on first selections
   filtInput <- reactive({
-    locationID <- input$rtnLocid
+
+    remote <- filter(tbl_scores, 
+                     locationID == input$rtnLocid &&
+                     LT %in% input$lead.times &&
+                     modelVariable == input$rtnModelVariable &&
+                     scoreType == input$rtnScoreType
+    )
+    getit <- structure(collect(remote))
+  }) #end reactive
+
     # scoreType <- input$rtnModelVariable
     # minyear <- input$year[1]
     # maxyear <- input$year[2]
 
-    # Apply filters
-    filt1 <- tbl_scores %>%
-      filter(
-        Location == input$rtnLocid
-        #ScoreType == input$ctlScrtype,
-        # Year <= maxyear,
-      ) %>%
-
-      #    arrange(locationID)
-      output$summary <- renderPrint({
-        dataset <- filtInput()
-        summary(dataset)
-      })
+  output$summary <- renderPrint({
+    dataset <- filtInput()
+    summary(dataset)
+  })
   
-      output$seriesPlot <- renderPlot({
-      # ggplot(filt1,aes(x = LT / 7, y = dateValue)) + 
-      #   geom_point(aes(color = scoreValue), size=5) +
-      #   scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
-      #   scale_color_gradient(low="yellow", high="darkgreen")
-      }) 
+    # output$seriesPlot <- renderPlot({
 
-    }) #end reactive
+    # ggplot(filt1,aes(x = LT / 7, y = dateValue)) + 
+    #   geom_point(aes(color = scoreValue), size=5) +
+    #   scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
+    #   scale_color_gradient(low="yellow", high="darkgreen")
+    # }) 
+
   
-    #db
-    # scores <- tbl(db, "tblScores")
-    # print(translate_sql(rank(), tbl = "tblScores", window = TRUE))
-    # #controls  unique(as.character(mpg$manufacturer
-    # scrflav <- collect(order(unique(as.character(scores$scoreType))))
-    # loc <- unique(as.character(scores$locationID))
-    
-    
     # filter stuff to draw
     # remote <- select(filter(scores, locationID == 'M0243010' && 
     #                            scoreType == 'Seasonal_LS_month' && 
     #                            LT == 4), dateValue, scoreValue:1)
     #remote2 <- collapse(remote) #unimportant for now
     #cached <- compute(remote2)
-#    local  <- collect(filt1) #finally hits db with SELECT WHERE
-
 
   }) # end shinyServer
-
-#on unload --- disconnect???
-
-

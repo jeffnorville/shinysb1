@@ -1,3 +1,10 @@
+#Mini DB Testdrive
+readRenviron("~/R/shinysb1/.Renviron")
+REdbname =   Sys.getenv('pgdb')
+REuser =     Sys.getenv('api_user')
+RElanguage = Sys.getenv('api_language')
+REpassword = Sys.getenv('pgpassword')
+
 library(shiny)
 library(RPostgreSQL)
 library(dplyr)
@@ -9,9 +16,12 @@ db <- src_postgres('postgres',
                    user = REuser,
                    password = REpassword)
 tbl_scores <- tbl(db, "tblScores")
+
+tmpLocationName <- filter(tbl(db, "tblInterface"),ObjectName=="Location Name" & LanguageID == RElanguage)
+ctlLocationName <- collect(tmpLocationName)
+
 tmpModelVariable <- filter(tbl(db, "tblInterface"),ObjectName=="Model Variable" & LanguageID == RElanguage)
 ctlModelVariable <- collect(tmpModelVariable)
-
 
 # Define UI for dataset viewer application
 shinyUI(fluidPage(
@@ -27,7 +37,8 @@ shinyUI(fluidPage(
       textInput("caption", "Caption:", "Data Summary"),
       
       selectInput("dataset", "Choose a BV:",
-                  choices = c(sort.int(ctlLocationName$ObjectItemName))
+                  choices = c(sort.int(ctlLocationName$ObjectItemName)) #not clear why we use "choices"
+                  # c(sort.int(ctlLocationName$ObjectItemName)) #okay, w/o choices the state change isn't detected...
       ),
       
       
@@ -42,8 +53,10 @@ shinyUI(fluidPage(
       
       verbatimTextOutput("summary"), 
       "note: limited to uncorrected CRPS precipitation values on X BVs in France" ,
-      
-      tableOutput("view")
+      tableOutput("view") #commenting this out removes the weird, date-stripping format error:
+      #Warning in formatC(x = 4018, format = "f", digits = 2, decimal.mark = ".") :
+      # class of 'x' was discarded
+      # update (w fix if needed): http://stackoverflow.com/questions/22405550/r-shiny-table-with-dates
     )
   )
 ))
