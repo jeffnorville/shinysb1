@@ -2,7 +2,9 @@
 title: "v19notes"
 author: "Jeff"
 date: "9 mai 2016"
-output: html_document
+output: 
+  html_document: 
+    number_sections: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -42,6 +44,20 @@ This week I need to:
     + http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/
     + http://shiny.rstudio.com/articles/debugging.html
     + other ideas?
+    
+This week so far I have done:
+
+* modified local db to match v2 specifics
+* built interactive dataframe to postgres db,
+* built csv upload function which loads SMHI files successfully
+* finished main score series viewer
+
+This first-pass structure worked for simple data off all one datatype...
+![ERD v0.1](C:\Users\jeffrey.norville\Documents\VerificationScorecard\ERDv001.png)
+... but in fact we are scoring many variables which need to be tied together more explicitely.
+
+
+
 
 We need a structure for the scores to import - currently receiving text files and 3D "cubes" depending on source... tidying takes time; should be automated so users may load / arrange their scores (EVS)
 

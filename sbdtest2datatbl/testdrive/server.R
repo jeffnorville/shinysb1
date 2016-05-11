@@ -31,9 +31,16 @@ shinyServer(function(input, output) {
   #
   datasetInput <- reactive({
     #filter input by selection
+    
+    # #testing
+    remote <- filter(tbl_scores, locationID == "I5221010" && 
+                       LT %in% c(1,2,3,4,5) )
     remote <- filter(tbl_scores, locationID == input$dataset && 
                LT == input$lead.times )
-    getit <- collect(remote)
+    getit <- structure(collect(remote))
+
+    
+        
     # switch(input$dataset,
     #        "rock" = rock,
     #        "pressure" = pressure,

@@ -1,4 +1,7 @@
 library(shiny)
+library(RPostgreSQL)
+library(dplyr)
+
 
 db <- src_postgres('postgres',
                    host = 'localhost',
@@ -16,17 +19,12 @@ shinyUI(fluidPage(
   # Application title
   titlePanel("Mini DB Testdrive"),
   
-  # Sidebar with controls to provide a caption, select a dataset,
-  # and specify the number of observations to view. Note that
+  # Note that
   # changes made to the caption in the textInput control are
   # updated in the output area immediately as you type
   sidebarLayout(
     sidebarPanel(
       textInput("caption", "Caption:", "Data Summary"),
-      
-      # selectInput("dataset", "Choose a model var:", 
-      #             choices = sort(c("Streamflow","Precipitation","Temperature"))
-      # ),
       
       selectInput("dataset", "Choose a BV:",
                   choices = c(sort.int(ctlLocationName$ObjectItemName))
