@@ -1,4 +1,6 @@
 library(shiny)
+library(dplyr)
+library(RPostgreSQL)
 
 db <- src_postgres('postgres',
                    host = 'localhost',
@@ -8,6 +10,10 @@ db <- src_postgres('postgres',
 tbl_scores <- tbl(db, "tblScores")
 tmpModelVariable <- filter(tbl(db, "tblInterface"),ObjectName=="Model Variable" & LanguageID == RElanguage)
 ctlModelVariable <- collect(tmpModelVariable)
+# tmpModelVariable <- filter(tbl(db, "tblInterface"),ObjectName=="Model Variable" & LanguageID == RElanguage)
+# ctlModelVariable <- collect(tmpModelVariable)
+tmpLocationName <- filter(tbl(db, "tblInterface"),ObjectName=="Location Name" & LanguageID == RElanguage)
+ctlLocationName <- collect(tmpLocationName)
 
 
 # Define UI for dataset viewer application
