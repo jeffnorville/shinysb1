@@ -1,4 +1,7 @@
+
+
 library(shiny)
+require("uuid")
 
 shinyUI(fluidPage(
   titlePanel("Uploading Files"),
@@ -25,7 +28,13 @@ shinyUI(fluidPage(
     #   "Load to Database:"
     #   ),
     mainPanel(
-      tableOutput(head('contents'))
+      # tableOutput(head('contents'))
+      tableOutput('contents')
+      # ,
+      # if (is.null(generated.guid))
+      #   "Choose a file"
+      # else
+      #   "Your GUID for this datapackage is: ", generated.guid
     )
   )
 ))

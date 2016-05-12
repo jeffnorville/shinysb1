@@ -99,26 +99,43 @@ tbl_scores <- tbl(db, "tblScores")
 # reduced <- filter(tbl_scores, locationID %in% c('S2242510') & dateValue > "2005-01-01" & dateValue < "2005-12-31" ) #%in% works, except this is a multi-cond qry... 
 reduced <- filter(tbl_scores, locationID == c('S2242510') & dateValue > "2005-01-01" & dateValue < "2005-12-31" )
 
+local <- collect(reduced)
+local <- filter(local, dateValue == "2005-02-01" & forecastType == "Seasonal_EDMD_month")
+# ggplot(local,aes(x = leadtimeValue, y = (scoreValue - mean(scoreValue)))) +
+  
+ggplot(local,aes(x = leadtimeValue, y = (scoreValue - mean(scoreValue)))) +
+  # stat_summary(fun.y="mean", geom = "bar") +
+  geom_line(aes(color = scoreValue), size=1) +
+  geom_hline(aes(yintercept=0), colour="black", linetype="dashed") # colour="#990000"
+
+
+ggplot(local,aes(x = leadtimeValue, y = (scoreValue - mean(scoreValue)))) +
+  # stat_summary(fun.y="mean", geom = "bar") +
+  geom_line(aes(color = scoreValue), size=1) +
+  geom_hline(aes(yintercept=0), colour="black", linetype="dashed") # colour="#990000"
+
+
 #
 # for (LeadTime in 1:90)
 #  {
-#local <- collect(filter(reduced, LT==LeadTime))
- local <- collect(reduced)
-  ggp <- ggplot(local,aes(x = dateValue , y = (scoreValue - mean(scoreValue)))) +
-    geom_line(aes(color = LT), size=1) 
+#local <- collect(filter(reduced, leadtimeValue==LeadTime))
+ # local <- collect(reduced)
+ #  ggp <- ggplot(local,aes(x = dateValue , y = (scoreValue - mean(scoreValue)))) +
+ #    geom_line(aes(color = leadtimeValue), size=1) 
+  
   # +
-  #   scale_x_date("Lead Time (weeks)") + scale_y_continuous("CRPS for Lead Time ", LT)  
+  #   scale_x_date("Lead Time (weeks)") + scale_y_continuous("CRPS for Lead Time ", leadtimeValue)  
     #print(ggp)
 # }
 
-  ggp + facet_grid(scoreValue ~ LT)
+  # ggp + facet_grid(scoreValue ~ leadtimeValue)
 
 
-# sm2 <- filter(sm, LT==LeadTime)
-for (LeadTime in 1:9)
-{ ggp <- ggplot(sm,aes(x = dateValue , y = (scoreValue - mean(scoreValue)))) +
-    geom_point(aes(color = 'red'), size=1) +
-    scale_x_date("Lead Time (weeks)") + scale_y_continuous("CRPS for Lead Time ")  
-  #print(ggp)
-  ggp + facet_grid(. ~ LT)
-}
+# # sm2 <- filter(sm, leadtimeValue==LeadTime)
+# for (LeadTime in 1:9)
+# { ggp <- ggplot(sm,aes(x = dateValue , y = (scoreValue - mean(scoreValue)))) +
+#     geom_point(aes(color = 'red'), size=1) +
+#     scale_x_date("Lead Time (weeks)") + scale_y_continuous("CRPS for Lead Time ")  
+#   #print(ggp)
+#   ggp + facet_grid(. ~ leadtimeValue)
+# }

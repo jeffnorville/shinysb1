@@ -1,4 +1,5 @@
 library(shiny)
+require("uuid")
 
 shinyServer(function(input, output) {
   output$contents <- renderTable({
@@ -13,8 +14,11 @@ shinyServer(function(input, output) {
     
     if (is.null(inFile))
       return(NULL)
-    
+    else
+      generated.guid <- UUIDgenerate(TRUE) # got a file, generate a unique id based on user timestamp
+
     read.csv(inFile$datapath, header=input$header, sep=input$sep, 
              quote=input$quote)
   })
+  
 })

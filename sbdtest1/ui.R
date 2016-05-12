@@ -12,7 +12,7 @@ library(RPostgreSQL)
 library(lazyeval)
 library(ggplot2)
 
-#test db existance and grab 1ere date
+#test db existance and grab date brackets for ENTIRE dataset
   tmpcon <- dbConnect(PostgreSQL(), user=REuser, password=REpassword, dbname=REdbname) #add error checking here
   qry1e <- "select distinct(\"dateValue\") from \"tblScores\" order by \"dateValue\" limit 1;"
   rs1e <- dbSendQuery(tmpcon,qry1e)
@@ -90,7 +90,8 @@ shinyUI(fluidPage(
 
     # Show a plot of the generated distribution
     mainPanel(
-       # plotOutput("seriesPlot") ,
+      
+       plotOutput("seriesPlot") ,
 
        verbatimTextOutput("summary"),
        tableOutput("view")

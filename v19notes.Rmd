@@ -1,10 +1,11 @@
 ---
-title: "v19notes"
+title: "Week 19 notes"
 author: "Jeff"
 date: "9 mai 2016"
-output: 
-  html_document: 
+output:
+  html_document:
     number_sections: yes
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -13,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ## Week 19, 2016
-This is week 10 of   of the internship!
+Happily it's not week 19 of the internship, just 2016. However, it's already week 10 of 34!
 
 ```{r plot il reste}
 thisweek <- 10
@@ -52,19 +53,26 @@ This week so far I have done:
 * built csv upload function which loads SMHI files successfully
 * finished main score series viewer
 
+
 This first-pass structure worked for simple data off all one datatype...
+
 ![ERD v0.1](C:\Users\jeffrey.norville\Documents\VerificationScorecard\ERDv001.png)
-... but in fact we are scoring many variables which need to be tied together more explicitely.
+
+... but in fact we are scoring many variables which need to be tied together more explicitely. Hence, version 2:
+
+![ERD v0.2](C:\Users\jeffrey.norville\Documents\VerificationScorecard\ERD_v2.png)
 
 
 
-
-We need a structure for the scores to import - currently receiving text files and 3D "cubes" depending on source... tidying takes time; should be automated so users may load / arrange their scores (EVS)
+We need a structure for the scores to import - currently receiving text files and 3D "cubes" depending on source... tidying takes time; should be automated so users may load / arrange their scores (like EVS).
 
 Working with "reactive" call today:
 https://gallery.shinyapps.io/003-reactivity/
 
-Confidence Intervals discussed in different context:
+O'Reilly always publishes goodness, will put this here to remember later:
+http://www.cookbook-r.com/Graphs/
+
+Something to look into on my time -- confidence Intervals discussed in different context:
 http://learnbayes.org/papers/confidenceIntervalsFallacy/introduction.html
 ...with nifty Shiny app to illustrate Figs 1 - 5 from article:
 https://richarddmorey.shinyapps.io/confidenceFallacy/

@@ -29,29 +29,38 @@ shinyServer(function(input, output) {
 
     remote <- filter(tbl_scores, 
                      locationID == input$rtnLocid &&
-                     LT %in% input$lead.times &&
+                     leadtimeValue %in% input$lead.times &&
                      modelVariable == input$rtnModelVariable &&
                      scoreType == input$rtnScoreType
     )
     getit <- structure(collect(remote))
+    # browser()
+    
   }) #end reactive
-
-    # scoreType <- input$rtnModelVariable
-    # minyear <- input$year[1]
-    # maxyear <- input$year[2]
 
   output$summary <- renderPrint({
     dataset <- filtInput()
     summary(dataset)
   })
   
-    # output$seriesPlot <- renderPlot({
-
-    # ggplot(filt1,aes(x = LT / 7, y = dateValue)) + 
+  output$view
+  
+  output$seriesPlot <- renderPlot({
+    
+    ggplot(getit, aes(x = leadtimeValue, y = (scoreValue - mean(scoreValue)))) +
+      # stat_summary(fun.y="mean", geom = "bar") +
+      geom_line(aes(color = scoreValue), size=1) +
+      geom_hline(aes(yintercept=0), colour="black", linetype="dashed")
+    
+    
+    # ggplot(filtInput(), aes(x = leadtimeValue , y = (scoreValue - mean(scoreValue)))) +
+    #   geom_line(aes(color = scoreValue), size=1)     
+    
+    # ggplot(filtInput, aes(x = LeadTime / 7, y = dateValue)) +
     #   geom_point(aes(color = scoreValue), size=5) +
     #   scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
     #   scale_color_gradient(low="yellow", high="darkgreen")
-    # }) 
+  })
 
   
     # filter stuff to draw
