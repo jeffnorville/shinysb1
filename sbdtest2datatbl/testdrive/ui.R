@@ -6,9 +6,14 @@ RElanguage = Sys.getenv('api_language')
 REpassword = Sys.getenv('pgpassword')
 
 library(shiny)
+<<<<<<< HEAD:sbdtest2/testdrive/ui.R
+library(dplyr)
+library(RPostgreSQL)
+=======
 library(RPostgreSQL)
 library(dplyr)
 
+>>>>>>> 3682748cfaba830ff9f377cb0bc5dd2109f401cf:sbdtest2datatbl/testdrive/ui.R
 
 db <- src_postgres('postgres',
                    host = 'localhost',
@@ -22,6 +27,10 @@ ctlLocationName <- collect(tmpLocationName)
 
 tmpModelVariable <- filter(tbl(db, "tblInterface"),ObjectName=="Model Variable" & LanguageID == RElanguage)
 ctlModelVariable <- collect(tmpModelVariable)
+# tmpModelVariable <- filter(tbl(db, "tblInterface"),ObjectName=="Model Variable" & LanguageID == RElanguage)
+# ctlModelVariable <- collect(tmpModelVariable)
+tmpLocationName <- filter(tbl(db, "tblInterface"),ObjectName=="Location Name" & LanguageID == RElanguage)
+ctlLocationName <- collect(tmpLocationName)
 
 # Define UI for dataset viewer application
 shinyUI(fluidPage(

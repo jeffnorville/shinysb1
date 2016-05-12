@@ -2,10 +2,7 @@
 title: "Week 19 notes"
 author: "Jeff"
 date: "9 mai 2016"
-output:
-  html_document:
-    number_sections: yes
-  pdf_document: default
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -45,8 +42,9 @@ This week I need to:
     + http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/
     + http://shiny.rstudio.com/articles/debugging.html
     + other ideas?
-    
-This week so far I have done:
+
+
+This week so far I have:
 
 * modified local db to match v2 specifics
 * built interactive dataframe to postgres db,

@@ -43,7 +43,7 @@ shinyServer(function(input, output) {
     summary(dataset)
   })
   
-  output$view
+  # output$view
   
   output$seriesPlot <- renderPlot({
     

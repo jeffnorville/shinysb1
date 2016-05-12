@@ -24,8 +24,8 @@ db <- src_postgres('postgres',
 tbl_scores <- tbl(db, "tblScores")
 
 
-# fulldb <- collect(tbl_scores, n=Inf)
-# db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
+fulldb <- collect(tbl_scores, n=Inf)
+db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
 
 #goal tonight -- dplyr working for me
 # when is db queried?

@@ -1,9 +1,0 @@
-name: testdrive
-account: jnorville
-server: shinyapps.io
-appId: 101151
-bundleId: 446820
-url: https://jnorville.shinyapps.io/testdrive/
-when: 1462891150.70042
-asMultiple: FALSE
-asStatic: FALSE
