@@ -47,7 +47,7 @@ shinyServer(function(input, output) {
   
   output$seriesPlot <- renderPlot({
     
-    ggplot(getit, aes(x = leadtimeValue, y = (scoreValue - mean(scoreValue)))) +
+    ggp <- ggplot(filtInput(), aes(x = leadtimeValue, y = (scoreValue - mean(scoreValue)))) +
       # stat_summary(fun.y="mean", geom = "bar") +
       geom_line(aes(color = scoreValue), size=1) +
       geom_hline(aes(yintercept=0), colour="black", linetype="dashed")

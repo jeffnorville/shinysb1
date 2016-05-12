@@ -91,7 +91,7 @@ shinyUI(fluidPage(
     # Show a plot of the generated distribution
     mainPanel(
       
-       # plotOutput("seriesPlot") ,
+       plotOutput("seriesPlot") ,
 
        verbatimTextOutput("summary"),
        tableOutput("view")
