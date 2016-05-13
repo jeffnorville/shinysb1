@@ -6,7 +6,6 @@ RElanguage = Sys.getenv('api_language')
 REpassword = Sys.getenv('pgpassword')
 
 library(shiny)
-#connect to db
 library(dplyr)
 library(RPostgreSQL)
 library(lazyeval)
@@ -18,20 +17,21 @@ db <- src_postgres('postgres',
                    user = REuser,
                    password = REpassword)
 tbl_scores <- tbl(db, "tblScores")
-# print(translate_sql( tbl = tbl_scores, window = TRUE))
-
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
-  #filter dataframe from db based on first selections
+  #filter DB dataframe based on (default) selections
   filtInput <- reactive({
 
     remote <- filter(tbl_scores, 
                      locationID == input$rtnLocid &&
-                     leadtimeValue %in% input$lead.times &&
+                     # leadtimeValue >= min(input$lead.times) &&
+                     # leadtimeValue <= max(input$lead.times) &&
                      modelVariable == input$rtnModelVariable &&
-                     scoreType == input$rtnScoreType
+                     scoreType == input$rtnScoreType &&
+                     leadtimeValue %in% input$lead.times
+                       
     )
     getit <- structure(collect(remote))
     # browser()
@@ -44,7 +44,6 @@ shinyServer(function(input, output) {
   })
   
   # output$view
-  
   output$seriesPlot <- renderPlot({
     
     ggp <- ggplot(filtInput(), aes(x = leadtimeValue, y = (scoreValue - mean(scoreValue)))) +
@@ -53,9 +52,6 @@ shinyServer(function(input, output) {
       geom_hline(aes(yintercept=0), colour="black", linetype="dashed")
     
     
-    # ggplot(filtInput(), aes(x = leadtimeValue , y = (scoreValue - mean(scoreValue)))) +
-    #   geom_line(aes(color = scoreValue), size=1)     
-    
     # ggplot(filtInput, aes(x = LeadTime / 7, y = dateValue)) +
     #   geom_point(aes(color = scoreValue), size=5) +
     #   scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
@@ -63,11 +59,4 @@ shinyServer(function(input, output) {
   })
 
   
-    # filter stuff to draw
-    # remote <- select(filter(scores, locationID == 'M0243010' && 
-    #                            scoreType == 'Seasonal_LS_month' && 
-    #                            LT == 4), dateValue, scoreValue:1)
-    #remote2 <- collapse(remote) #unimportant for now
-    #cached <- compute(remote2)
-
   }) # end shinyServer

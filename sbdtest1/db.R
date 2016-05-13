@@ -24,15 +24,14 @@ db <- src_postgres('postgres',
 tbl_scores <- tbl(db, "tblScores")
 
 
-fulldb <- collect(tbl_scores, n=Inf)
-db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
+# fulldb <- collect(tbl_scores, n=Inf)
+# db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
 
 #goal tonight -- dplyr working for me
 # when is db queried?
 # types of queries?
 # best to reduce locally or server-side?
 # "windows?
-
 
 # scoreTypeList <- distinct(tbl_scores$scoreType)
 # sctp <- collect(scoreTypeList)
@@ -97,13 +96,20 @@ db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
 #sm <- subset(lcldb, locationID %in% c('S2242510'))
 #sm2 <- subset(sm, dateValue > "2005-01-01" & dateValue < "2005-12-31")
 # reduced <- filter(tbl_scores, locationID %in% c('S2242510') & dateValue > "2005-01-01" & dateValue < "2005-12-31" ) #%in% works, except this is a multi-cond qry... 
-reduced <- filter(tbl_scores, locationID == c('S2242510') & dateValue > "2005-01-01" & dateValue < "2005-12-31" )
+# reduced <- filter(tbl_scores, locationID == c('S2242510') & dateValue > "2005-01-01" & dateValue < "2005-12-31" )
+reduced <- filter(tbl_scores, locationID == c('S2242510') & leadtimeValue == 1 )
 
 local <- collect(reduced)
-local <- filter(local, dateValue == "2005-02-01" & forecastType == "Seasonal_EDMD_month")
+#  as.POSIXlt(date1)$mon
+season.winter <- c(12, 1, 2) # december, january, february
+local <- filter(local, as.POSIXlt(dateValue)$mon+1 %in% season.winter & forecastType == "Seasonal_EDMD_month")
+
+#non-POSIX
+season.winter <- c('décembre', 'janvier', 'février')
+local <- filter(local, months(dateValue) %in% season.winter & forecastType == "Seasonal_EDMD_month")
 # ggplot(local,aes(x = leadtimeValue, y = (scoreValue - mean(scoreValue)))) +
   
-ggplot(local,aes(x = leadtimeValue, y = (scoreValue - mean(scoreValue)))) +
+ggplot(local,aes(x = date, y = (scoreValue - mean(scoreValue)))) +
   # stat_summary(fun.y="mean", geom = "bar") +
   geom_line(aes(color = scoreValue), size=1) +
   geom_hline(aes(yintercept=0), colour="black", linetype="dashed") # colour="#990000"

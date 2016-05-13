@@ -14,15 +14,13 @@ library(ggplot2)
 
 #test db existance and grab date brackets for ENTIRE dataset
   tmpcon <- dbConnect(PostgreSQL(), user=REuser, password=REpassword, dbname=REdbname) #add error checking here
-  qry1e <- "select distinct(\"dateValue\") from \"tblScores\" order by \"dateValue\" limit 1;"
+  qry1e <- "SELECT DISTINCT(\"dateValue\") FROM \"tblScores\" ORDER BY \"dateValue\" LIMIT 1;"
   rs1e <- dbSendQuery(tmpcon,qry1e)
   dttFirstInDB <- fetch(rs1e,n=-1)
-  qryDernier <- "select distinct(\"dateValue\") from \"tblScores\" order by \"dateValue\" desc limit 1;"
+  qryDernier <- "SELECT DISTINCT(\"dateValue\") FROM \"tblScores\" ORDER BY \"dateValue\" DESC LIMIT 1;"
   rsDernier <- dbSendQuery(tmpcon,qryDernier)
   dttLastInDB <- fetch(rsDernier,n=-1)
-  
-    #kill connection
-  rm(tmpcon)
+  rm(tmpcon)  #kill connection
 
 db <- src_postgres('postgres',
                    host = 'localhost',
@@ -44,11 +42,8 @@ ctlLocationName <- collect(tmpLocationName)
 tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == RElanguage)
 ctlCaseStudy <- collect(tmpCaseStudy)
 
-
-
 # tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == RElanguage)
 # ctlCaseStudy <- collect(tmpCaseStudy)
-
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
@@ -76,19 +71,28 @@ shinyUI(fluidPage(
                       c(sort.int(ctlScoreType$ObjectItemName))
           ),
           
-
-          #does this make any sense as selection criteria?          
-          "Date range: ", start.date <- as.Date(dttFirstInDB$dateValue), 
-          "to: ", end.date <- as.Date(dttLastInDB$dateValue),
-          dateInput("ctlFirstDate", "Startdate: ", as.Date(start.date)),
+          selectInput("rtnTimeScale",
+                      "Time scale:",
+                      c("Week", "Month", "Seasonal")
+          ),
+          
           sliderInput("lead.times",
-                      "Pick lead times:",
+                      "Look at these lead times:",
                       min = 1,
                       max = 90,
-                      value = 1:10)
+                      value = c(10,10))
+          ,
+          
+          "Between: ", start.date <- as.Date(dttFirstInDB$dateValue), 
+          "and: ", end.date <- as.Date(dttLastInDB$dateValue),
+          
+          # if daterange is reduced, calc number of records to display  
+          dateInput("ctlFirstDate", "Startdate: ", as.Date(start.date)),
+          dateInput("ctlEndDate", "Enddate: ", as.Date(end.date))
+          
+          
         )),
 
-    # Show a plot of the generated distribution
     mainPanel(
       
        plotOutput("seriesPlot") ,
