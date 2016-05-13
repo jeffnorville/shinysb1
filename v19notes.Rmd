@@ -64,11 +64,31 @@ This first-pass structure worked for simple data off all one datatype...
 
 We need a structure for the scores to import - currently receiving text files and 3D "cubes" depending on source... tidying takes time; should be automated so users may load / arrange their scores (like EVS).
 
+Considering NetCDF for this ... oldie but goodie? Opinions?
+http://www.unidata.ucar.edu/software/netcdf/docs/faq.html#How-do-I-convert-netCDF-data-to-ASCII-or-text
+http://www.unidata.ucar.edu/software/netcdf/examples/files.html
+Discussion(s) of handling time using netCDF:
+http://www.unidata.ucar.edu/software/netcdf/time/
+http://www.unidata.ucar.edu/software/netcdf/time/recs.html
+
+Some NetCDF files from our friends at ECMWF:
+http://apps.ecmwf.int/datasets/
+
+
+Doing all date comparisons using posix-happy functions:
+```{code}
+m <- as.POSIXlt(dateValue)$mon
+```
+
 Working with "reactive" call today:
 https://gallery.shinyapps.io/003-reactivity/
 
 O'Reilly always publishes goodness, will put this here to remember later:
 http://www.cookbook-r.com/Graphs/
+
+
+
+
 
 Something to look into on my time -- confidence Intervals discussed in different context:
 http://learnbayes.org/papers/confidenceIntervalsFallacy/introduction.html
