@@ -1,7 +1,6 @@
-
-
+# IMPREX file picker
 library(shiny)
-require("uuid")
+library(uuid)
 
 shinyUI(fluidPage(
   titlePanel("Uploading Files"),

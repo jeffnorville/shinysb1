@@ -6,14 +6,8 @@ RElanguage = Sys.getenv('api_language')
 REpassword = Sys.getenv('pgpassword')
 
 library(shiny)
-<<<<<<< HEAD:sbdtest2/testdrive/ui.R
-library(dplyr)
-library(RPostgreSQL)
-=======
 library(RPostgreSQL)
 library(dplyr)
-
->>>>>>> 3682748cfaba830ff9f377cb0bc5dd2109f401cf:sbdtest2datatbl/testdrive/ui.R
 
 db <- src_postgres('postgres',
                    host = 'localhost',

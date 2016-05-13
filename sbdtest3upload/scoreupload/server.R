@@ -1,5 +1,7 @@
+# IMPREX file picker
 library(shiny)
-require("uuid")
+# require("uuid")
+library(uuid)
 
 shinyServer(function(input, output) {
   output$contents <- renderTable({
