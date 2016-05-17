@@ -23,52 +23,8 @@ db <- src_postgres('postgres',
                    password = REpassword)
 tbl_scores <- tbl(db, "tblScores")
 
+# db "windows?
 
-# fulldb <- collect(tbl_scores, n=Inf)
-# db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
-
-#goal tonight -- dplyr working for me
-# when is db queried?
-# types of queries?
-# best to reduce locally or server-side?
-# "windows?
-
-# scoreTypeList <- distinct(tbl_scores$scoreType)
-# sctp <- collect(scoreTypeList)
-
-# print(translate_sql( tbl = tbl_scores, window = TRUE))
-
-# flights_postgres <- tbl(src_postgres("nycflights13"), "flights")
-
-#UI buildup
-#dates
-
-######################################
-# 
-# print("Starting: ")
-# Sys.time()
-# # #allDates <- filter(distinct(tbl_scores, dateValue), rank(dateValue)==1)
-# # allDates <- filter(tbl_scores, !is.null(dateValue))
-# 
-# # qry <- tbl_scores %>% 
-# #   filter(locationID %in% c("1","2","3") %>% 
-# #   group_by()  %>% 
-# #   summarise(count = n()) %>%
-# #   collect()
-# 
-# print("Collecting: ")
-# Sys.time()
-# 
-# system.time(allDates <- collect(allDates, n=Inf))
-# 
-# print("Filtering: ")
-# Sys.time()
-# system.time(firstDate <- filter(allDates, rank(dateValue)==1))
-# 
-# print("Ending: ")
-# Sys.time()
-# 
-######################################
 
 # #selectInput boxes
 # tmpScoreType <- filter(tbl(db, "tblInterface"),ObjectName=="Score Type" & LanguageID == "1")
@@ -86,27 +42,21 @@ tbl_scores <- tbl(db, "tblScores")
 # tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == "1")
 # ctlCaseStudy <- collect(tmpCaseStudy)
 
-#this is dumb
-#fulldb <- collect(tbl_scores, n=Inf)
-#db2005 <- subset(fulldb, dateValue > "2005-01-01" & dateValue < "2005-12-31")
-
-
-
 # sm <- subset(lcldb, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
 #sm <- subset(lcldb, locationID %in% c('S2242510'))
 #sm2 <- subset(sm, dateValue > "2005-01-01" & dateValue < "2005-12-31")
 # reduced <- filter(tbl_scores, locationID %in% c('S2242510') & dateValue > "2005-01-01" & dateValue < "2005-12-31" ) #%in% works, except this is a multi-cond qry... 
 # reduced <- filter(tbl_scores, locationID == c('S2242510') & dateValue > "2005-01-01" & dateValue < "2005-12-31" )
-reduced <- filter(tbl_scores, locationID == c('S2242510') & leadtimeValue == 1 )
+reduced <- filter(tbl_scores, locationID == c('S2242510') & leadtimeValue == 5 )
 
 local <- collect(reduced)
 #  as.POSIXlt(date1)$mon
 season.winter <- c(12, 1, 2) # december, january, february
-local <- filter(local, as.POSIXlt(dateValue)$mon+1 %in% season.winter & forecastType == "Seasonal_EDMD_month")
+lclwintr <- filter(local, as.POSIXlt(dateValue)$mon+1 %in% season.winter & forecastType == "Seasonal_EDMD_month")
 
 #non-POSIX
-season.winter <- c('décembre', 'janvier', 'février')
-local <- filter(local, months(dateValue) %in% season.winter & forecastType == "Seasonal_EDMD_month")
+# season.winter <- c('décembre', 'janvier', 'février')
+# local <- filter(local, months(dateValue) %in% season.winter & forecastType == "Seasonal_EDMD_month")
 # ggplot(local,aes(x = leadtimeValue, y = (scoreValue - mean(scoreValue)))) +
   
 ggplot(local,aes(x = date, y = (scoreValue - mean(scoreValue)))) +

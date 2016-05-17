@@ -1,0 +1,105 @@
+---
+title: "Week 20 notes"
+author: "Jeff"
+date: "17 mai 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Week 20, 2016
+Welcome to week 11 of 34...
+
+```{r plot il reste}
+thisweek <- 11
+yikes <- c(thisweek, 34-thisweek) / 34
+barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
+```
+
+Last week we got a scoreboard deployed sorta, then I did some silly things on github and broke it, and realised I had also done some silly things with postgres backups. So, the normal two-steps-forward-one-back routine.
+
+Last week we also tossed a new wrench in the mix, discussing netCDF as the main format for new data acquisitions. I don't care much what format people send data in, but if we're going to automate this tool (which is to say make it outlast it's creator, a goal all makers share) then we need to predict the weird variations we're gonna see. And I've never seen a netCDF file.
+
+
+This week I need to:
+
+* decide if the SOS database format is the way to go forward,
+    + which makes maintenance easier
+    + more durable
+    + bit trickier upfront !
+* mysteries to solve
+    + ...
+* R fundamentals I still need
+    + ~~ggplot2~~
+    + facet()
+* Some helpful r debugging links:
+    + http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/
+    + http://shiny.rstudio.com/articles/debugging.html
+
+This week so far I am also reading and writing:
+
+* Reading:
+    + genetic algorithms in rare event prediction, including network reliability apps
+    + 
+    
+* Writing:
+    + in LaTex (yikes) for first time in forever
+    + soutenance en mauvaise français
+    + an English version
+    + an update to my linkedin profile
+    
+
+
+* modified local db to match v2 specifics
+* built interactive dataframe to postgres db,
+* built csv upload function which loads SMHI files successfully
+* finished main score series viewer
+
+
+This first-pass structure worked for simple data off all one datatype...
+
+![ERD v0.1](C:\Users\jeffrey.norville\Documents\VerificationScorecard\ERDv001.png)
+
+... but in fact we are scoring many variables which need to be tied together more explicitely. Hence, version 2:
+
+![ERD v0.2](C:\Users\jeffrey.norville\Documents\VerificationScorecard\ERD_v2.png)
+
+
+
+We need a structure for the scores to import - currently receiving text files and 3D "cubes" depending on source... tidying takes time; should be automated so users may load / arrange their scores (like EVS).
+
+Considering NetCDF for this ... oldie but goodie? Opinions?
+http://www.unidata.ucar.edu/software/netcdf/docs/faq.html#How-do-I-convert-netCDF-data-to-ASCII-or-text
+http://www.unidata.ucar.edu/software/netcdf/examples/files.html
+Discussion(s) of handling time using netCDF:
+http://www.unidata.ucar.edu/software/netcdf/time/
+http://www.unidata.ucar.edu/software/netcdf/time/recs.html
+
+Some NetCDF files from our friends at ECMWF:
+http://apps.ecmwf.int/datasets/
+
+
+Doing all date comparisons using posix-happy functions:
+```{code}
+m <- as.POSIXlt(dateValue)$mon
+```
+
+Working with "reactive" call today:
+https://gallery.shinyapps.io/003-reactivity/
+
+O'Reilly always publishes goodness, will put this here to remember later:
+http://www.cookbook-r.com/Graphs/
+
+
+
+
+
+Something to look into on my time -- confidence Intervals discussed in different context:
+http://learnbayes.org/papers/confidenceIntervalsFallacy/introduction.html
+...with nifty Shiny app to illustrate Figs 1 - 5 from article:
+https://richarddmorey.shinyapps.io/confidenceFallacy/
+http://learnbayes.org/papers/confidenceIntervalsFallacy/
+
