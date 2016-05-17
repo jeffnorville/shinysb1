@@ -6,3 +6,6 @@ private.R
 .html
 .Renviron
 .pdf
+fcst_corr_mini.txt
+*.html
+*.pdf
