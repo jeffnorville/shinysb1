@@ -3,6 +3,7 @@
 .RData
 .Ruserdata
 private.R
-.html
 .Renviron
-.pdf
+*.txt
+*.html
+*.pdf
