@@ -25,27 +25,19 @@ tbl_scores <- tbl(db, "tblScores")
 
 # db "windows?
 
+# done in server.R:
+remote <- filter(tbl_scores, 
+                 locationID == input$rtnLocid &&
+                   # leadtimeValue >= min(input$lead.times) &&
+                   # leadtimeValue <= max(input$lead.times) &&
+                   modelVariable == input$rtnModelVariable &&
+                   scoreType == input$rtnScoreType &&
+                   leadtimeValue %in% input$lead.times
+                 
+)
+getit <- structure(collect(remote))
 
-# #selectInput boxes
-# tmpScoreType <- filter(tbl(db, "tblInterface"),ObjectName=="Score Type" & LanguageID == "1")
-# ctlScoreType <- collect(tmpScoreType)
-# 
-# tmpModelVariable <- filter(tbl(db, "tblInterface"),ObjectName=="Model Variable" & LanguageID == "1")
-# ctlModelVariable <- collect(tmpModelVariable)
-# 
-# tmpLocationName <- filter(tbl(db, "tblInterface"),ObjectName=="Location Name" & LanguageID == "1")
-# ctlLocationName <- collect(tmpLocationName)
-# 
-# tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == "1")
-# ctlCaseStudy <- collect(tmpCaseStudy)
-# 
-# tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == "1")
-# ctlCaseStudy <- collect(tmpCaseStudy)
 
-# sm <- subset(lcldb, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
-#sm <- subset(lcldb, locationID %in% c('S2242510'))
-#sm2 <- subset(sm, dateValue > "2005-01-01" & dateValue < "2005-12-31")
-# reduced <- filter(tbl_scores, locationID %in% c('S2242510') & dateValue > "2005-01-01" & dateValue < "2005-12-31" ) #%in% works, except this is a multi-cond qry... 
 # reduced <- filter(tbl_scores, locationID == c('S2242510') & dateValue > "2005-01-01" & dateValue < "2005-12-31" )
 reduced <- filter(tbl_scores, locationID == c('S2242510') & leadtimeValue == 5 )
 

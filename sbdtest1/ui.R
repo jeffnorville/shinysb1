@@ -94,7 +94,9 @@ shinyUI(fluidPage(
         )),
 
     mainPanel(
-      
+      # TODO read facet() function, use it for series of plots...
+      # http://www.cookbook-r.com/Graphs/Facets_%28ggplot2%29/
+      # https://plot.ly/ggplot2/facet/
        plotOutput("seriesPlot") ,
 
        verbatimTextOutput("summary"),

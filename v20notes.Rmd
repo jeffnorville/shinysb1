@@ -19,12 +19,23 @@ yikes <- c(thisweek, 34-thisweek) / 34
 barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
 ```
 
-Last week we got a scoreboard deployed sorta, then I did some silly things on github and broke it, and realised I had also done some silly things with postgres backups. So, the normal two-steps-forward-one-back routine.
+Last week we got a scoreboard deployed sorta, then I did some silly things on [github](https://github.com/jeffnorville/shinysb1/) and broke it, and realised I had also done some silly things with postgres backups. So, the normal two-steps-forward-one-back routine.
 
+Quote of the week comes from [SO](http://stackoverflow.com/questions/5617211/what-is-git-remote-add-and-git-push-origin-master), original source unknown:
+
+```
+    "git is like UNIX. User friendly but picky about it's friends."
+```
 Last week we also tossed a new wrench in the mix, discussing netCDF as the main format for new data acquisitions. I don't care much what format people send data in, but if we're going to automate this tool (which is to say make it outlast it's creator, a goal all makers share) then we need to predict the weird variations we're gonna see. And I've never seen a netCDF file.
 
 
-This week I need to:
+This week I need to: 
+
+* deploy AWS instance of shiny server
+    + http://www.r-bloggers.com/installing-rstudio-shiny-server-on-aws/
+    + for when shinyapps.io stops hosting us
+    + which'll solve the ".Rfiles" hosting problem (~~currently shiny deploy breaks these files~~)
+    + update: according to [a note here](https://groups.google.com/forum/#!msg/shinyapps-users/dMjMJlk0cPQ/kB4GiIE7DQAJ) this is actually solvable using rsconnect:deployApp()... to be continued
 
 * decide if the SOS database format is the way to go forward,
     + which makes maintenance easier
@@ -43,8 +54,23 @@ This week so far I am also reading and writing:
 
 * Reading:
     + genetic algorithms in rare event prediction, including network reliability apps
-    + 
+    + https://pdfs.semanticscholar.org/895b/0b0472e1c47167d6cad1ea5436fdcf9976ca.pdf
+    + https://pdfs.semanticscholar.org/f5df/a9c3cb206423445a5c71153c30fe74d917e3.pdf
+    + http://www.ann-geophys.net/24/3185/2006/angeo-24-3185-2006.pdf
+  
+* More Reading:
+    + Colleagues published a paper on drought-resistant governance: 
+    http://link.springer.com/chapter/10.1007/978-3-319-29671-5_11/fulltext.html
     
+Dr. Furusho et al (including Dr. Ramos, my thesis advisor) point out Flanders uses a mixture of ground- and surface-water for a drinking water resource.
+    
+A potentially-interesting question I'll try to address will involve 'scoring' basins with a strong surface / groundwater connection. A hypothesis introduced here last month by [Dr. Murray Peel](http://www.findanexpert.unimelb.edu.au/display/person15645) from U. Melbourne involved looking at drought tolerance across certain basins in Australia, 
+
+Peel asked if the models' poor performances in certain basins (based on observed "Millenium Drought" period 1997-2009) due to 1) model structure? or 2) parameter set?
+
+Answer: some models do better than others, but after Pareto runs there is NO solution within the parameter set for a set of discontinuous basins. They seem to share these characteristics: drier (less mean anual precip); lower slopes; less woody vegetation.
+
+
 * Writing:
     + in LaTex (yikes) for first time in forever
     + soutenance en mauvaise français
