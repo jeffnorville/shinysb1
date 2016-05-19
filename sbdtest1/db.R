@@ -8,6 +8,7 @@ REpassword = Sys.getenv('pgpassword')
 #db connections
 library(dplyr)
 library(ggplot2)
+source("global.R")
 
 if (is.null(RElanguage) || RElanguage=="")  {
   language = 1
@@ -25,33 +26,45 @@ tbl_scores <- tbl(db, "tblScores")
 
 # db "windows?
 
-# done in server.R:
+# done in server.R (NON-REACTIVE QUERY):
+# ? vs ??
+
 remote <- filter(tbl_scores, 
-                 locationID == input$rtnLocid &&
-                   # leadtimeValue >= min(input$lead.times) &&
-                   # leadtimeValue <= max(input$lead.times) &&
-                   modelVariable == input$rtnModelVariable &&
-                   scoreType == input$rtnScoreType &&
-                   leadtimeValue %in% input$lead.times
-                 
-)
+                   forecastType  == "Seasonal_EDMD_month" &
+                   modelVariable == "Streamflow" &
+                   # scoreType    == "CRPS" &
+                   leadtimeValue %in% 1:30
+  )
 getit <- structure(collect(remote))
 
-
-# reduced <- filter(tbl_scores, locationID == c('S2242510') & dateValue > "2005-01-01" & dateValue < "2005-12-31" )
-reduced <- filter(tbl_scores, locationID == c('S2242510') & leadtimeValue == 5 )
-
+#move to REACTIVE section so this can be datamined "live"
+reduced <- filter(getit, locationID %in% c('S2242510', 'L4411710') & scoreType == "CRPS")
 local <- collect(reduced)
-#  as.POSIXlt(date1)$mon
-season.winter <- c(12, 1, 2) # december, january, february
-lclwintr <- filter(local, as.POSIXlt(dateValue)$mon+1 %in% season.winter & forecastType == "Seasonal_EDMD_month")
 
-#non-POSIX
-# season.winter <- c('décembre', 'janvier', 'février')
-# local <- filter(local, months(dateValue) %in% season.winter & forecastType == "Seasonal_EDMD_month")
-# ggplot(local,aes(x = leadtimeValue, y = (scoreValue - mean(scoreValue)))) +
-  
-ggplot(local,aes(x = date, y = (scoreValue - mean(scoreValue)))) +
+by_lt <- local %>% group_by(leadtimeValue)
+by_lt %>% summarise()
+
+  summarise(local, 
+#           count=n(), 
+#           dist = avg(scoreValue),
+#           )
+
+#  as.POSIXlt(date1)$mon
+# season.winter <- c(12, 1, 2) # december, january, february
+# lclwintr <- filter(local, as.POSIXlt(dateValue)$mon+1 %in% season.winter )
+
+# needs debussing to work with dplyr
+#lcsmry <- summarySE(local, measurevar = "scoreValue", groupvars = c("locationID","leadtimeValue"))
+
+
+
+ggplot(local,aes(x = leadtimeValue, y = mean(scoreValue) ) ) +
+  # stat_summary(fun.y="mean", geom = "bar") +
+  geom_line(aes(color = scoreValue), size=1) +
+  geom_hline(aes(yintercept=0), colour="black", linetype="dashed") # colour="#990000"
+
+
+ggplot(local,aes(x = leadtimeValue, y = (scoreValue - mean(scoreValue)))) +
   # stat_summary(fun.y="mean", geom = "bar") +
   geom_line(aes(color = scoreValue), size=1) +
   geom_hline(aes(yintercept=0), colour="black", linetype="dashed") # colour="#990000"
