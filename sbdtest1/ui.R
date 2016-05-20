@@ -12,7 +12,7 @@ library(RPostgreSQL)
 library(lazyeval)
 library(ggplot2)
 
-#test db existance and grab date brackets for ENTIRE dataset
+# test db existance and grab date brackets for ENTIRE dataset
   tmpcon <- dbConnect(PostgreSQL(), user=REuser, password=REpassword, dbname=REdbname) #add error checking here
   qry1e <- "SELECT DISTINCT(\"dateValue\") FROM \"tblScores\" ORDER BY \"dateValue\" LIMIT 1;"
   rs1e <- dbSendQuery(tmpcon,qry1e)
@@ -21,6 +21,9 @@ library(ggplot2)
   rsDernier <- dbSendQuery(tmpcon,qryDernier)
   dttLastInDB <- fetch(rsDernier,n=-1)
   rm(tmpcon)  #kill connection
+  
+# REACTIVE? based on daterange, update "Time scale" control to
+#   if ((dttLastInDB - dttFirstInDB) < year(1)) [All] ELSE [Monthly , Annual]
 
 db <- src_postgres('postgres',
                    host = 'localhost',
@@ -94,7 +97,9 @@ shinyUI(fluidPage(
         )),
 
     mainPanel(
-      
+      # TODO read facet() function, use it for series of plots...
+      # http://www.cookbook-r.com/Graphs/Facets_%28ggplot2%29/
+      # https://plot.ly/ggplot2/facet/
        plotOutput("seriesPlot") ,
 
        verbatimTextOutput("summary"),
