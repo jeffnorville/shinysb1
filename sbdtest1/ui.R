@@ -45,9 +45,6 @@ ctlLocationName <- collect(tmpLocationName)
 tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == RElanguage)
 ctlCaseStudy <- collect(tmpCaseStudy)
 
-# tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == RElanguage)
-# ctlCaseStudy <- collect(tmpCaseStudy)
-
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
   

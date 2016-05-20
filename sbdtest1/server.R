@@ -21,19 +21,31 @@ tbl_scores <- tbl(db, "tblScores")
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
+  #consider doing an initial data reduce outside reactive()
+  
   #filter DB dataframe based on (default) selections
   filtInput <- reactive({
 
+    #if input$lead.times
+    tot <- input$lead.times
+    toto <- as.numeric(input$lead.times) #debug
+    all.lead.times <- as.integer(unlist(input$lead.times))  # strsplit(input$lead.times, split = ":"))
+    if (all.lead.times[1] == all.lead.times[2]) {
+      toto = toto
+    }
+    else {
+      toto = all.lead.times[1]:all.lead.times[2]
+    }
+
     remote <- filter(tbl_scores, 
                      locationID == input$rtnLocid &&
-                     # leadtimeValue >= min(input$lead.times) &&
-                     # leadtimeValue <= max(input$lead.times) &&
                      modelVariable == input$rtnModelVariable &&
                      scoreType == input$rtnScoreType &&
-                     leadtimeValue %in% input$lead.times
-                       
+                     leadtimeValue %in% toto # span.leadtime
     )
     getit <- structure(collect(remote))
+    
+    #local <- collect(reduced)
     # browser()
     
   }) #end reactive
@@ -43,19 +55,19 @@ shinyServer(function(input, output) {
     summary(dataset)
   })
   
+  
   # output$view
   output$seriesPlot <- renderPlot({
     
-    ggp <- ggplot(filtInput(), aes(x = leadtimeValue, y = (scoreValue - mean(scoreValue)))) +
-      # stat_summary(fun.y="mean", geom = "bar") +
-      geom_line(aes(color = scoreValue), size=1) +
-      geom_hline(aes(yintercept=0), colour="black", linetype="dashed")
+    loc.sum <- summarySE(filtInput(), measurevar="scoreValue", groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
     
     
-    # ggplot(filtInput, aes(x = LeadTime / 7, y = dateValue)) +
-    #   geom_point(aes(color = scoreValue), size=5) +
-    #   scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
-    #   scale_color_gradient(low="yellow", high="darkgreen")
+    loc.sum$locationID <- as.factor(loc.sum$locationID)
+    plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID)
+    # ggplot(loc.sum, aes(leadtimeValue, scoreValue)) +
+    #   geom_point(aes(color = locationID), size=2)
+    
+    
   })
 
   
