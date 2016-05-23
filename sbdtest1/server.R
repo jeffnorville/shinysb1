@@ -63,7 +63,8 @@ shinyServer(function(input, output) {
     
     
     loc.sum$locationID <- as.factor(loc.sum$locationID)
-    plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID)
+    plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 
+         xlab = "Lead Times", ylab = "Score")
     # ggplot(loc.sum, aes(leadtimeValue, scoreValue)) +
     #   geom_point(aes(color = locationID), size=2)
     

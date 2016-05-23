@@ -80,7 +80,8 @@ shinyUI(fluidPage(
                       "Look at these lead times:",
                       min = 1,
                       max = 90,
-                      value = c(10,10))
+                      value = c(5,10))
+                      #value = c(10,10))
           ,
           
           "Between: ", start.date <- as.Date(dttFirstInDB$dateValue), 

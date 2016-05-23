@@ -1,0 +1,89 @@
+---
+title: "Mid-May notes"
+author: "Jeff"
+date: "23 mai 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Week 21, 2016
+Welcome to week 12 of 34...
+
+```{r plot il reste}
+thisweek <- 12
+yikes <- c(thisweek, 34-thisweek) / 34
+barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
+```
+
+Last week I got a couple new interactive plots working, and tweaked the slider to use a default lead time at first -- then allow the user to expand to all leadtimes. (Not every system has the same value of leadtimes however, so for comparisons this could get weird?)
+
+I've been adding notes to a LaTeX outline for the thesis document -- "memoire", en français. At this moment I've got multi-lingual abstracts, but am writing in English...
+
+
+Think I'm getting the hang of using [github](https://github.com/jeffnorville/shinysb1/) to keep current between home and "office" ... but I should've used a pseudonym while I learn R. Ouch, ugliness.
+
+
+Got access to a 2013 netCDF [development branch for SOS DB] (https://svn.52north.org/svn/swe/main/SOS/Service/branches/52n-sos-netCDF/), so I'll look into that this week to understand better our options for accomodating netCDF files (a requirement which became more likely last week).
+
+
+This week I need to: 
+* finish loading our current "draft" data
+    + ECMWF forecast model (EFAS) scores and observations
+    + SMHI forecast model (EHYPE) scores and potentially observations
+
+* deploy AWS instance of shiny server
+    + http://www.r-bloggers.com/installing-rstudio-shiny-server-on-aws/
+    + for when shinyapps.io stops hosting us
+    + which'll solve the ".Rfiles" hosting problem (~~currently shiny deploy breaks these files~~)
+    + update: according to [a note here](https://groups.google.com/forum/#!msg/shinyapps-users/dMjMJlk0cPQ/kB4GiIE7DQAJ) this is actually solvable using rsconnect:deployApp()... to be continued
+
+* decide if the SOS database format is the way to go forward,
+    + which makes maintenance easier
+    + more durable
+    + bit trickier upfront !
+* mysteries to solve
+    + ...
+* R fundamentals I still need
+    + ~~ggplot2~~
+    + facet()
+* Some helpful r debugging links:
+    + http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/
+    + http://shiny.rstudio.com/articles/debugging.html
+
+This week so far I am also reading and writing:
+
+* Reading:
+    + http://shiny.rstudio.com/reference/shiny/latest/session.html
+
+* More Reading:
+    + Colleagues published a paper on drought-resistant governance: 
+    http://link.springer.com/chapter/10.1007/978-3-319-29671-5_11/fulltext.html
+    
+
+
+We need a structure for the scores to import - currently receiving text files and 3D "cubes" depending on source... tidying takes time; should be automated so users may load / arrange their scores (like EVS).
+
+Considering NetCDF for this ... oldie but goodie? Opinions?
+http://www.unidata.ucar.edu/software/netcdf/docs/faq.html#How-do-I-convert-netCDF-data-to-ASCII-or-text
+http://www.unidata.ucar.edu/software/netcdf/examples/files.html
+Discussion(s) of handling time using netCDF:
+http://www.unidata.ucar.edu/software/netcdf/time/
+http://www.unidata.ucar.edu/software/netcdf/time/recs.html
+
+Some NetCDF files from our friends at ECMWF:
+http://apps.ecmwf.int/datasets/
+
+O'Reilly always publishes goodness, re-reminging myself to remember this later:
+http://www.cookbook-r.com/Graphs/
+
+
+Something to look into on my time -- confidence Intervals discussed in different context:
+http://learnbayes.org/papers/confidenceIntervalsFallacy/introduction.html
+...with nifty Shiny app to illustrate Figs 1 - 5 from article:
+https://richarddmorey.shinyapps.io/confidenceFallacy/
+http://learnbayes.org/papers/confidenceIntervalsFallacy/
+

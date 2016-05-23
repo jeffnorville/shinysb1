@@ -55,7 +55,9 @@ loc.sum <- summarySE(local, measurevar="scoreValue", groupvars=c("locationID", "
 loc.sum$locationID <- as.factor(loc.sum$locationID)
 plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID)
 
+mse(local$scoreValue[[1]], c(local$scoreValue, na.rm=TRUE))
 
+summary(c(local$scoreValue, na.rm=TRUE))
 
 ggplot(loc.sum, aes(leadtimeValue, scoreValue)) +
   geom_point(aes(color = locationID), size=3)
