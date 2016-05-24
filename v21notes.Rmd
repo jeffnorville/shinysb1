@@ -2,7 +2,7 @@
 title: "Mid-May notes"
 author: "Jeff"
 date: "23 mai 2016"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -20,6 +20,20 @@ barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
 ```
 
 Last week I got a couple new interactive plots working, and tweaked the slider to use a default lead time at first -- then allow the user to expand to all leadtimes. (Not every system has the same value of leadtimes however, so for comparisons this could get weird?)
+
+![Brier 80 score for precipitation model, lead times 5 - 10](figures/20160523_brierScrPPT_LT5-10.png)
+
+Note these Brier scores are raw, still not normalized ... wups.
+
+TODO: for example a skill calculation root-mean squared error (RMSE):
+$$ RMSE = {\sqrt {\frac{1} {N}{\sum\limits_{i = 1}^N {(c_{i} - \bar{c}_{i} } })^{2} } }   $$
+
+Skill score (SS) associated with RMSE:
+$$ SS = 1 - \frac{ RMSE _{forecast}}{RMSE _{observations}} $$
+
+![CRPS for precipitation model, lead times 1 - 90](figures/20160523_crpsScrPPT_LT0-90.png)
+
+Normalized plots in ggplot2 coming up soon! These are just placeholders while I get the database running/secure at AWS.
 
 I've been adding notes to a LaTeX outline for the thesis document -- "memoire", en français. At this moment I've got multi-lingual abstracts, but am writing in English...
 
@@ -86,4 +100,7 @@ http://learnbayes.org/papers/confidenceIntervalsFallacy/introduction.html
 ...with nifty Shiny app to illustrate Figs 1 - 5 from article:
 https://richarddmorey.shinyapps.io/confidenceFallacy/
 http://learnbayes.org/papers/confidenceIntervalsFallacy/
+
+Tools for LaTeX:
+https://www.codecogs.com/latex/eqneditor.php
 

@@ -99,9 +99,9 @@ shinyUI(fluidPage(
       # http://www.cookbook-r.com/Graphs/Facets_%28ggplot2%29/
       # https://plot.ly/ggplot2/facet/
        plotOutput("seriesPlot") ,
-
-       verbatimTextOutput("summary"),
-       tableOutput("view")
+       verbatimTextOutput("summary")
+       # ,
+       # tableOutput("view")
 
     ) #mainPanel
 
