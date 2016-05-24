@@ -2,7 +2,7 @@
 title: "Mid-May notes"
 author: "Jeff"
 date: "23 mai 2016"
-output: pdf_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
