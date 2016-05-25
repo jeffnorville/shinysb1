@@ -8,7 +8,6 @@ mse <- function(x, series){
   mean((series - x)^2)
 }
 
-
 ## Summarizes data.
 ## Gives count, mean, standard deviation, standard error of the mean, and confidence interval (default 95%).
 ##   data: a data frame.

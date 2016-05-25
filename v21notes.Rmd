@@ -14,9 +14,13 @@ knitr::opts_chunk$set(echo = TRUE)
 Welcome to week 12 of 34...
 
 ```{r plot il reste}
-thisweek <- 12
-yikes <- c(thisweek, 34-thisweek) / 34
-barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
+thesis.duration <- 34
+this.week <- 12
+
+# yikes <- c(this.week, thesis.duration - this.week) / thesis.duration
+# barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
+# ggplot(yikes, aes(x = "time", y = thesis.duration))
+
 ```
 
 Last week I got a couple new interactive plots working, and tweaked the slider to use a default lead time at first -- then allow the user to expand to all leadtimes. (Not every system has the same value of leadtimes however, so for comparisons this could get weird?)
