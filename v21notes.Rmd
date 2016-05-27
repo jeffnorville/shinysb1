@@ -37,7 +37,11 @@ $$ SS = 1 - \frac{ RMSE _{forecast}}{RMSE _{observations}} $$
 
 ![CRPS for precipitation model, lead times 1 - 90](figures/20160523_crpsScrPPT_LT0-90.png)
 
-Normalized plots in ggplot2 coming up soon! These are just placeholders while I get the database running/secure at AWS.
+Normalized plots in ggplot2 coming up soon! These are just placeholders while I get the database running/secure at AWS...
+
+Another point ... We're using data with daily scores calculated, AND data with monthly score averages. I'll handle these in the interface.
+
+NOTE: handle these in R...
 
 I've been adding notes to a LaTeX outline for the thesis document -- "memoire", en français. At this moment I've got multi-lingual abstracts, but am writing in English...
 

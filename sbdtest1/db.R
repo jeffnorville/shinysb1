@@ -5,10 +5,11 @@ REuser = Sys.getenv('api_user')
 RElanguage = Sys.getenv('api_language')
 REpassword = Sys.getenv('pgpassword')
 
+source("global.R")
+
 #db connections
 library(plyr); library(dplyr)
 library(ggplot2)
-source("global.R")
 
 if (is.null(RElanguage) || RElanguage=="")  {
   language = 1
@@ -28,6 +29,8 @@ tbl_scores <- tbl(db, "tblScores")
 
 # done in server.R (NON-REACTIVE QUERY):
 # ? vs ??
+
+#  TODO time the influence of breaking this into two calls
 
 # broken into 2 
 remote <- filter(tbl_scores, 
@@ -49,7 +52,7 @@ local <- collect(reduced)
 
 
 #lcsmry <- summarySE(local, measurevar = "scoreValue", groupvars = c("locationID","leadtimeValue"))
-# summarySE(local, measurevar="scoreValue", groupvars="leadtimeValue", na.rm = TRUE)
+summarySE(local, measurevar="scoreValue", groupvars="leadtimeValue", na.rm = TRUE)
 loc.sum <- summarySE(local, measurevar="scoreValue", groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
 
 loc.sum$locationID <- as.factor(loc.sum$locationID)
