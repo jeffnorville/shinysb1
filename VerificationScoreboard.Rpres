@@ -1,34 +1,54 @@
 VerificationScoreboard
 ========================================================
-author: NORVILLE Jeff
+author: RAMOS Maria-Héléna, NORVILLE Jeff
 date: 2016-05-27
 autosize: true
 
 Verification Tools
 ========================================================
+Ensemble Model verification
 
-Ensemble Model verification 
+- Observations
+- Forecasts
+- Statistics
+
+User Base
+========================================================
+Who are these "model fans" who track performance stats?
+- Eletric utility operators
+- Water managers / planners
+- Aviation / shipping planners
+- City emergency response administration
 
 
+A European movement to "Learn from today to anticipate tomorrow"
+========================================================
+![Imprex](sbdtest1/www/imprex.png)
+<!-- img(src = "imprex.png", height = 100) -->
+"IMproving PRedictions and management of hydrological EXtremes"
 
-- Bullet 1
-- Bullet 2
-- Bullet 3
 
-Finley's tornadoes
+The IMPREX project team 
+========================================================
+
+```{r kable, echo=FALSE}
+partnerlist <- read.delim("~/R/shinysb1/partnerlist.txt", row.names=NULL)
+library(knitr)
+kable(partnerlist)
+```
+
+The Famous Finley Tornadoes
 ========================================================
 
 Finley (1884) 
 
-pull from 
-http://www.cawcr.gov.au/projects/verification/Finley/Finley_Tornados.html
 
 
+found at [http://www.cawcr.gov.au/projects/verification/Finley/Finley_Tornados.html](http://www.cawcr.gov.au/projects/verification/Finley/Finley_Tornados.html#Murphy%201996)
+reference to **Murphy, A.H.**, *1996: The Finley affair: A signal event in the history of forecast verification. Wea. Forecasting, 11, 3-20.* 
 
 Scores
 ========================================================
-
-http://iri.columbia.edu/wp-content/uploads/2013/07/scoredescriptions.pdf
 
 Skill scores are metrics based on predictive performance relative to a baseline forecast.
 
@@ -47,17 +67,47 @@ RMSE <- sqrt(mean((y-y_pred)^2))
 A Skill score (SS) associated with RMSE, then, is one minus the ratio of forecast over observation:
     $$ SS = 1 - \frac{ RMSE _{forecasts}}{RMSE _{observations}} $$
 
+discuss sample size?
 
-Slide With Code
+Present Case for Ensemble Forecast Scoreboard
 ========================================================
 
-```{r}
-summary(cars)
-```
+Model and Data Uncertainty and Bias
+========================================================
+Observations
+Forecasts
 
-Slide With Plot
+
+Forecast Types
+========================================================
+Gridded forecasts
+ - interpolation uncertainty
+ - magnitude 
+ - i.e. take largest value or nearest point?
+
+Basin-level forecasts
+ - in use in our scoreboard development
+ - 
+
+
+Forecast Types
 ========================================================
 
-```{r, echo=FALSE}
-plot(cars)
-```
+- Ensemble
+- Deterministic
+- etc
+
+*Non-determnisitc models require scores evaluated by distribution...*
+
+
+Skill Metrics
+========================================================
+
+- Brier Score
+- CRPS
+- MAE
+- PIT
+- Regression Coefficient
+- RMSE
+
+

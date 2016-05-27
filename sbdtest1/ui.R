@@ -71,25 +71,26 @@ shinyUI(fluidPage(
                       c(sort.int(ctlScoreType$ObjectItemName))
           ),
           
-          selectInput("rtnTimeScale",
-                      "Time scale:",
-                      c("Week", "Month", "Seasonal")
-          ),
+          # selectInput("rtnTimeScale",
+          #             "Time scale:",
+          #             c("Week", "Month", "Seasonal")
+          # ),
           
           sliderInput("lead.times",
-                      "Look at these lead times:",
+                      "Compare lead times:",
                       min = 1,
                       max = 90,
                       value = c(5,10))
                       #value = c(10,10))
           ,
           
-          "Between: ", start.date <- as.Date(dttFirstInDB$dateValue), 
+          "Viewing dates between: ", start.date <- as.Date(dttFirstInDB$dateValue), 
           "and: ", end.date <- as.Date(dttLastInDB$dateValue),
-          
           # if daterange is reduced, calc number of records to display  
           dateInput("ctlFirstDate", "Startdate: ", as.Date(start.date)),
-          dateInput("ctlEndDate", "Enddate: ", as.Date(end.date))
+          dateInput("ctlEndDate", "Enddate: ", as.Date(end.date)),
+          h6("Note - date range pickers not yet implemented")
+          
           
           
         )),
