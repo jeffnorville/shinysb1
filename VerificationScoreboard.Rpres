@@ -20,10 +20,15 @@ Finley's tornadoes
 
 Finley (1884) 
 
+pull from 
+http://www.cawcr.gov.au/projects/verification/Finley/Finley_Tornados.html
+
 
 
 Scores
 ========================================================
+
+http://iri.columbia.edu/wp-content/uploads/2013/07/scoredescriptions.pdf
 
 Skill scores are metrics based on predictive performance relative to a baseline forecast.
 
