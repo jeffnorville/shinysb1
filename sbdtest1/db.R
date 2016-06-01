@@ -56,8 +56,9 @@ summarySE(local, measurevar="scoreValue", groupvars="leadtimeValue", na.rm = TRU
 loc.sum <- summarySE(local, measurevar="scoreValue", groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
 
 loc.sum$locationID <- as.factor(loc.sum$locationID)
-plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID)
 
+plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID)
+unique(loc.sum$locationID)
 
 mse(local$scoreValue[[1]], c(local$scoreValue, na.rm=TRUE))
 
@@ -69,18 +70,23 @@ ggplot(loc.sum, aes(leadtimeValue, scoreValue)) +
 
 (local$scoreValue - loc.sum$scoreValue) / loc.sum$N
 
+lcl2 <- filter(local, locationID %in% c("A1080330", "H7401010"), leadtimeValue < 25)
 
-
-ggplot(local,aes(x = leadtimeValue, y = (local$scoreValue - loc.sum$scoreValue) / loc.sum$N ) ) +
-  # stat_summary(fun.y="mean", geom = "bar") +
-  geom_line(aes(color = "blue"), size=1) +
+# GETTING THERE
+ggplot(lcl2, aes(x = leadtimeValue, y = scoreValue ) ) +
+  geom_point(aes(color = locationID)) +
   geom_hline(aes(yintercept=0), colour="black", linetype="dashed") # colour="#990000"
 
 
 
+
 ss <- (local$scoreValue - loc.sum$scoreValue) / loc.sum$N
-ggplot(local, aes(x=leadtimeValue, y= ss, colour=leadtimeValue)) + 
-  geom_errorbar(aes(ymin=ss-loc.sum$ci, ymax=ss+loc.sum$ci), width=.1) +
+axismin <- ss-loc.sum$ci
+axismax <- ss+loc.sum$ci
+
+
+ggplot(local, aes(x = subset(leadtimeValue, leadtimeValue == 5)), y = ss, colour = leadtimeValue) + 
+  geom_errorbar( aes (ymin = axismin, ymax = axismax), width=.1) +
   geom_line() +
   geom_point()
 
@@ -95,6 +101,9 @@ ggplot(local,aes(x = leadtimeValue, y = (scoreValue - mean(scoreValue)))) +
   # stat_summary(fun.y="mean", geom = "bar") +
   geom_line(aes(color = scoreValue), size=1) +
   geom_hline(aes(yintercept=0), colour="black", linetype="dashed") # colour="#990000"
+
+loc.sum <- summarySE(local, measurevar="scoreValue", groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
+
 
 
 # function for running average -- improved to allow partial=FALSE 

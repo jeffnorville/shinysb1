@@ -71,18 +71,23 @@ shinyUI(fluidPage(
                       c(sort.int(ctlScoreType$ObjectItemName))
           ),
           
-          # selectInput("rtnTimeScale",
-          #             "Time scale:",
-          #             c("Week", "Month", "Seasonal")
-          # ),
-          
           sliderInput("lead.times",
-                      "Compare lead times:",
+                      "Compare lead times (weeks):",
                       min = 1,
-                      max = 90,
-                      value = c(5,10))
+                      max = 90 / 7,
+                      value = c(1,4))
                       #value = c(10,10))
           ,
+          
+          selectInput("rtnTimeScale",
+                      "Summarize by:",
+                      c("All", 
+                        "Month", 
+                        "Spring (MAM)", 
+                        "Winter (DJF)", 
+                        "Monsoon (JJAS)", 
+                        "Year")
+          ),
           
           "Viewing dates between: ", start.date <- as.Date(dttFirstInDB$dateValue), 
           "and: ", end.date <- as.Date(dttLastInDB$dateValue),
@@ -100,17 +105,17 @@ shinyUI(fluidPage(
       # http://www.cookbook-r.com/Graphs/Facets_%28ggplot2%29/
       # https://plot.ly/ggplot2/facet/
        plotOutput("seriesPlot") ,
-       verbatimTextOutput("summary")
+       # "note, there", db.NAs ,"NA values in the score database for this selection" ,
+       verbatimTextOutput("summary"),
+       # verbatimTextOutput("dataNAs$scoreNA"), #this is all I really want
+       verbatimTextOutput("dataNAs")
        # ,
        # tableOutput("view")
 
     ) #mainPanel
 
-    # wellPanel(
-    #   span("Records selected:",
-    #        textOutput("n_records")
-    #   )
       
    ) #sidebarPanel
   ) #sidebarLayout
+  
  )

@@ -25,31 +25,66 @@ shinyServer(function(input, output) {
   #filter DB dataframe based on (default) selections
   filtInput <- reactive({
 
-    #if input$lead.times
-    tot <- input$lead.times
-    toto <- as.numeric(input$lead.times) #debug
+    #allow ONE leadtime or any other value
+    toto <- as.numeric(input$lead.times )
     all.lead.times <- as.integer(unlist(input$lead.times))  # strsplit(input$lead.times, split = ":"))
     if (all.lead.times[1] == all.lead.times[2]) {
-      toto = toto
+      toto = toto 
     }
     else {
       toto = all.lead.times[1]:all.lead.times[2]
     }
 
+    # input$rtnSummarizeBy
+    
+    # dplyr doesn't hit db here, hence "remote"
     remote <- filter(tbl_scores, 
+                     scoreNA == FALSE &&
                      locationID == input$rtnLocid &&
                      modelVariable == input$rtnModelVariable &&
                      scoreType == input$rtnScoreType &&
-                     leadtimeValue %in% toto # span.leadtime
+                     leadtimeValue %in% toto # span.leadtime # note - this %in% HAS to be last criteria
     )
-    getit <- structure(collect(remote))
+    
+    getit <- structure(collect(remote)) #database hit
     # browser()
     
   }) #end reactive
+  
+  filtNAs <- reactive({
+    # keep track of and exclude NAs from plot attempt
+    toto <- as.numeric(input$lead.times)
+    all.lead.times <- as.integer(unlist(input$lead.times))  # strsplit(input$lead.times, split = ":"))
+    if (all.lead.times[1] == all.lead.times[2]) {
+      toto = 7*toto 
+    }
+    else {
+      toto = 7*all.lead.times[1]:7*all.lead.times[2]
+    }
+    db.NAs <- filter(tbl_scores, 
+                     scoreNA == TRUE &&
+                       locationID == input$rtnLocid &&
+                       modelVariable == input$rtnModelVariable &&
+                       scoreType == input$rtnScoreType &&
+                       leadtimeValue %in% toto # span.leadtime # note - this %in% HAS to be last criteria
+    )
+    getit <- structure(collect(db.NAs)) #database hit
+
+    # if (input$rtnTimeScale == "Monthly") {
+    # mutate...
+    # }
+
+    
+  })
 
   output$summary <- renderPrint({
     dataset <- filtInput()
     summary(dataset)
+  })
+
+  output$dataNAs <- renderPrint({
+    datasetNAs <- filtNAs()
+    summary(datasetNAs)
   })
   
   
@@ -69,6 +104,8 @@ shinyServer(function(input, output) {
       plot(1,1,col="white")
       text(1,1,"The database doesn't have information on this combination of variables (yet)")
     } else {
+      
+    ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue))  
     plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 
          xlab = "Lead Times", ylab = "Score")
     }

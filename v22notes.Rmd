@@ -37,6 +37,8 @@ I have a dataset from our friends in Sweden which begins on 1982-1-1 and ends 20
 
 In order to compare these records with existing data I need to average our current (ECMWF) scores over a month; I can conserve the stats, but since I don't have a place in the DB to put stats I decided it's best to redo the calcs ... then the user can drill deeper into resolution of ECMWF score series than, for example, data averaged by month.
 
+One complicating factor is the Shiny "leadtimes" implemntation by slider : the first dataset had simply "days" for leadtimes. I scaled the slider between 1:90 days. To change the resolution of the SQL query behind dplyr (ex. WHERE leadtime in (1,2,3,4,5))
+
 
 Here are last week's screens ... will load new ones today I hope:
 
