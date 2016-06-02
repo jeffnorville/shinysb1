@@ -1,9 +1,12 @@
 #ini file
 readRenviron("~/R/shinysb1/.Renviron")
-REdbname = Sys.getenv('pgdb')
-REuser = Sys.getenv('api_user')
+REhost =     Sys.getenv('pgserver')
+REport =     Sys.getenv('pgport')
+REdbname =   Sys.getenv('pgdb')
+REuser =     Sys.getenv('api_user')
 RElanguage = Sys.getenv('api_language')
 REpassword = Sys.getenv('pgpassword')
+
 
 source("global.R")
 
@@ -18,9 +21,9 @@ if (is.null(RElanguage) || RElanguage=="")  {
 }
 
   
-db <- src_postgres('postgres',
-                   host = 'localhost',
-                   port = 5432,
+db <- src_postgres(dbname = REdbname,
+                   host = REhost,
+                   port = REport,
                    user = REuser,
                    password = REpassword)
 tbl_scores <- tbl(db, "tblScores")
