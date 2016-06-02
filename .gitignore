@@ -1,9 +1,9 @@
+.Renviron
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
 private.R
-.Renviron
 *.txt
 *.html
 *.pdf
