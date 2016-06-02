@@ -34,10 +34,12 @@ tbl_scores <- tbl(db, "tblScores")
 
 # broken into 2 
 remote <- filter(tbl_scores, 
-                   forecastType  == "Seasonal_EDMD_month" &
-                   modelVariable == "Streamflow" &
-                   # scoreType    == "CRPS" &
-                   leadtimeValue %in% 1:90
+                   scoreNA == FALSE &&
+                   locationID %in% c('S2242510', 'L4411710') &&
+                   modelVariable == "Streamflow" &&
+                   forecastType  == "Seasonal_EDMD_month" &&
+                   # scoreType    == "CRPS" &&
+                   leadtimeValue %in% 1:15
   )
 getit <- structure(collect(remote))
 
@@ -51,26 +53,57 @@ local <- collect(reduced)
 # lclwintr <- filter(local, as.POSIXlt(dateValue)$mon+1 %in% season.winter )
 
 
-#lcsmry <- summarySE(local, measurevar = "scoreValue", groupvars = c("locationID","leadtimeValue"))
-summarySE(local, measurevar="scoreValue", groupvars="leadtimeValue", na.rm = TRUE)
+# lcsmry <- summarySE(local, measurevar = "scoreValue", groupvars = c("locationID","leadtimeValue"))
+# summarySE(local, measurevar="scoreValue", groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
 loc.sum <- summarySE(local, measurevar="scoreValue", groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
 
 loc.sum$locationID <- as.factor(loc.sum$locationID)
 
-plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID)
-unique(loc.sum$locationID)
+plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 
+     xlab = "Lead Times", ylab = "Score")
 
-mse(local$scoreValue[[1]], c(local$scoreValue, na.rm=TRUE))
+#averages
+ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
+  geom_point(aes(color = locationID)) +
+  geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
+  xlab("Lead Times") + ylab("Score")
 
-summary(c(local$scoreValue, na.rm=TRUE))
-browser()
 
-ggplot(loc.sum, aes(leadtimeValue, scoreValue)) +
-  geom_point(aes(color = locationID), size=3)
+#with CIs
+pd <- position_dodge(0.1)
 
-(local$scoreValue - loc.sum$scoreValue) / loc.sum$N
+ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
+  geom_point(aes(color = locationID)) +
+  geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci),width=.1, position=pd) +
+  geom_line(position=pd) +
+  geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
+  xlab("Lead Times") + ylab("Score") 
 
-lcl2 <- filter(local, locationID %in% c("A1080330", "H7401010"), leadtimeValue < 25)
+
+
+
+#raw scores
+ggplot(local, aes(x = leadtimeValue, y = scoreValue ) ) +
+  geom_point(aes(color = locationID)) +
+  geom_hline(aes(yintercept=0), colour="black", linetype="dashed") # colour="#990000"
+
+
+
+
+# plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID)
+# unique(loc.sum$locationID)
+# 
+# mse(local$scoreValue[[1]], c(local$scoreValue, na.rm=TRUE))
+# 
+# summary(c(local$scoreValue, na.rm=TRUE))
+# browser()
+# 
+# ggplot(loc.sum, aes(leadtimeValue, scoreValue)) +
+#   geom_point(aes(color = locationID), size=3)
+# 
+# (local$scoreValue - loc.sum$scoreValue) / loc.sum$N
+# 
+# lcl2 <- filter(local, locationID %in% c("A1080330", "H7401010"), leadtimeValue < 25)
 
 # GETTING THERE
 ggplot(lcl2, aes(x = leadtimeValue, y = scoreValue ) ) +

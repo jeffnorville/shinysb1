@@ -1,5 +1,14 @@
 ## Example .Renviron on Windows
+# pgserver="localhost"
+# pgport=5432
+# pgdb="postgres"
+# api_user="postgres"
+# api_language=1
+# pgpassword="irstea"
+
+pgserver="sosdev3.cldt1wtxtpoc.us-east-1.rds.amazonaws.com"
+pgport=5432
 pgdb="postgres"
 api_user="postgres"
 api_language=1
-pgpassword="irstea"
+pgpassword="iR640iki"

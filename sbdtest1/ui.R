@@ -1,10 +1,12 @@
 #IMPREX Scoreboard
 readRenviron("~/R/shinysb1/.Renviron")
-REdbname = Sys.getenv('pgdb')
-REuser = Sys.getenv('api_user')
+# setwd("~/R/shinysb1/sbdtest1")
+REhost =     Sys.getenv('pgserver')
+REport =     Sys.getenv('pgport')
+REdbname =   Sys.getenv('pgdb')
+REuser =     Sys.getenv('api_user')
 RElanguage = Sys.getenv('api_language')
 REpassword = Sys.getenv('pgpassword')
-RElanguage <- 1 #for now
 
 library(shiny)
 library(dplyr)
@@ -12,8 +14,12 @@ library(RPostgreSQL)
 library(lazyeval)
 library(ggplot2)
 
+# lead.time.units <- "days" #update from DB based on selection
+# lead.time.min <- 1
+# lead.time.max <- 90
+
 # test db existance and grab date brackets for ENTIRE dataset
-  tmpcon <- dbConnect(PostgreSQL(), user=REuser, password=REpassword, dbname=REdbname) #add error checking here
+  tmpcon <- dbConnect(PostgreSQL(), host=REhost, user=REuser, password=REpassword, dbname=REdbname) #add error checking here
   qry1e <- "SELECT DISTINCT(\"dateValue\") FROM \"tblScores\" ORDER BY \"dateValue\" LIMIT 1;"
   rs1e <- dbSendQuery(tmpcon,qry1e)
   dttFirstInDB <- fetch(rs1e,n=-1)
@@ -25,9 +31,9 @@ library(ggplot2)
 # REACTIVE? based on daterange, update "Time scale" control to
 #   if ((dttLastInDB - dttFirstInDB) < year(1)) [All] ELSE [Monthly , Annual]
 
-db <- src_postgres('postgres',
-                   host = 'localhost',
-                   port = 5432,
+db <- src_postgres(dbname = REdbname,
+                   host = REhost,
+                   port = REport,
                    user = REuser,
                    password = REpassword)
 tbl_scores <- tbl(db, "tblScores")
@@ -38,6 +44,9 @@ ctlScoreType <- collect(tmpScoreType)
 
 tmpModelVariable <- filter(tbl(db, "tblInterface"),ObjectName=="Model Variable" & LanguageID == RElanguage)
 ctlModelVariable <- collect(tmpModelVariable)
+
+tmpForecastType <- filter(tbl(db, "tblInterface"),ObjectName=="Forecast Type" & LanguageID == RElanguage)
+ctlForecastType <- collect(tmpForecastType)
 
 tmpLocationName <- filter(tbl(db, "tblInterface"),ObjectName=="Location Name" & LanguageID == RElanguage)
 ctlLocationName <- collect(tmpLocationName)
@@ -56,7 +65,8 @@ shinyUI(fluidPage(
     column(4,
         wellPanel( 
           h4("Filter"),
-          selectInput("rtnLocid",
+          selectInput("rtnLocid", 
+                      # multiple=TRUE, # breaks stuff
                       "Location:",
                       c(structure(ctlLocationName$ObjectItemName))
           ),
@@ -66,16 +76,23 @@ shinyUI(fluidPage(
                       c(sort.int(ctlModelVariable$ObjectItemName))
                         ),
           
+
+          selectInput("rtnForecastType",
+                      "Forecast Type:",
+                      c(sort.int(ctlForecastType$ObjectItemName))
+          ),
+          
           selectInput("rtnScoreType",
                       "Score Type:",
                       c(sort.int(ctlScoreType$ObjectItemName))
           ),
           
           sliderInput("lead.times",
-                      "Compare lead times (weeks):",
-                      min = 1,
-                      max = 90 / 7,
-                      value = c(1,4))
+                      "Compare lead times (days):",
+                      # "Compare lead times (", lead.time.units ,"):",
+                      min = 1, # lead.time.min,
+                      max = 90, # lead.time.max,
+                      value = c(5,10))
                       #value = c(10,10))
           ,
           
@@ -95,8 +112,6 @@ shinyUI(fluidPage(
           dateInput("ctlFirstDate", "Startdate: ", as.Date(start.date)),
           dateInput("ctlEndDate", "Enddate: ", as.Date(end.date)),
           h6("Note - date range pickers not yet implemented")
-          
-          
           
         )),
 
