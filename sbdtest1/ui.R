@@ -66,9 +66,9 @@ shinyUI(fluidPage(
         wellPanel( 
           h4("Filter"),
           selectInput("rtnLocid", 
-                      # multiple=TRUE, # breaks stuff
+                      multiple=TRUE, # breaks stuff
                       "Location:",
-                      c(structure(ctlLocationName$ObjectItemName))
+                      c(structure(ctlLocationName$ObjectItemName)) # , selected=NULL
           ),
           
           selectInput("rtnModelVariable",
@@ -105,7 +105,7 @@ shinyUI(fluidPage(
                         "Monsoon (JJAS)", 
                         "Year")
           ),
-          
+          # "Data summarized / averaged by ", summarize.by,
           "Viewing dates between: ", start.date <- as.Date(dttFirstInDB$dateValue), 
           "and: ", end.date <- as.Date(dttLastInDB$dateValue),
           # if daterange is reduced, calc number of records to display  
