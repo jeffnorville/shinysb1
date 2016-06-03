@@ -20,13 +20,14 @@ if (is.null(RElanguage) || RElanguage=="")  {
   language = RElanguage
 }
 
-  
 db <- src_postgres(dbname = REdbname,
                    host = REhost,
                    port = REport,
                    user = REuser,
                    password = REpassword)
 tbl_scores <- tbl(db, "tblScores")
+
+
 
 # db "windows?
 
