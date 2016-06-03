@@ -34,15 +34,32 @@ shinyServer(function(input, output) {
     else {
       toto = all.lead.times[1]:all.lead.times[2]
     }
+# 
+#     summarize.by <- "All"
+#     
+#     # input$rtnTimeScale
+#     if (input$rtnTimeScale == "All"){
+#     } else if (input$rtnTimeScale == "Month"){
+#       summarize.by <- "Month"
+#     } else if (input$rtnTimeScale == "Spring (MAM)"){
+#       summarize.by <- "Spring (MAM)"
+#     } else if (input$rtnTimeScale == "Winter (DJF)"){
+#       summarize.by <- "Winter (DJF)"
+#     } else if (input$rtnTimeScale == "Monsoon (JJAS)"){
+#       summarize.by <- "Monsoon (JJAS)"
+#     } else if (input$rtnTimeScale == "Year"){
+#       summarize.by <- "Year"
+#     } else {
+#       summarize.by <- "All"
+#     }
 
-    # input$rtnSummarizeBy
-    
     # dplyr doesn't hit db here, hence "remote"
     remote <- filter(tbl_scores, 
                      scoreNA == FALSE &&
                      locationID == input$rtnLocid &&   # %in% # breaks interface
                      modelVariable == input$rtnModelVariable &&
                      forecastType == input$rtnForecastType &&
+                     # summarizeByTime == summarize.by &&
                      scoreType == input$rtnScoreType &&
                      leadtimeValue %in% toto # span.leadtime # note - this %in% HAS to be last criteria
     )
@@ -66,13 +83,15 @@ shinyServer(function(input, output) {
     else {
       toto = all.lead.times[1]:all.lead.times[2]
     }
-    
+
+    # find solution to count NAs for this dataset other than doubling the query...    
     db.NAs <- filter(tbl_scores, 
                      scoreNA == TRUE &&
+                       locationID == input$rtnLocid &&   # %in% # breaks interface
                        modelVariable == input$rtnModelVariable &&
                        forecastType == input$rtnForecastType &&
+                       # summarizeByTime == input$rtnTimeScale &&
                        scoreType == input$rtnScoreType &&
-                       locationID == input$rtnLocid && # %in% breaks things
                        leadtimeValue %in% toto # span.leadtime # note - this %in% HAS to be last criteria
     )
     getit <- structure(collect(db.NAs)) #database hit

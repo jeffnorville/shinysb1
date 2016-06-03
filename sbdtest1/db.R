@@ -41,6 +41,7 @@ remote <- filter(tbl_scores,
                    locationID %in% c('S2242510', 'L4411710') &&
                    modelVariable == "Streamflow" &&
                    forecastType  == "Seasonal_EDMD_month" &&
+                   summarizeByTime == "All" &&
                    # scoreType    == "CRPS" &&
                    leadtimeValue %in% 1:15
   )
@@ -48,7 +49,28 @@ getit <- structure(collect(remote))
 
 # move to REACTIVE section so this can be datamined "live"
 # reduced <- filter(getit, locationID %in% c('S2242510', 'L4411710') & scoreType == "CRPS")
+
+# ADD DATE, SEASONAL FILTER  ... dateValue
+# if (summarizeByTime == "All"){
+#   summarize.by <- "Month"
+# } else if (summarizeByTime == "Month"){
+#   summarize.by <- "Month"
+# } else if (summarizeByTime == "Spring (MAM)"){
+#   
+# } else if (summarizeByTime == "Winter (DJF)"){
+# } else if (summarizeByTime == "Monsoon (JJAS)"){
+# } else if (summarizeByTime == "Year"){
+# } else {
+#   
+# }   
+
+
 reduced <- filter(getit, scoreType == "CRPS")
+reduced$month <- format(reduced$dateValue, "%m")
+
+reduced <- filter(getit, Month(dateValue) == 2)
+
+
 local <- collect(reduced)
 
 #  as.POSIXlt(date1)$mon
