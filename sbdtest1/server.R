@@ -56,7 +56,7 @@ shinyServer(function(input, output) {
     # dplyr doesn't hit db here, hence "remote"
     remote <- filter(tbl_scores, 
                      scoreNA == FALSE &&
-                     locationID == input$rtnLocid &&   # %in% # breaks interface
+                     locationID %in% input$rtnLocid &&   # %in% # breaks interface
                      modelVariable == input$rtnModelVariable &&
                      forecastType == input$rtnForecastType &&
                      # summarizeByTime == summarize.by &&
@@ -87,7 +87,7 @@ shinyServer(function(input, output) {
     # find solution to count NAs for this dataset other than doubling the query...    
     db.NAs <- filter(tbl_scores, 
                      scoreNA == TRUE &&
-                       locationID == input$rtnLocid &&   # %in% # breaks interface
+                       locationID %in% input$rtnLocid &&   # %in% # breaks interface
                        modelVariable == input$rtnModelVariable &&
                        forecastType == input$rtnForecastType &&
                        # summarizeByTime == input$rtnTimeScale &&
@@ -141,7 +141,7 @@ shinyServer(function(input, output) {
         geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color="grey", position=pd) +
         # geom_line(position=pd) +
         geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
-        theme(legend.position="none") +
+        # theme(legend.position="none") +
         xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
       
       

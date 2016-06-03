@@ -66,7 +66,7 @@ shinyUI(fluidPage(
         wellPanel( 
           h4("Filter"),
           selectInput("rtnLocid", 
-                      # multiple=TRUE, # breaks stuff
+                      multiple=TRUE, # breaks stuff
                       "Location:",
                       c(structure(ctlLocationName$ObjectItemName)) # , selected=NULL
           ),
