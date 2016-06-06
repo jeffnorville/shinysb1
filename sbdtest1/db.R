@@ -35,15 +35,17 @@ tbl_scores <- tbl(db, "tblScores")
 # ? vs ??
 
 #  TODO time the influence of breaking this into two calls
-int.list <- c(1:5)
+int.list <- c(1:15)
 # toto <- as.numeric(int.list)
-all.lead.times <- as.integer(unlist(int.list))  # strsplit(input$lead.times, split = ":"))
-
-if (all.lead.times[1] == all.lead.times[2]) {
-  toto = toto
-} else {
-  toto = all.lead.times[1]:all.lead.times[2]
-}
+# all.lead.times <- as.integer(unlist(int.list))  # strsplit(input$lead.times, split = ":"))
+# 
+# if (all.lead.times[1] == all.lead.times[2]) {
+#   toto = toto
+# } else {
+#   toto = all.lead.times[1]:all.lead.times[2]
+# }
+# doesn't make sense here, only with slider where [2] is the MAX of the series
+toto <- int.list
 
 # broken into 2 
 remote <- filter(tbl_scores, 
@@ -110,10 +112,12 @@ ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
 #with CIs
 pd <- position_dodge(0.1)
 
+# CONTINUE WORKING HERE -- DEFINE COLOR RAMP
+# geom_point ... factors? howto tie color of geom_errorbar to geom_point? 
 ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
   geom_point(aes(color = locationID)) +
   geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci),width=.1, position=pd) +
-  geom_line(position=pd) +
+  # geom_line(position=pd) +
   geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
   xlab("Lead Times") + ylab("Score") 
 
