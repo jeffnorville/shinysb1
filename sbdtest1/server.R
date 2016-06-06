@@ -8,7 +8,7 @@ RElanguage = Sys.getenv('api_language')
 REpassword = Sys.getenv('pgpassword')
 
 library(shiny)
-library(dplyr)
+library(plyr); library(dplyr)
 library(RPostgreSQL)
 library(lazyeval)
 library(ggplot2)
@@ -34,32 +34,59 @@ shinyServer(function(input, output) {
     else {
       toto = all.lead.times[1]:all.lead.times[2]
     }
-# 
-#     summarize.by <- "All"
-#     
-#     # input$rtnTimeScale
-#     if (input$rtnTimeScale == "All"){
-#     } else if (input$rtnTimeScale == "Month"){
-#       summarize.by <- "Month"
-#     } else if (input$rtnTimeScale == "Spring (MAM)"){
-#       summarize.by <- "Spring (MAM)"
-#     } else if (input$rtnTimeScale == "Winter (DJF)"){
-#       summarize.by <- "Winter (DJF)"
-#     } else if (input$rtnTimeScale == "Monsoon (JJAS)"){
-#       summarize.by <- "Monsoon (JJAS)"
-#     } else if (input$rtnTimeScale == "Year"){
-#       summarize.by <- "Year"
-#     } else {
-#       summarize.by <- "All"
-#     }
+
+    summarize.by <- "All"
+
+    # input$rtnTimeScale
+    if (input$rtnTimeScale == "All"){
+    } else if (input$rtnTimeScale == "Month"){
+      summarize.by <- c(1:12)
+    } else if (input$rtnTimeScale == "Spring (MAM)"){
+      summarize.by <- c(3:5) # "Spring (MAM)"
+    } else if (input$rtnTimeScale == "Winter (DJF)"){
+      summarize.by <- c(12,1:2) # "Winter (DJF)"
+    } else if (input$rtnTimeScale == "Monsoon (JJAS)"){
+      summarize.by <- c(6:9) # "Monsoon (JJAS)"
+    } else if (input$rtnTimeScale == "Year"){
+      summarize.by <- c(1:12) # "Year"
+    } else {
+      # summarize.by <- "All"
+    }
 
     # dplyr doesn't hit db here, hence "remote"
-    remote <- filter(tbl_scores, 
+    if(length(input$rtnLocid) == 1) {
+      remote <- filter(tbl_scores, 
+                       locationID == input$rtnLocid 
+      )
+    }
+    else {
+      remote <- filter(tbl_scores, 
+                       locationID %in% input$rtnLocid
+      )
+    }
+    
+# timescale may be: All; some combination of months (Seasonal); or ?
+    if(input$rtnTimeScale == "All") {
+    # nothin
+  } else {
+    if(length(input$rtnTimeScale) == 1) {
+      remote <- filter(remote,
+                       summarizeByTime == summarize.by
+      )
+    }
+    else {
+      remote <- filter(tbl_scores,  # leaving this in case we go back to multiselect
+                       summarizeByTime %in% summarize.by
+      )
+    }
+  }
+
+
+    #     remote <- filter(tbl_scores, 
+    remote <- filter(remote, 
                      scoreNA == FALSE &&
-                     locationID %in% input$rtnLocid &&   # %in% # breaks interface
                      modelVariable == input$rtnModelVariable &&
                      forecastType == input$rtnForecastType &&
-                     # summarizeByTime == summarize.by &&
                      scoreType == input$rtnScoreType &&
                      leadtimeValue %in% toto # span.leadtime # note - this %in% HAS to be last criteria
     )
@@ -69,39 +96,40 @@ shinyServer(function(input, output) {
     
   }) #end reactive
   
-  filtNAs <- reactive({
-    # keep track of and exclude NAs from plot attempt
-    # lead.time.units <- "days" #update from DB based on selection
-    # lead.time.min <- 1
-    # lead.time.max <- 90
-      
-    toto <- as.numeric(input$lead.times)
-    all.lead.times <- as.integer(unlist(input$lead.times))  # strsplit(input$lead.times, split = ":"))
-    if (all.lead.times[1] == all.lead.times[2]) {
-      toto = toto 
-    }
-    else {
-      toto = all.lead.times[1]:all.lead.times[2]
-    }
-
-    # find solution to count NAs for this dataset other than doubling the query...    
-    db.NAs <- filter(tbl_scores, 
-                     scoreNA == TRUE &&
-                       locationID %in% input$rtnLocid &&   # %in% # breaks interface
-                       modelVariable == input$rtnModelVariable &&
-                       forecastType == input$rtnForecastType &&
-                       # summarizeByTime == input$rtnTimeScale &&
-                       scoreType == input$rtnScoreType &&
-                       leadtimeValue %in% toto # span.leadtime # note - this %in% HAS to be last criteria
-    )
-    getit <- structure(collect(db.NAs)) #database hit
+  
+  
+# DELETE
+  # filtNAs <- reactive({
+  #   # keep track of and exclude NAs from plot attempt
+  #   # lead.time.units <- "days" #update from DB based on selection
+  #   # lead.time.min <- 1
+  #   # lead.time.max <- 90
+  #     
+  #   toto <- as.numeric(input$lead.times)
+  #   all.lead.times <- as.integer(unlist(input$lead.times))  # strsplit(input$lead.times, split = ":"))
+  #   if (all.lead.times[1] == all.lead.times[2]) {
+  #     toto = toto 
+  #   }
+  #   else {
+  #     toto = all.lead.times[1]:all.lead.times[2]
+  #   }
+  # 
+  #   # find solution to count NAs for this dataset other than doubling the query...    
+  #   db.NAs <- filter(tbl_scores, 
+  #                    scoreNA == TRUE &&
+  #                      locationID %in% input$rtnLocid &&   # %in% # breaks interface
+  #                      modelVariable == input$rtnModelVariable &&
+  #                      forecastType == input$rtnForecastType &&
+  #                      # summarizeByTime == input$rtnTimeScale &&
+  #                      scoreType == input$rtnScoreType &&
+  #                      leadtimeValue %in% toto # span.leadtime # note - this %in% HAS to be last criteria
+  #   )
+  #   getit <- structure(collect(db.NAs)) #database hit
+  # })
 
     # if (input$rtnTimeScale == "Monthly") {
     # mutate...
     # }
-
-    
-  })
 
   output$summary <- renderPrint({
     dataset <- filtInput()
@@ -113,8 +141,8 @@ shinyServer(function(input, output) {
     summary(datasetNAs)
   })
   
+  # a.thing <- output$dataNAs()
   
-  # output$view
   output$seriesPlot <- renderPlot({
     
     if(nrow(filtInput()) == 0){
@@ -126,7 +154,7 @@ shinyServer(function(input, output) {
       loc.sum$locationID <- as.factor(loc.sum$locationID)
     }
 
-    if(nrow(filtInput()) == 0) {
+    if(nrow(filtInput()) == 0 || length(filtInput()) == 0) {
       # print error/ warning message
       plot(1,1,col="white")
       text(1,1,"The database doesn't have information on this combination of variables (yet)")
@@ -134,11 +162,12 @@ shinyServer(function(input, output) {
       
     # plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 
     #      xlab = "Lead Times", ylab = "Score")
-      pd <- position_dodge(0.1)
+      group <- c(1:length(loc.sum$locationID)) # not right
+      pd <- position_dodge(0.1) # not working
       
       ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
-        geom_point(aes(color = locationID, size=3)) +
-        geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color="grey", position=pd) +
+        geom_point(aes(color = locationID, size=2)) +
+        geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) + # color="grey",
         # geom_line(position=pd) +
         geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
         # theme(legend.position="none") +

@@ -9,7 +9,7 @@ RElanguage = Sys.getenv('api_language')
 REpassword = Sys.getenv('pgpassword')
 
 library(shiny)
-library(dplyr)
+library(plyr); library(dplyr)
 library(RPostgreSQL)
 library(lazyeval)
 library(ggplot2)
@@ -67,6 +67,7 @@ shinyUI(fluidPage(
           h4("Filter"),
           selectInput("rtnLocid", 
                       multiple=TRUE, # breaks stuff
+                      selected = "A1080330",
                       "Location:",
                       c(structure(ctlLocationName$ObjectItemName)) # , selected=NULL
           ),
@@ -75,7 +76,6 @@ shinyUI(fluidPage(
                        "Model Variable:",
                       c(sort.int(ctlModelVariable$ObjectItemName))
                         ),
-          
 
           selectInput("rtnForecastType",
                       "Forecast Type:",

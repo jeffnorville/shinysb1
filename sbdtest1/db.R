@@ -35,6 +35,15 @@ tbl_scores <- tbl(db, "tblScores")
 # ? vs ??
 
 #  TODO time the influence of breaking this into two calls
+int.list <- c(1:5)
+# toto <- as.numeric(int.list)
+all.lead.times <- as.integer(unlist(int.list))  # strsplit(input$lead.times, split = ":"))
+
+if (all.lead.times[1] == all.lead.times[2]) {
+  toto = toto
+} else {
+  toto = all.lead.times[1]:all.lead.times[2]
+}
 
 # broken into 2 
 remote <- filter(tbl_scores, 
@@ -42,9 +51,9 @@ remote <- filter(tbl_scores,
                    locationID %in% c('S2242510', 'L4411710') &&
                    modelVariable == "Streamflow" &&
                    forecastType  == "Seasonal_EDMD_month" &&
-                   summarizeByTime == "All" &&
+                   # summarizeByTime == "All" &&
                    # scoreType    == "CRPS" &&
-                   leadtimeValue %in% 1:15
+                   leadtimeValue %in% toto
   )
 getit <- structure(collect(remote))
 
@@ -84,6 +93,9 @@ local <- collect(reduced)
 loc.sum <- summarySE(local, measurevar="scoreValue", groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
 
 loc.sum$locationID <- as.factor(loc.sum$locationID)
+group <- c(1:length(loc.sum$locationID))
+
+pd <- position_dodge(0.1)
 
 plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 
      xlab = "Lead Times", ylab = "Score")
@@ -91,7 +103,7 @@ plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID,
 #averages
 ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
   geom_point(aes(color = locationID)) +
-  geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
+  geom_hline(aes(yintercept=0), colour=group, linetype="dashed") + # colour="#990000"
   xlab("Lead Times") + ylab("Score")
 
 
@@ -104,6 +116,17 @@ ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
   geom_line(position=pd) +
   geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
   xlab("Lead Times") + ylab("Score") 
+
+
+ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
+  geom_point(aes(color = group, size=3)) +
+  geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) + # color="grey",
+  # geom_line(position=pd) +
+  geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
+  # theme(legend.position="none") +
+  xlab("Lead Times") + ylab("Score") # "Score"
+
+
 
 
 
