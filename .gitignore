@@ -1,0 +1,11 @@
+.Renviron
+*.Renviron
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+private.R
+*.txt
+*.html
+*.pdf
+*.dcf
