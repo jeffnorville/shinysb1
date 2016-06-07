@@ -35,8 +35,19 @@ shinyServer(function(input, output) {
       toto = all.lead.times[1]:all.lead.times[2]
     }
 
+    # if 1 locID is chose ... "remote" is the 'local' cursor, hasnt hit db yet
+    if(length(input$rtnLocid) == 1) {
+      remote <- filter(tbl_scores, 
+                       locationID == input$rtnLocid 
+      )
+    }
+    else { # more than one locID chosen
+      remote <- filter(tbl_scores, 
+                       locationID %in% input$rtnLocid
+      )
+    }
+    
     summarize.by <- "All"
-
     # input$rtnTimeScale
     if (input$rtnTimeScale == "All"){
     } else if (input$rtnTimeScale == "Month"){
@@ -49,38 +60,16 @@ shinyServer(function(input, output) {
       summarize.by <- c(6:9) # "Monsoon (JJAS)"
     } else if (input$rtnTimeScale == "Year"){
       summarize.by <- c(1:12) # "Year"
-    } else {
+    } else { # default
       # summarize.by <- "All"
     }
-
-    # dplyr doesn't hit db here, hence "remote"
-    if(length(input$rtnLocid) == 1) {
-      remote <- filter(tbl_scores, 
-                       locationID == input$rtnLocid 
+    # timescale may be: All; some combination of months (Seasonal); or ?
+    if(input$rtnTimeScale != "All") {
+      remote$month <- format(remote$dateValue, "%m")
+      remote <- filter(tbl_scores,
+                       months %in% summarize.by
       )
     }
-    else {
-      remote <- filter(tbl_scores, 
-                       locationID %in% input$rtnLocid
-      )
-    }
-    
-# timescale may be: All; some combination of months (Seasonal); or ?
-    if(input$rtnTimeScale == "All") {
-    # nothin
-  } else {
-    if(length(input$rtnTimeScale) == 1) {
-      remote <- filter(remote,
-                       summarizeByTime == summarize.by
-      )
-    }
-    else {
-      remote <- filter(tbl_scores,  # leaving this in case we go back to multiselect
-                       summarizeByTime %in% summarize.by
-      )
-    }
-  }
-
 
     #     remote <- filter(tbl_scores, 
     remote <- filter(remote, 
@@ -90,7 +79,7 @@ shinyServer(function(input, output) {
                      scoreType == input$rtnScoreType &&
                      leadtimeValue %in% toto # span.leadtime # note - this %in% HAS to be last criteria
     )
-    
+
     getit <- structure(collect(remote)) #database hit
     # browser()
     
@@ -149,7 +138,9 @@ shinyServer(function(input, output) {
       text(1,1,"filtInput() was empty, try a different combo")
     } else {
       # have data
-      loc.sum <- summarySE(filtInput(), measurevar="scoreValue", 
+      # browser()
+      filtered.input <- filtInput() # unneccesary step? debugging "rename" call in summarySE
+      loc.sum <- summarySE(filtered.input, measurevar="scoreValue", 
                            groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
       loc.sum$locationID <- as.factor(loc.sum$locationID)
     }
@@ -162,11 +153,15 @@ shinyServer(function(input, output) {
       
     # plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 
     #      xlab = "Lead Times", ylab = "Score")
+      
       group <- c(1:length(loc.sum$locationID)) # not right
       pd <- position_dodge(0.1) # not working
+      # browser()
       
       ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
-        geom_point(aes(color = locationID, size=2)) +
+        # geom_boxplot(aes(color = locationID, fill = "white")) +
+        geom_point(aes(color = locationID, size=2)) + # works
+        # geom_errorbar(aes(ymin=scoreValue-se, ymax=scoreValue+se), width=.1, color = group, position=pd) + # color="grey",
         geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) + # color="grey",
         # geom_line(position=pd) +
         geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"

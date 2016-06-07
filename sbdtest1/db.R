@@ -57,7 +57,15 @@ remote <- filter(tbl_scores,
                    # scoreType    == "CRPS" &&
                    leadtimeValue %in% toto
   )
+
+
 getit <- structure(collect(remote))
+
+# daily, monthly
+if(leadtimeUnit == "daily") {
+  getit$months <- months(getit$dateValue)
+  browser()
+}
 
 # move to REACTIVE section so this can be datamined "live"
 # reduced <- filter(getit, locationID %in% c('S2242510', 'L4411710') & scoreType == "CRPS")
