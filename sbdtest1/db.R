@@ -131,14 +131,30 @@ ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
 
 
 ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
-  geom_point(aes(color = group, size=3)) +
-  geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) + # color="grey",
+  geom_point(aes(color = locationID, size=3)) +
   # geom_line(position=pd) +
+  geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) + # color="grey",
   geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
   # theme(legend.position="none") +
   xlab("Lead Times") + ylab("Score") # "Score"
 
+# mmm ... nope
+ggplot(aes(x = leadtimeValue, y = scoreValue, ymin=scoreValue-1, ymax=scoreValue+1), data=loc.sum ) +
+  geom_area(position="stack") +
+  geom_point(color="red")
 
+
+ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue, ymin=scoreValue-ci, ymax=scoreValue+ci, fill = locationID)) +
+  geom_boxplot()
+
+
+ggplot(local, aes(x = leadtimeValue, y = scoreValue, fill  = locationID)) +
+  geom_boxplot()
+
+
+  geom_point(aes(color = locationID)) +
+  geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci),width=.1, position=pd) +
+  xlab("Lead Times") + ylab("Score") 
 
 
 

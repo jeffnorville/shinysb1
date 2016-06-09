@@ -13,6 +13,7 @@ library(plyr); library(dplyr)
 library(RPostgreSQL)
 library(lazyeval)
 library(ggplot2)
+library(DT)
 
 # lead.time.units <- "days" #update from DB based on selection
 # lead.time.min <- 1
@@ -66,11 +67,17 @@ shinyUI(fluidPage(
         wellPanel( 
           h4("Filter"),
           selectInput("rtnLocid", 
-                      multiple=TRUE, # breaks stuff
-                      selected = "A1080330",
+                      multiple=TRUE,
+                      selected = "A1080330", #need a default
                       "Location:",
                       c(structure(ctlLocationName$ObjectItemName)) # , selected=NULL
           ),
+          
+          selectInput("wants.facets",
+                      "Multiple plots?",
+                      c("no" = FALSE, 
+                        "yes" = TRUE)
+                      ),
           
           selectInput("rtnModelVariable",
                        "Model Variable:",
@@ -92,7 +99,7 @@ shinyUI(fluidPage(
                       # "Compare lead times (", lead.time.units ,"):",
                       min = 1, # lead.time.min,
                       max = 90, # lead.time.max,
-                      value = c(5,10))
+                      value = c(5,10)) # default
                       #value = c(10,10))
           ,
           
@@ -121,9 +128,10 @@ shinyUI(fluidPage(
       # https://plot.ly/ggplot2/facet/
        plotOutput("seriesPlot") ,
        # "note, there", db.NAs ,"NA values in the score database for this selection" ,
-       verbatimTextOutput("summary"),
-       # verbatimTextOutput("dataNAs$scoreNA"), #this is all I really want
-       verbatimTextOutput("dataNAs")
+       DT::dataTableOutput("dataset")
+       # verbatimTextOutput("summary"),
+       # # verbatimTextOutput("dataNAs$scoreNA"), #this is all I really want
+       # verbatimTextOutput("dataNAs")
        # ,
        # tableOutput("view")
 

@@ -12,6 +12,7 @@ library(plyr); library(dplyr)
 library(RPostgreSQL)
 library(lazyeval)
 library(ggplot2)
+library(DT)
 
 db <- src_postgres(dbname = REdbname,
                    host = REhost,
@@ -45,6 +46,14 @@ shinyServer(function(input, output) {
       remote <- filter(tbl_scores, 
                        locationID %in% input$rtnLocid
       )
+    }
+    
+    do.facets = FALSE
+    if (input$wants.facets == "yes") {
+      do.facets = TRUE    
+    }
+    else {
+      do.facets = FALSE
     }
     
     summarize.by <- "All"
@@ -81,13 +90,14 @@ shinyServer(function(input, output) {
     )
 
     getit <- structure(collect(remote)) #database hit
+    
     # browser()
     
   }) #end reactive
   
   
   
-# DELETE
+# DELETE?
   # filtNAs <- reactive({
   #   # keep track of and exclude NAs from plot attempt
   #   # lead.time.units <- "days" #update from DB based on selection
@@ -125,10 +135,15 @@ shinyServer(function(input, output) {
     summary(dataset)
   })
 
-  output$dataNAs <- renderPrint({
-    datasetNAs <- filtNAs()
-    summary(datasetNAs)
+  output$dataset <- renderPrint({
+    dataset <- filtInput()
   })
+  
+  
+  # output$dataNAs <- renderPrint({
+  #   datasetNAs <- filtNAs()
+  #   summary(datasetNAs)
+  # })
   
   # a.thing <- output$dataNAs()
   
@@ -136,16 +151,17 @@ shinyServer(function(input, output) {
     
     if(nrow(filtInput()) == 0){
       text(1,1,"filtInput() was empty, try a different combo")
-    } else {
-      # have data
-      # browser()
+    } else {  # have data
       filtered.input <- filtInput() # unneccesary step? debugging "rename" call in summarySE
       loc.sum <- summarySE(filtered.input, measurevar="scoreValue", 
                            groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
       loc.sum$locationID <- as.factor(loc.sum$locationID)
     }
 
-    if(nrow(filtInput()) == 0 || length(filtInput()) == 0) {
+    na.count <- sum(filtered.input$scoreNA) # should report to user since value hidden by summarySE()
+
+    # if(nrow(filtInput()) == 0 || length(filtInput()) == 0) {
+    if(nrow(filtInput()) == 0) {
       # print error/ warning message
       plot(1,1,col="white")
       text(1,1,"The database doesn't have information on this combination of variables (yet)")
@@ -158,15 +174,29 @@ shinyServer(function(input, output) {
       pd <- position_dodge(0.1) # not working
       # browser()
       
-      ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
-        # geom_boxplot(aes(color = locationID, fill = "white")) +
-        geom_point(aes(color = locationID, size=2)) + # works
-        # geom_errorbar(aes(ymin=scoreValue-se, ymax=scoreValue+se), width=.1, color = group, position=pd) + # color="grey",
-        geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) + # color="grey",
-        # geom_line(position=pd) +
-        geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
-        # theme(legend.position="none") +
-        xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
+      # works, but slow and not very interesting (unless y-axis transformed?)
+      # ggplot(filtered.input, aes(x = leadtimeValue, y = scoreValue, group=leadtimeValue, fill = locationID)) +
+      #   geom_boxplot() +
+      #   facet_wrap(~ locationID) +
+      #   xlab("Lead Times") + ylab("Score") 
+      
+      if (do.facets == TRUE) {
+        ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
+          geom_point(aes(color = locationID, size=2)) +
+          facet_wrap(~ locationID) +
+          geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) + 
+          geom_hline(aes(yintercept=0), colour="black", linetype="dashed") +
+          xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
+      } else {
+        ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
+          geom_point(aes(color = locationID, size=2)) + # works
+          geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) + 
+          geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
+          xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
+      }
+        
+        
+      
       
       
     # ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
