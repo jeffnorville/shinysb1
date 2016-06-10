@@ -49,7 +49,7 @@ shinyServer(function(input, output) {
     }
     
     do.facets = FALSE
-    if (input$wants.facets == "yes") {
+    if (input$wants.facets == "TRUE") {
       do.facets = TRUE    
     }
     else {
@@ -146,67 +146,63 @@ shinyServer(function(input, output) {
   # })
   
   # a.thing <- output$dataNAs()
-  
-  output$seriesPlot <- renderPlot({
+
+  if (do.facets == TRUE) {
+    output$seriesPlot <- renderPlot({
+      
+    ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
+      geom_point(aes(color = locationID, size=2)) +
+      facet_wrap(~ locationID) +
+      geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) + 
+      geom_hline(aes(yintercept=0), colour="black", linetype="dashed") +
+      xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
+    })
     
-    if(nrow(filtInput()) == 0){
-      text(1,1,"filtInput() was empty, try a different combo")
-    } else {  # have data
-      filtered.input <- filtInput() # unneccesary step? debugging "rename" call in summarySE
-      loc.sum <- summarySE(filtered.input, measurevar="scoreValue", 
-                           groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
-      loc.sum$locationID <- as.factor(loc.sum$locationID)
-    }
+  } else {
 
-    na.count <- sum(filtered.input$scoreNA) # should report to user since value hidden by summarySE()
-
-    # if(nrow(filtInput()) == 0 || length(filtInput()) == 0) {
-    if(nrow(filtInput()) == 0) {
-      # print error/ warning message
-      plot(1,1,col="white")
-      text(1,1,"The database doesn't have information on this combination of variables (yet)")
-    } else {
+    output$seriesPlot <- renderPlot({
       
-    # plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 
-    #      xlab = "Lead Times", ylab = "Score")
-      
-      group <- c(1:length(loc.sum$locationID)) # not right
-      pd <- position_dodge(0.1) # not working
-      # browser()
-      
-      # works, but slow and not very interesting (unless y-axis transformed?)
-      # ggplot(filtered.input, aes(x = leadtimeValue, y = scoreValue, group=leadtimeValue, fill = locationID)) +
-      #   geom_boxplot() +
-      #   facet_wrap(~ locationID) +
-      #   xlab("Lead Times") + ylab("Score") 
-      
-      if (do.facets == TRUE) {
-        ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
-          geom_point(aes(color = locationID, size=2)) +
-          facet_wrap(~ locationID) +
-          geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) + 
-          geom_hline(aes(yintercept=0), colour="black", linetype="dashed") +
-          xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
-      } else {
-        ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
-          geom_point(aes(color = locationID, size=2)) + # works
-          geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) + 
-          geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
-          xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
+      if(nrow(filtInput()) == 0){
+        text(1,1,"filtInput() was empty, try a different combo")
+      } else {  # have data
+        filtered.input <- filtInput() # unneccesary step? debugging "rename" call in summarySE
+        loc.sum <- summarySE(filtered.input, measurevar="scoreValue", 
+                             groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
+        loc.sum$locationID <- as.factor(loc.sum$locationID)
       }
+  
+      na.count <- sum(filtered.input$scoreNA) # should report to user since value hidden by summarySE()
+  
+      # if(nrow(filtInput()) == 0 || length(filtInput()) == 0) {
+      if(nrow(filtInput()) == 0) {
+        # print error/ warning message
+        plot(1,1,col="white")
+        text(1,1,"The database doesn't have information on this combination of variables (yet)")
+      } else {
         
+      # plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 
+      #      xlab = "Lead Times", ylab = "Score")
         
-      
-      
-      
-    # ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
-    #   geom_point(aes(color = locationID)) +
-    #   geom_hline(aes(yintercept=0), colour="black", linetype="dashed") +
-    #   xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
-    }
-    
-    
-  })
-
+        group <- c(1:length(loc.sum$locationID)) # not right
+        pd <- position_dodge(0.1) # not working
+  
+        # works, but slow and not very interesting (unless y-axis transformed?)
+        # ggplot(filtered.input, aes(x = leadtimeValue, y = scoreValue, group=leadtimeValue, fill = locationID)) +
+        #   geom_boxplot() +
+        #   facet_wrap(~ locationID) +
+        #   xlab("Lead Times") + ylab("Score") 
+          ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
+            geom_point(aes(color = locationID, size=2)) + # works
+            geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) + 
+            geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
+            xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
+          
+      # ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
+      #   geom_point(aes(color = locationID)) +
+      #   geom_hline(aes(yintercept=0), colour="black", linetype="dashed") +
+      #   xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
+      }
+  }) # end renderPlot
+}
   
   }) # end shinyServer
