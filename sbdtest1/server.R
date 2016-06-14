@@ -193,7 +193,7 @@ shinyServer(function(input, output) {
         #   xlab("Lead Times") + ylab("Score") 
           ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
             geom_point(aes(color = locationID, size=2)) + # works
-            geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) + 
+            geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position = pd) + 
             geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
             xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
           
