@@ -86,12 +86,16 @@ if(leadtimeUnit == "daily") {
 
 
 reduced <- filter(getit, scoreType == "CRPS")
-reduced$month <- format(reduced$dateValue, "%m")
 
-reduced <- filter(getit, Month(dateValue) == 2)
+
+
+# reduced <- filter(getit, Month(dateValue) == 2)
+
 
 
 local <- collect(reduced)
+local$month <- format(local$dateValue, "%m")
+
 
 #  as.POSIXlt(date1)$mon
 # season.winter <- c(12, 1, 2) # december, january, february
@@ -105,15 +109,18 @@ loc.sum <- summarySE(local, measurevar="scoreValue", groupvars=c("locationID", "
 loc.sum$locationID <- as.factor(loc.sum$locationID)
 group <- c(1:length(loc.sum$locationID))
 
-pd <- position_dodge(0.1)
+
 
 plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 
      xlab = "Lead Times", ylab = "Score")
 
 #averages
+pd <- position_dodge(0.9)
 ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
-  geom_point(aes(color = locationID)) +
-  geom_hline(aes(yintercept=0), colour=group, linetype="dashed") + # colour="#990000"
+  geom_point(aes( color = locationID), position = pd) +
+  geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), position = pd, color="grey") + # 
+  # geom_errorbar(aes(ymin=scoreValue-se, ymax=scoreValue+se), position = pd, color="grey") + # 
+  geom_hline(aes(yintercept=0), color="red", linetype="dashed") + 
   xlab("Lead Times") + ylab("Score")
 
 
