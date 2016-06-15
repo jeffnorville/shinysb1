@@ -11,7 +11,8 @@ REpassword = Sys.getenv('pgpassword')
 source("global.R")
 
 #db connections
-library(plyr); library(dplyr)
+# library(plyr); library(dplyr)
+library(dplyr)
 library(ggplot2)
 
 if (is.null(RElanguage) || RElanguage=="")  {
