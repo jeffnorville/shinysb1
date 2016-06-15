@@ -24,6 +24,7 @@ library(DT)
   qry1e <- "SELECT DISTINCT(\"dateValue\") FROM \"tblScores\" ORDER BY \"dateValue\" LIMIT 1;"
   rs1e <- dbSendQuery(tmpcon,qry1e)
   dttFirstInDB <- fetch(rs1e,n=-1)
+  #if this is NULL then the table is empty / broken...
   qryDernier <- "SELECT DISTINCT(\"dateValue\") FROM \"tblScores\" ORDER BY \"dateValue\" DESC LIMIT 1;"
   rsDernier <- dbSendQuery(tmpcon,qryDernier)
   dttLastInDB <- fetch(rsDernier,n=-1)
@@ -78,6 +79,7 @@ shinyUI(fluidPage(
                       c("no" = FALSE, 
                         "yes" = TRUE)
                       ),
+          "note: if NO, multiple locn selections will be overlain" ,
           
           selectInput("rtnModelVariable",
                        "Model Variable:",
@@ -128,8 +130,8 @@ shinyUI(fluidPage(
       # https://plot.ly/ggplot2/facet/
        plotOutput("seriesPlot") ,
        # "note, there", db.NAs ,"NA values in the score database for this selection" ,
-       DT::dataTableOutput("dataset")
-       # verbatimTextOutput("summary"),
+       # DT::dataTableOutput("dataset")
+       verbatimTextOutput("summary")
        # # verbatimTextOutput("dataNAs$scoreNA"), #this is all I really want
        # verbatimTextOutput("dataNAs")
        # ,

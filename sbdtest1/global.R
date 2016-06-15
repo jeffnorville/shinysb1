@@ -17,8 +17,9 @@ mse <- function(x, series){
 # borrowed from http://www.cookbook-r.com/Manipulating_data/Summarizing_data/
 summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
                       conf.interval=.95, .drop=TRUE) {
-  library(plyr); library(dplyr)
-  library(reshape)
+  # library(plyr); library(dplyr)
+  # library(reshape2)
+  library(dplyr)
   
   # New version of length which can handle NA's: if na.rm==T, don't count them
   length2 <- function (x, na.rm=FALSE) {
@@ -39,8 +40,11 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
                  measurevar
   )
   
-  # Rename the "mean" column    
-  datac <- rename(datac, c("mean" = measurevar))
+  # Rename the "mean" column - causes a lot of issues w plyr, dplyr, reshape
+  # datac <- rename(datac, c("mean" = measurevar))
+  names(datac)[names(datac)=="mean"] <- measurevar
+  # browser()
+  
   
   datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
   

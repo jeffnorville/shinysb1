@@ -20,6 +20,7 @@ db <- src_postgres(dbname = REdbname,
                    user = REuser,
                    password = REpassword)
 tbl_scores <- tbl(db, "tblScores")
+do.facets = FALSE
 
 shinyServer(function(input, output) {
 
@@ -47,15 +48,15 @@ shinyServer(function(input, output) {
                        locationID %in% input$rtnLocid
       )
     }
+
     
-    do.facets = FALSE
     if (input$wants.facets == "TRUE") {
       do.facets = TRUE    
     }
     else {
       do.facets = FALSE
     }
-    
+
     summarize.by <- "All"
     # input$rtnTimeScale
     if (input$rtnTimeScale == "All"){
@@ -146,19 +147,20 @@ shinyServer(function(input, output) {
   # })
   
   # a.thing <- output$dataNAs()
+  
 
-  if (do.facets == TRUE) {
-    output$seriesPlot <- renderPlot({
-      
-    ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
-      geom_point(aes(color = locationID, size=2)) +
-      facet_wrap(~ locationID) +
-      geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) + 
-      geom_hline(aes(yintercept=0), colour="black", linetype="dashed") +
-      xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
-    })
-    
-  } else {
+  # if (do.facets == TRUE) {
+  #   output$seriesPlot <- renderPlot({
+  #     
+  #   ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
+  #     geom_point(aes(color = locationID, size=2)) +
+  #     facet_wrap(~ locationID) +
+  #     geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) + 
+  #     geom_hline(aes(yintercept=0), colour="black", linetype="dashed") +
+  #     xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
+  #   })
+  #   
+  # } else {
 
     output$seriesPlot <- renderPlot({
       
@@ -169,9 +171,9 @@ shinyServer(function(input, output) {
         loc.sum <- summarySE(filtered.input, measurevar="scoreValue", 
                              groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
         loc.sum$locationID <- as.factor(loc.sum$locationID)
+        na.count <- sum(filtered.input$scoreNA) # should report to user since value hidden by summarySE()
       }
   
-      na.count <- sum(filtered.input$scoreNA) # should report to user since value hidden by summarySE()
   
       # if(nrow(filtInput()) == 0 || length(filtInput()) == 0) {
       if(nrow(filtInput()) == 0) {
@@ -203,6 +205,7 @@ shinyServer(function(input, output) {
       #   xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
       }
   }) # end renderPlot
-}
+    
+  # } #end else
   
   }) # end shinyServer
