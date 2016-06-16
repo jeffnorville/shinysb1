@@ -7,7 +7,7 @@ REuser =     Sys.getenv('api_user')
 RElanguage = Sys.getenv('api_language')
 REpassword = Sys.getenv('pgpassword')
 
-
+setwd("~/R/shinysb1/sbdtest1")
 source("global.R")
 
 #db connections

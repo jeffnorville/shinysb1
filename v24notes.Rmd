@@ -23,9 +23,32 @@ barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
 
 ```
 
+### Big changes:
+ - ggplot over base::plot ... pretty! 
+   - easy lables! 
+   - easier facets, 
+   - boxplots, 
+   - you name it!
+ 
+Also, the database schema:
+- new numeric field for partial dates
+- which required a text field for partial date units (day (default); week; month; quarter; year)
+
+This grew out of the latest dataset -- which, rather than containing daily score values for me to do stats on, is reduced to monthly values.
+
+This makes for a more compact database naturally, but drops the confidence interval plot, and generally dilutes the scoreboard. I haven't decided if this is important or not yet.
+
+I posted a poorly-worded inquiry for feedback on this schema change on SO and was upbraided a bit, lost what rep points I'd had ... there's social networking for you. Basically, 
+1. I could've only added one column with the dateUnit specified, then imported the latest monthly data with fake year and day in the date field, and asked the GUI to ignore those parts on display;
+2. alternately, change the GUI logic to look for "date" values in a numeric field, which are already aggregated. 
+
+
+
+
+
 Last week I made a few improvements on the GUI, and am in the middle of untangling the grouping functions (SQL speak) for checking scores based on their applicable time windows.
 
-I also got a nice response to a problem I was having with the selectInput boxes in Shiny on [StackOverflow](http://stackoverflow.com/questions/37591084/multiple-selectinput-values-create-unexpected-dplyr-postgres-behavior) ... this is a silly behavior for dplyr in my opinion but yeah, 
+I also got a nice response to a problem I was having with the selectInput boxes in Shiny on [StackOverflow](http://stackoverflow.com/questions/37591084/multiple-selectinput-values-create-unexpected-dplyr-postgres-behavior) ... this is a silly behavior for dplyr in my opinion but yeah, fixed.
 
 
 
