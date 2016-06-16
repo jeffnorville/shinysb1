@@ -40,12 +40,10 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
                  measurevar
   )
   
-  # Rename the "mean" column - causes a lot of issues w plyr, dplyr, reshape
-  # datac <- rename(datac, c("mean" = measurevar))
-  names(datac)[names(datac)=="mean"] <- measurevar
-  # browser()
-  
-  
+  # Rename the "mean" column
+  # datac <- rename(datac, c("mean" = measurevar)) # causes issues w plyr?
+  names(datac)[names(datac)=="mean"] <- measurevar # simpler jbn
+
   datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
   
   # Confidence interval multiplier for standard error
