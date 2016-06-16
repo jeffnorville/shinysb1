@@ -60,6 +60,10 @@ ctlLocationName <- collect(tmpLocationName)
 tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == RElanguage)
 ctlCaseStudy <- collect(tmpCaseStudy)
 
+tmpDataPackageList <- filter(tbl(db, "tblDataLoad"))
+ctlDataPackageList <- collect(tmpDataPackageList)
+
+
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
   
@@ -70,10 +74,16 @@ shinyUI(fluidPage(
   fluidRow(
     column(4,
         wellPanel( 
+          # h4("Pick a dataset"),
+          selectInput("rtnByPackage",
+                      "package:",
+                      c(ctlDataPackageList$dataPkgFriendlyName)
+          ),
+
           h4("Filter"),
           selectInput("rtnLocid", 
                       multiple=TRUE,
-                      selected = "A1080330", #need a default
+                      # selected = "A1080330", #need a default ?
                       "Location:",
                       c(structure(ctlLocationName$ObjectItemName)) # , selected=NULL
           ),
