@@ -1,4 +1,5 @@
 #ini file
+setwd("~/R/shinysb1/sbdtest1")
 readRenviron("~/R/shinysb1/.Renviron")
 REhost =     Sys.getenv('pgserver')
 REport =     Sys.getenv('pgport')
@@ -62,11 +63,6 @@ remote <- filter(tbl_scores,
 
 getit <- structure(collect(remote))
 
-# daily, monthly
-if(leadtimeUnit == "daily") {
-  getit$months <- months(getit$dateValue)
-  browser()
-}
 
 # move to REACTIVE section so this can be datamined "live"
 # reduced <- filter(getit, locationID %in% c('S2242510', 'L4411710') & scoreType == "CRPS")
@@ -83,20 +79,20 @@ if(leadtimeUnit == "daily") {
 # } else if (summarizeByTime == "Year"){
 # } else {
 #   
-# }   
+# }
 
 
 reduced <- filter(getit, scoreType == "CRPS")
-
-
-
 # reduced <- filter(getit, Month(dateValue) == 2)
 
-
-
 local <- collect(reduced)
-local$month <- format(local$dateValue, "%m")
 
+# daily, monthly (should vectorize but doesn't matter since df here will be consistent)
+if(local$leadtimeUnit == "day") {
+  # local$month <- format(local$dateValue, "%m")
+  # getit$months <- months(getit$dateValue) # "février"
+  local$months <- format.Date(local$dateValue, "%m")
+}
 
 #  as.POSIXlt(date1)$mon
 # season.winter <- c(12, 1, 2) # december, january, february
@@ -106,22 +102,23 @@ local$month <- format(local$dateValue, "%m")
 # lcsmry <- summarySE(local, measurevar = "scoreValue", groupvars = c("locationID","leadtimeValue"))
 # summarySE(local, measurevar="scoreValue", groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
 loc.sum <- summarySE(local, measurevar="scoreValue", groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
-
 loc.sum$locationID <- as.factor(loc.sum$locationID)
-group <- c(1:length(loc.sum$locationID))
 
+# this doesn't really do it
+# group <- c(1:length(loc.sum$locationID))
+group <- factor(c(loc.sum$locationID))
 
-
+# base plot
 plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 
      xlab = "Lead Times", ylab = "Score")
 
-#averages
+# get fancier
 pd <- position_dodge(0.2)
-ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ), group = locationID) +
+ggplot(loc.sum, aes(color = locationID, x = leadtimeValue, y = scoreValue )) +
   geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), position = pd) + # , color="grey"
-  geom_line(position = pd) +
+  geom_line() +
   geom_point(aes(color = locationID), position = pd) +
-  geom_hline(aes(yintercept=0), color="red", linetype="dashed") + 
+  geom_hline(aes(yintercept=0), color="blue", linetype="dashed") + 
   xlab("Lead Times") + ylab("Score")
 
 

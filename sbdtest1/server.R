@@ -1,4 +1,5 @@
 #IMPREX Scoreboard
+setwd("~/R/shinysb1/sbdtest1")
 readRenviron("~/R/shinysb1/.Renviron")
 REhost =     Sys.getenv('pgserver')
 REport =     Sys.getenv('pgport')
@@ -186,20 +187,27 @@ shinyServer(function(input, output) {
       # plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 
       #      xlab = "Lead Times", ylab = "Score")
         
-        group <- c(1:length(loc.sum$locationID)) # not right
-        pd <- position_dodge(0.1) # not working
-  
+
         # works, but slow and not very interesting (unless y-axis transformed?)
         # ggplot(filtered.input, aes(x = leadtimeValue, y = scoreValue, group=leadtimeValue, fill = locationID)) +
         #   geom_boxplot() +
         #   facet_wrap(~ locationID) +
         #   xlab("Lead Times") + ylab("Score") 
-          ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
-            geom_point(aes(color = locationID, size=2)) + # works
-            geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position = pd) + 
-            geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
-            # if (do.facets == TRUE){facet_wrap(~ locationID) } +
-            xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
+        group <- factor(c(loc.sum$locationID))
+        pd <- position_dodge(0.2)
+        ggplot(loc.sum, aes(color = locationID, x = leadtimeValue, y = scoreValue )) +
+          geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), position = pd) + # , color="grey"
+          geom_line() +
+          geom_point(aes(color = locationID), position = pd) +
+          geom_hline(aes(yintercept=0), color="blue", linetype="dashed") + 
+          xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) 
+        
+          # ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
+          #   geom_point(aes(color = locationID, size=2)) + # works
+          #   geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position = pd) + 
+          #   geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
+          #   # if (do.facets == TRUE){facet_wrap(~ locationID) } +
+          #   xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
           
       # ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
       #   geom_point(aes(color = locationID)) +

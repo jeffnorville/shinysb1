@@ -1,6 +1,6 @@
 #IMPREX Scoreboard
+setwd("~/R/shinysb1/sbdtest1")
 readRenviron("~/R/shinysb1/.Renviron")
-# setwd("~/R/shinysb1/sbdtest1")
 REhost =     Sys.getenv('pgserver')
 REport =     Sys.getenv('pgport')
 REdbname =   Sys.getenv('pgdb')
