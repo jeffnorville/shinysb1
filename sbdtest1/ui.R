@@ -42,6 +42,9 @@ db <- src_postgres(dbname = REdbname,
 tbl_scores <- tbl(db, "tblScores")
 
 #selectInput boxes
+
+# add data package selector
+
 tmpScoreType <- filter(tbl(db, "tblInterface"),ObjectName=="Score Type" & LanguageID == RElanguage)
 ctlScoreType <- collect(tmpScoreType)
 

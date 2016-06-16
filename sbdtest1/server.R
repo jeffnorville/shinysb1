@@ -75,6 +75,7 @@ shinyServer(function(input, output) {
     } else { # default
       # summarize.by <- "All"
     }
+    
     # timescale may be: All; some combination of months (Seasonal); or ?
     if(input$rtnTimeScale != "All") {
       remote$month <- format(remote$dateValue, "%m")
@@ -85,7 +86,7 @@ shinyServer(function(input, output) {
 
     #     remote <- filter(tbl_scores, 
     remote <- filter(remote, 
-                     scoreNA == FALSE &&
+                     # scoreNA == FALSE &&
                      modelVariable == input$rtnModelVariable &&
                      forecastType == input$rtnForecastType &&
                      scoreType == input$rtnScoreType &&
@@ -97,37 +98,6 @@ shinyServer(function(input, output) {
     # browser()
     
   }) #end reactive
-  
-  
-  
-# DELETE?
-  # filtNAs <- reactive({
-  #   # keep track of and exclude NAs from plot attempt
-  #   # lead.time.units <- "days" #update from DB based on selection
-  #   # lead.time.min <- 1
-  #   # lead.time.max <- 90
-  #     
-  #   toto <- as.numeric(input$lead.times)
-  #   all.lead.times <- as.integer(unlist(input$lead.times))  # strsplit(input$lead.times, split = ":"))
-  #   if (all.lead.times[1] == all.lead.times[2]) {
-  #     toto = toto 
-  #   }
-  #   else {
-  #     toto = all.lead.times[1]:all.lead.times[2]
-  #   }
-  # 
-  #   # find solution to count NAs for this dataset other than doubling the query...    
-  #   db.NAs <- filter(tbl_scores, 
-  #                    scoreNA == TRUE &&
-  #                      locationID %in% input$rtnLocid &&   # %in% # breaks interface
-  #                      modelVariable == input$rtnModelVariable &&
-  #                      forecastType == input$rtnForecastType &&
-  #                      # summarizeByTime == input$rtnTimeScale &&
-  #                      scoreType == input$rtnScoreType &&
-  #                      leadtimeValue %in% toto # span.leadtime # note - this %in% HAS to be last criteria
-  #   )
-  #   getit <- structure(collect(db.NAs)) #database hit
-  # })
 
     # if (input$rtnTimeScale == "Monthly") {
     # mutate...
@@ -193,6 +163,7 @@ shinyServer(function(input, output) {
         #   geom_boxplot() +
         #   facet_wrap(~ locationID) +
         #   xlab("Lead Times") + ylab("Score") 
+        
         group <- factor(c(loc.sum$locationID))
         pd <- position_dodge(0.2)
         ggplot(loc.sum, aes(color = locationID, x = leadtimeValue, y = scoreValue )) +
@@ -200,22 +171,12 @@ shinyServer(function(input, output) {
           geom_line() +
           geom_point(aes(color = locationID), position = pd) +
           geom_hline(aes(yintercept=0), color="blue", linetype="dashed") + 
-          xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) 
-        
-          # ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
-          #   geom_point(aes(color = locationID, size=2)) + # works
-          #   geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position = pd) + 
-          #   geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
           #   # if (do.facets == TRUE){facet_wrap(~ locationID) } +
-          #   xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
-          
-      # ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
-      #   geom_point(aes(color = locationID)) +
-      #   geom_hline(aes(yintercept=0), colour="black", linetype="dashed") +
-      #   xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
+          xlab("Lead Times") + ylab(paste(input$rtnScoreType, " removed ", na.count, " NAs")) 
+        
       }
   }) # end renderPlot
-    
+
   # } #end else
   
   }) # end shinyServer
