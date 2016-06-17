@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-## Week 24, 2016
+# Week 24, 2016
 Welcome to week 15 of 34. This document updated 17 juin 2016.
 
 ```{r plot il reste}
@@ -23,7 +23,7 @@ barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
 
 ```
 
-### Big changes:
+## Big changes:
  - ggplot changes including "dodge" and better grouping 
    - easy lables! 
    - facets, 
