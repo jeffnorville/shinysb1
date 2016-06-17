@@ -114,11 +114,15 @@ plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID,
 
 # get fancier
 pd <- position_dodge(0.2)
+min.LT <- min(loc.sum$leadtimeValue)
+max.LT <- max(loc.sum$leadtimeValue)
+
 ggplot(loc.sum, aes(color = locationID, x = leadtimeValue, y = scoreValue )) +
   geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), position = pd) + # , color="grey"
   geom_line() +
   geom_point(aes(color = locationID), position = pd) +
   geom_hline(aes(yintercept=0), color="blue", linetype="dashed") + 
+  scale_y_continuous(breaks=c(min.LT:max.LT)) +
   xlab("Lead Times") + ylab("Score")
 
 
