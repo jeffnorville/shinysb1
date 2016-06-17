@@ -2,7 +2,7 @@
 title: "Week 19 notes"
 author: "Jeff"
 date: "9 mai 2016"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
