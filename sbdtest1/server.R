@@ -39,7 +39,7 @@ shinyServer(function(input, output) {
       toto = all.lead.times[1]:all.lead.times[2]
     }
 
-    # if 1 locID is chose ... "remote" is the 'local' cursor, hasnt hit db yet
+    # if 1 locID is chosen ... "remote" is the 'local' cursor, hasnt hit db yet
     if(length(input$rtnLocid) == 1) {
       remote <- filter(tbl_scores, 
                        locationID == input$rtnLocid 
@@ -52,12 +52,12 @@ shinyServer(function(input, output) {
     }
 
     
-    if (input$wants.facets == "TRUE") {
-      do.facets = TRUE    
-    }
-    else {
-      do.facets = FALSE
-    }
+    # if (input$wants.facets == "TRUE") {
+    #   do.facets = TRUE    
+    # }
+    # else {
+    #   do.facets = FALSE
+    # }
 
     summarize.by <- "All"
     # input$rtnTimeScale
@@ -136,7 +136,7 @@ shinyServer(function(input, output) {
 
     output$seriesPlot <- renderPlot({
       
-      if(nrow(filtInput()) == 0){
+      if(nrow(filtInput()) == 0 || length(filtInput()) == 0) {
         text(1,1,"filtInput() was empty, try a different combo")
       } else {  # have data
         filtered.input <- filtInput() # unneccesary step? debugging "rename" call in summarySE
@@ -147,8 +147,8 @@ shinyServer(function(input, output) {
       }
   
   
-      # if(nrow(filtInput()) == 0 || length(filtInput()) == 0) {
-      if(nrow(filtInput()) == 0) {
+      if(nrow(filtInput()) == 0 || length(filtInput()) == 0) {
+      # if(nrow(filtInput()) == 0) {
         # print error/ warning message
         plot(1,1,col="white")
         text(1,1,"The database doesn't have information on this combination of variables (yet)")
@@ -172,7 +172,7 @@ shinyServer(function(input, output) {
           geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), position = pd) + # , color="grey"
           geom_line() +
           geom_point(aes(color = locationID), position = pd) +
-          geom_hline(aes(yintercept=0), color="blue", linetype="dashed") + 
+          # geom_hline(aes(yintercept=0), color="blue", linetype="dashed") + 
           #   # if (do.facets == TRUE){facet_wrap(~ locationID) } +
           # scale_y_discrete() +
           scale_y_continuous(breaks=c(min.LT:max.LT)) +

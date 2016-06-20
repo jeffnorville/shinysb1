@@ -81,8 +81,8 @@ getit <- structure(collect(remote))
 #   
 # }
 
-
-reduced <- filter(getit, scoreType == "CRPS")
+# CRPSS, CRPSS
+reduced <- filter(getit, scoreType == "RMSES")
 # reduced <- filter(getit, Month(dateValue) == 2)
 
 local <- collect(reduced)

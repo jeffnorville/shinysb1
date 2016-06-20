@@ -76,45 +76,50 @@ shinyUI(fluidPage(
         wellPanel( 
           # h4("Pick a dataset"),
           selectInput("rtnByPackage",
-                      "package:",
+                      "Package:",
                       c(ctlDataPackageList$dataPkgFriendlyName)
           ),
 
           h4("Filter"),
           selectInput("rtnLocid", 
                       multiple=TRUE,
-                      # selected = "A1080330", #need a default ?
+                      selected = "A1080330", #need a default ?
                       "Location:",
                       c(structure(ctlLocationName$ObjectItemName)) # , selected=NULL
           ),
           
-          selectInput("wants.facets",
-                      "Multiple plots?",
-                      c("no" = FALSE, 
-                        "yes" = TRUE)
-                      ),
-          "note: if NO, multiple locn selections will be overlain" ,
+          # selectInput("wants.facets",
+          #             "Multiple plots?",
+          #             c("no" = FALSE, 
+          #               "yes" = TRUE)
+          #             ),
+          # "note: if NO, multiple locn selections will be overlain" ,
           
           selectInput("rtnModelVariable",
-                       "Model Variable:",
+                       "Variable:",
                       c(sort.int(ctlModelVariable$ObjectItemName))
                         ),
 
           selectInput("rtnForecastType",
-                      "Forecast Type:",
+                      "Forecast System:",
                       c(sort.int(ctlForecastType$ObjectItemName))
           ),
           
           selectInput("rtnScoreType",
-                      "Score Type:",
+                      "Score:",
                       c(sort.int(ctlScoreType$ObjectItemName))
           ),
           
+          # TODO pull from dataset based on 1eme requête
+          # max.leadtime.in.db <- c(6.0), # if there are fewer than X LTs, show all by default
+          # if (max.leadtime.in.db < 15) {
+             show.max.LT <- 90,
+          # }
           sliderInput("lead.times",
-                      "Compare lead times (days):",
+                      "Lead time window:",
                       # "Compare lead times (", lead.time.units ,"):",
                       min = 1, # lead.time.min,
-                      max = 90, # lead.time.max,
+                      max = show.max.LT, # lead.time.max,
                       value = c(5,10)) # default
                       #value = c(10,10))
           ,
@@ -127,15 +132,14 @@ shinyUI(fluidPage(
                         "Winter (DJF)", 
                         "Monsoon (JJAS)", 
                         "Year")
-          ),
-          # "Data summarized / averaged by ", summarize.by,
-          "Viewing dates between: ", start.date <- as.Date(dttFirstInDB$dateValue), 
-          "and: ", end.date <- as.Date(dttLastInDB$dateValue),
-          # if daterange is reduced, calc number of records to display  
-          dateInput("ctlFirstDate", "Startdate: ", as.Date(start.date)),
-          dateInput("ctlEndDate", "Enddate: ", as.Date(end.date)),
-          h6("Note - date range pickers not yet implemented")
-          
+          )
+          # # "Data summarized / averaged by ", summarize.by,
+          # "Viewing dates between: ", start.date <- as.Date(dttFirstInDB$dateValue), 
+          # "and: ", end.date <- as.Date(dttLastInDB$dateValue),
+          # # if daterange is reduced, calc number of records to display  
+          # dateInput("ctlFirstDate", "Startdate: ", as.Date(start.date)),
+          # dateInput("ctlEndDate", "Enddate: ", as.Date(end.date)),
+
         )),
 
     mainPanel(
