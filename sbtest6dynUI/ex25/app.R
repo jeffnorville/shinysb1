@@ -7,13 +7,13 @@ server <- function(input, output, session) {
   output$my_output_UI <- renderUI({
     
     list(
-      h4(style = "color:blue;", "My selection list"),
+      h4(style = "color:blue;", "Add stuff to this list"),
       selectInput(inputId = "myselect", label="", choices = selections)
     )
   })
   
   # initial selections
-  selections <- c("New York", "Philadelphia")
+  selections <- c("Brier Score", "CRPS", "CRPS Score")
   
   # use observe event to notice when the user clicks the button
   # update the selection list. Note the double assignment <<-
@@ -26,10 +26,10 @@ server <- function(input, output, session) {
 
 ui <- basicPage(
   
-  h3("Using renderUI and uiOutput"),
+  h3("testing renderUI and uiOutput"),
   uiOutput("my_output_UI"),
   textInput("mytext", ""),
-  actionButton("mybutton", "Click to add to selections")
+  actionButton("mybutton", "Click to add to Selections")
   
 )
 
