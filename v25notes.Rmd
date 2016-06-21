@@ -38,7 +38,6 @@ barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
 
 ## Modified database schema:
  - Renaming?
- - None
 
 We also simplified the wording on the display again; I need to follow this with database logic to be sure names are clear and sensible (self-documenting).
 
@@ -49,22 +48,30 @@ I'm also adding a layer of reactivity BEFORE the filter function; now we have a 
 ![CRPS for 2 locs, 10 LTs](figures/2016-06-17_2locsCRPS.png)
 
 This week I need to: 
-* Change interface:
-    + reduce "summary";
-    + reduce emphasis on ci();
-    + add ability to post 2eme Score Type to same page (or more?)
 
 * prep slides for 10 minute "wave peaks" presentation
     + less technic, more "qualitative" study
     + underscore the utility in comparing score types
     + examples of other scoreboards...?
+    
+* Enhance data import definition 
+    + example file
+    + user preview (?) before database import run
+    
+* Change interface:
+    + reduce "summary";
+    + reduce emphasis on conf interval plot (ci and se agglom function, summarySE);
+    + add ability to post 2eme Score Type to same page (or more?)
+    
+Planning:
+* ggplot libraries
+    + facet;
+    + map (GDAL);
+    
 
-* re-deploy AWS instance
-    + http://www.r-bloggers.com/installing-rstudio-shiny-server-on-aws/
-    + which'll solve the ".Rfiles" hosting problem (~~currently shiny deploy breaks these files~~)
-    + update: according to [a note here](https://groups.google.com/forum/#!msg/shinyapps-users/dMjMJlk0cPQ/kB4GiIE7DQAJ) this is actually solvable using rsconnect:deployApp()... to be continued
 
-### SLIGHTLY STALE NOTES I'm keeping here for my reference:
+
+### Old Notes (for my reference):
 
 Got access to a 2013 netCDF [development branch for SOS DB] (https://svn.52north.org/svn/swe/main/SOS/Service/branches/52n-sos-netCDF/), so I'll look into that this week to understand better our options for accomodating netCDF files (a soft requirement which we won't implement without motivation!).
 

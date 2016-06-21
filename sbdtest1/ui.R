@@ -21,43 +21,67 @@ library(DT)
 # lead.time.max <- 90
 
 # test db existance and grab date brackets for ENTIRE dataset
-  tmpcon <- dbConnect(PostgreSQL(), host=REhost, user=REuser, password=REpassword, dbname=REdbname) #add error checking here
-  qry1e <- "SELECT DISTINCT(\"dateValue\") FROM \"tblScores\" ORDER BY \"dateValue\" LIMIT 1;"
-  rs1e <- dbSendQuery(tmpcon,qry1e)
-  dttFirstInDB <- fetch(rs1e,n=-1)
-  #if this is NULL then the table is empty / broken...
-  qryDernier <- "SELECT DISTINCT(\"dateValue\") FROM \"tblScores\" ORDER BY \"dateValue\" DESC LIMIT 1;"
-  rsDernier <- dbSendQuery(tmpcon,qryDernier)
-  dttLastInDB <- fetch(rsDernier,n=-1)
-  rm(tmpcon)  #kill connection
-  
+tmpcon <-
+  dbConnect(
+    PostgreSQL(),
+    host = REhost,
+    user = REuser,
+    password = REpassword,
+    dbname = REdbname
+  ) #add error checking here
+qry1e <-
+  "SELECT DISTINCT(\"dateValue\") FROM \"tblScores\" ORDER BY \"dateValue\" LIMIT 1;"
+rs1e <- dbSendQuery(tmpcon, qry1e)
+dttFirstInDB <- fetch(rs1e, n = -1)
+#if this is NULL then the table is empty / broken...
+qryDernier <-
+  "SELECT DISTINCT(\"dateValue\") FROM \"tblScores\" ORDER BY \"dateValue\" DESC LIMIT 1;"
+rsDernier <- dbSendQuery(tmpcon, qryDernier)
+dttLastInDB <- fetch(rsDernier, n = -1)
+rm(tmpcon)  #kill connection
+
 # REACTIVE? based on daterange, update "Time scale" control to
 #   if ((dttLastInDB - dttFirstInDB) < year(1)) [All] ELSE [Monthly , Annual]
 
-db <- src_postgres(dbname = REdbname,
-                   host = REhost,
-                   port = REport,
-                   user = REuser,
-                   password = REpassword)
+db <- src_postgres(
+  dbname = REdbname,
+  host = REhost,
+  port = REport,
+  user = REuser,
+  password = REpassword
+)
 tbl_scores <- tbl(db, "tblScores")
 
 #selectInput boxes
 
-# add data package selector
-
-tmpScoreType <- filter(tbl(db, "tblInterface"),ObjectName=="Score Type" & LanguageID == RElanguage)
+tmpScoreType <-
+  filter(tbl(db, "tblInterface"),
+         ObjectName == "Score Type" & LanguageID == RElanguage)
 ctlScoreType <- collect(tmpScoreType)
 
-tmpModelVariable <- filter(tbl(db, "tblInterface"),ObjectName=="Model Variable" & LanguageID == RElanguage)
+tmpSkillScoreType <-
+  filter(tbl(db, "tblInterface"),
+         ObjectName == "Score Type" & LanguageID == RElanguage & ObjectItemName %like% "SS")
+ctlSkillScoreType <- collect(tmpSkillScoreType)
+
+tmpModelVariable <-
+  filter(tbl(db, "tblInterface"),
+         ObjectName == "Model Variable" & LanguageID == RElanguage)
 ctlModelVariable <- collect(tmpModelVariable)
 
-tmpForecastType <- filter(tbl(db, "tblInterface"),ObjectName=="Forecast Type" & LanguageID == RElanguage)
+tmpForecastType <-
+  filter(tbl(db, "tblInterface"),
+         ObjectName == "Forecast Type" & LanguageID == RElanguage)
 ctlForecastType <- collect(tmpForecastType)
 
-tmpLocationName <- filter(tbl(db, "tblInterface"),ObjectName=="Location Name" & LanguageID == RElanguage)
+tmpLocationName <-
+  filter(tbl(db, "tblInterface"),
+         ObjectName == "Location Name" & LanguageID == RElanguage)
 ctlLocationName <- collect(tmpLocationName)
 
-tmpCaseStudy <- filter(tbl(db, "tblInterface"),ObjectName=="Case Study" & LanguageID == RElanguage)
+tmpCaseStudy <-
+  filter(tbl(db, "tblInterface"),
+         ObjectName == "Case Study" & LanguageID == RElanguage)
 ctlCaseStudy <- collect(tmpCaseStudy)
 
 tmpDataPackageList <- filter(tbl(db, "tblDataLoad"))
@@ -66,99 +90,83 @@ ctlDataPackageList <- collect(tmpDataPackageList)
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
-  
   # Application title
   img(src = "imprex.png", height = 100),
   titlePanel("Scoreboard"),
-
-  fluidRow(
-    column(4,
-        wellPanel( 
-          # h4("Pick a dataset"),
-          selectInput("rtnByPackage",
-                      "Package:",
-                      c(ctlDataPackageList$dataPkgFriendlyName)
-          ),
-
-          h4("Filter"),
-          selectInput("rtnLocid", 
-                      multiple=TRUE,
-                      selected = "A1080330", #need a default ?
-                      "Location:",
-                      c(structure(ctlLocationName$ObjectItemName)) # , selected=NULL
-          ),
-          
-          # selectInput("wants.facets",
-          #             "Multiple plots?",
-          #             c("no" = FALSE, 
-          #               "yes" = TRUE)
-          #             ),
-          # "note: if NO, multiple locn selections will be overlain" ,
-          
-          selectInput("rtnModelVariable",
-                       "Variable:",
-                      c(sort.int(ctlModelVariable$ObjectItemName))
-                        ),
-
-          selectInput("rtnForecastType",
-                      "Forecast System:",
-                      c(sort.int(ctlForecastType$ObjectItemName))
-          ),
-          
-          selectInput("rtnScoreType",
-                      "Score:",
-                      c(sort.int(ctlScoreType$ObjectItemName))
-          ),
-          
-          # TODO pull from dataset based on 1eme requête
-          # max.leadtime.in.db <- c(6.0), # if there are fewer than X LTs, show all by default
-          # if (max.leadtime.in.db < 15) {
-             show.max.LT <- 90,
-          # }
-          sliderInput("lead.times",
-                      "Lead time window:",
-                      # "Compare lead times (", lead.time.units ,"):",
-                      min = 1, # lead.time.min,
-                      max = show.max.LT, # lead.time.max,
-                      value = c(5,10)) # default
-                      #value = c(10,10))
-          ,
-          
-          selectInput("rtnTimeScale",
-                      "Summarize by:",
-                      c("All", 
-                        "Month", 
-                        "Spring (MAM)", 
-                        "Winter (DJF)", 
-                        "Monsoon (JJAS)", 
-                        "Year")
-          )
-          # # "Data summarized / averaged by ", summarize.by,
-          # "Viewing dates between: ", start.date <- as.Date(dttFirstInDB$dateValue), 
-          # "and: ", end.date <- as.Date(dttLastInDB$dateValue),
-          # # if daterange is reduced, calc number of records to display  
-          # dateInput("ctlFirstDate", "Startdate: ", as.Date(start.date)),
-          # dateInput("ctlEndDate", "Enddate: ", as.Date(end.date)),
-
-        )),
-
-    mainPanel(
-      # TODO read facet() function, use it for series of plots...
-      # http://www.cookbook-r.com/Graphs/Facets_%28ggplot2%29/
-      # https://plot.ly/ggplot2/facet/
-       plotOutput("seriesPlot") ,
-       # "note, there", db.NAs ,"NA values in the score database for this selection" ,
-       # DT::dataTableOutput("dataset")
-       verbatimTextOutput("summary")
-       # # verbatimTextOutput("dataNAs$scoreNA"), #this is all I really want
-       # verbatimTextOutput("dataNAs")
-       # ,
-       # tableOutput("view")
-
-    ) #mainPanel
-
-      
-   ) #sidebarPanel
-  ) #sidebarLayout
   
- )
+  fluidRow(
+    column(
+      4,
+      wellPanel(
+        selectInput(
+          "rtnByPackage",
+          "Package:",
+          c(ctlDataPackageList$dataPkgFriendlyName)
+          )
+        ) ,
+
+      wellPanel(
+        h4("Filter Criteria"),
+        
+        selectInput(
+          "rtnLocid",
+          multiple = TRUE,
+          selected = "A1080330",
+          #need a default ?
+          "Location:",
+          c(structure(ctlLocationName$ObjectItemName)) # , selected=NULL
+        ),
+        
+        selectInput("rtnModelVariable",
+                    "Variable:",
+                    c(
+                      sort.int(ctlModelVariable$ObjectItemName)
+                    )),
+        
+        selectInput("rtnForecastType",
+                    "Forecast System:",
+                    c(
+                      sort.int(ctlForecastType$ObjectItemName)
+                    )),
+        
+        selectInput("rtnScoreType",
+                    "Score:",
+                    c(sort.int(
+                      ctlScoreType$ObjectItemName
+                    ))),
+        
+        selectInput("rtnScoreType",
+                    "Skill Score:",
+                    c("All Skill Scores", sort.int(
+                      ctlScoreType$ObjectItemName
+                    ))),
+        # TODO pull from dataset based on 1eme requête
+        # max.leadtime.in.db <- c(6.0), # if there are fewer than X LTs, show all by default
+        # if (max.leadtime.in.db < 15) {
+        show.max.LT <- 90,
+        # }
+        sliderInput(
+          "lead.times",
+          "Lead time window:",
+          # "Compare lead times (", lead.time.units ,"):",
+          min = 1,
+          # lead.time.min,
+          max = show.max.LT,
+          # lead.time.max,
+          value = c(5, 10)
+        ) # default
+      )
+    ),
+    
+    mainPanel(
+      plotOutput("seriesPlot") ,
+      verbatimTextOutput("summary"),
+      DT::dataTableOutput("view")
+      # ,
+      # tableOutput("view")
+      
+    ) #mainPanel
+  ) 
+    
+  ) #sidebarPanel
+) #sidebarLayout)
