@@ -61,7 +61,7 @@ ctlScoreType <- collect(tmpScoreType)
 
 tmpSkillScoreType <-
   filter(tbl(db, "tblInterface"),
-         ObjectName == "Score Type" & LanguageID == RElanguage & ObjectItemName %like% "SS")
+         ObjectName == "Score Type" & ObjectItemName %like% "%Skill Score" & LanguageID == RElanguage )
 ctlSkillScoreType <- collect(tmpSkillScoreType)
 
 tmpModelVariable <-
@@ -75,8 +75,9 @@ tmpForecastType <-
 ctlForecastType <- collect(tmpForecastType)
 
 tmpLocationName <-
-  filter(tbl(db, "tblInterface"),
-         ObjectName == "Location Name" & LanguageID == RElanguage)
+  distinct(select(tbl_scores, locationID, dataPackageGUID))
+    # filter(tbl(db, "tblScores"),
+    #      ObjectName == "Location Name")
 ctlLocationName <- collect(tmpLocationName)
 
 tmpCaseStudy <-
