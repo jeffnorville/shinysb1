@@ -1,3 +1,6 @@
+# http://zevross.com/blog/2016/04/19/r-powered-web-applications-with-shiny-a-tutorial-and-cheat-sheet-with-40-example-apps/#dynamic-ui-with-renderui-and-outputui
+
+
 server <- function(input, output, session) {
   
   # return a list of UI elements
