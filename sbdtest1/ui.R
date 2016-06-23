@@ -62,8 +62,12 @@ tmpScoreType <-
 ctlScoreType <- collect(tmpScoreType)
 
 tmpSkillScoreType <-
-  filter(tbl(db, "tblInterface"),
-         ObjectName == "Score Type" & ObjectItemName %like% "%Skill Score" & LanguageID == RElanguage )
+  filter(
+    tbl(db, "tblInterface"),
+    ObjectName == "Score Type" &
+      ObjectItemName %like% "%Skill Score" &
+      LanguageID == RElanguage
+  )
 ctlSkillScoreType <- collect(tmpSkillScoreType)
 
 tmpModelVariable <-
@@ -79,7 +83,8 @@ ctlForecastType <- collect(tmpForecastType)
 tmpLocationName <-
   distinct(select(tbl_scores, locationID, dataPackageGUID))
 ctlLocationName <- collect(tmpLocationName)
-ctlLocationName <- arrange_(ctlLocationName, "dataPackageGUID", "locationID")
+ctlLocationName <-
+  arrange_(ctlLocationName, "dataPackageGUID", "locationID")
 
 tmpCaseStudy <-
   filter(tbl(db, "tblInterface"),
@@ -87,67 +92,71 @@ tmpCaseStudy <-
 ctlCaseStudy <- collect(tmpCaseStudy)
 
 # tmpDataPackageList <- filter(tbl(db, "tblDataLoad"))
-tmpDataPackageList <- distinct(select(tbl_data_load, dataPackageGUID, importResponsable, dataPkgFriendlyName, validPackage))
+tmpDataPackageList <-
+  distinct(
+    select(
+      tbl_data_load,
+      dataPackageGUID,
+      importResponsable,
+      dataPkgFriendlyName,
+      validPackage
+    )
+  )
 ctlDataPackageList <- collect(tmpDataPackageList)
-ctlDataPackageList <- arrange_(ctlDataPackageList, "dataPackageGUID", "dataPkgFriendlyName")
+ctlDataPackageList <-
+  arrange_(ctlDataPackageList, "dataPackageGUID", "dataPkgFriendlyName")
 
-tmpInterface <- distinct(select(tbl_interface, ObjectName, ObjectItemName, LanguageID))
+tmpInterface <-
+  distinct(select(tbl_interface, ObjectName, ObjectItemName, LanguageID))
 ctlInterface <- collect(tmpInterface)
 
 
 # Define UI for application that draws a histogram
-shinyUI(fluidPage(
-  # Application title
-  img(src = "imprex.png", height = 100),
-  titlePanel("Scoreboard"),
-  
-  fluidRow(
-    column(
+shinyUI(
+  fluidPage(
+    # Application title
+    img(src = "imprex.png", height = 100),
+    titlePanel("Scoreboard"),
+    
+    fluidRow(column(
       4,
-      wellPanel(
-        selectInput(
-          "rtnByPackage",
-          "Package:",
-          c(ctlDataPackageList$dataPkgFriendlyName)
-          )
-        ) ,
-
+      wellPanel(selectInput(
+        "rtnByPackage",
+        "Package:",
+        c(ctlDataPackageList$dataPkgFriendlyName)
+      )),
+      
       wellPanel(
         h4("Filter Criteria"),
         
-        selectInput(
-          "rtnLocid",
-          multiple = TRUE,
-          # selected = "A1080330",
-          #need a default ?
-          "Location:",
-          c(structure(ctlLocationName$locationID)) # , selected=NULL
-        ),
-        
+        selectInput("rtnLocid",
+                    multiple = TRUE,
+                    # selected = "A1080330", #need a default ?
+                    "Location:",
+                    c(structure(
+                      ctlLocationName$locationID
+                    ))),
+        # , selected=NULL),),
         selectInput("rtnModelVariable",
                     "Variable:",
                     c(
                       sort.int(ctlModelVariable$ObjectItemName)
                     )),
-        
         selectInput("rtnForecastType",
                     "Forecast System:",
                     c(
                       sort.int(ctlForecastType$ObjectItemName)
                     )),
-        
         selectInput("rtnScoreType",
                     "Score:",
                     c(sort.int(
                       ctlScoreType$ObjectItemName
                     ))),
-        
         selectInput("rtnScoreType",
                     "Skill Score:",
-                    c("All Skill Scores", sort.int(
-                      ctlScoreType$ObjectItemName
-                    ))),
-
+                    c(
+                      "All Skill Scores", sort.int(ctlScoreType$ObjectItemName)
+                    )),
         # max.leadtime.in.db <- c(6.0), # if there are fewer than X LTs, show all by default
         # if (max.leadtime.in.db < 15) {
         show.max.LT <- 90,
@@ -162,7 +171,8 @@ shinyUI(fluidPage(
           # lead.time.max,
           value = c(5, 10)
         ) # default
-      )
+      ) # close wellPanel
+     # close column?) # close fluidRow?
     ),
     
     mainPanel(
@@ -173,7 +183,6 @@ shinyUI(fluidPage(
       # tableOutput("view")
       
     ) #mainPanel
-  ) 
-    
-  ) #sidebarPanel
+  )
+) #sidebarPanel
 ) #sidebarLayout)
