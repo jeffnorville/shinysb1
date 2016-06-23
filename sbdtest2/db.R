@@ -53,7 +53,7 @@ toto <- int.list
 # broken into 2 
 remote <- filter(tbl_scores, 
                    scoreNA == FALSE &&
-                   locationID %in% c('S2242510', 'L4411710') &&
+                   locationID %in% c('8000100','9771083') &&
                    modelVariable == "Streamflow" &&
                    forecastType  == "Seasonal_EDMD_month" &&
                    # summarizeByTime == "All" &&
@@ -107,7 +107,7 @@ loc.sum$locationID <- as.factor(loc.sum$locationID)
 
 # this doesn't really do it
 # group <- c(1:length(loc.sum$locationID))
-group <- factor(c(loc.sum$locationID))
+# group <- factor(c(loc.sum$locationID))
 
 # base plot
 plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 

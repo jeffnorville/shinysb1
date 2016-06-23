@@ -85,10 +85,10 @@ shinyServer(function(input, output) {
     
     #     remote <- filter(tbl_scores,
     remote <- filter(remote,
-      # scoreNA == FALSE &&
-      modelVariable == input$rtnModelVariable &&
-        forecastType == input$rtnForecastType &&
-        scoreType == input$rtnScoreType &&
+      scoreNA == FALSE & #more like "bad data" now, contains -Infinity too
+      modelVariable == input$rtnModelVariable &
+        forecastType == input$rtnForecastType &
+        scoreType == input$rtnScoreType &
         leadtimeValue %in% toto # note - this %in% HAS to be last criteria
     )
     
