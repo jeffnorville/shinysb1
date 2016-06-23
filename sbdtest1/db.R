@@ -49,14 +49,28 @@ int.list <- c(1:15)
 # doesn't make sense here, only with slider where [2] is the MAX of the series
 toto <- int.list
 
+
+list.lots.basins.ehype <- c(
+  '8000100',
+  '8000133',
+  '8000179',
+  '8000190',
+  '9783018',
+  '9787525',
+  '9787915'
+)
+
+
 # broken into 2 
 remote <- filter(tbl_scores, 
-                   scoreNA == FALSE &&
-                   locationID %in% c('S2242510', 'L4411710') &&
-                   modelVariable == "Streamflow" &&
-                   forecastType  == "Seasonal_EDMD_month" &&
-                   # summarizeByTime == "All" &&
-                   # scoreType    == "CRPS" &&
+                   scoreNA == FALSE &
+                   locationID %in% list.lots.basins.ehype &
+                   # locationID %in% c('S2242510', 'L4411710') &
+                   modelVariable == "Streamflow" &
+                   forecastType  == "Linear Scaling (Seasonal_LS_month)" &
+                   # forecastType  == "Seasonal_EDMD_month" &
+                   # summarizeByTime == "All" &
+                   # scoreType    == "CRPS" &
                    leadtimeValue %in% toto
   )
 
@@ -82,7 +96,8 @@ getit <- structure(collect(remote))
 # }
 
 # CRPSS, CRPSS
-reduced <- filter(getit, scoreType == "RMSES")
+# reduced <- filter(getit, scoreType == "RMSES")
+reduced <- filter(getit, scoreType == "CRPS")
 # reduced <- filter(getit, Month(dateValue) == 2)
 
 local <- collect(reduced)
@@ -106,7 +121,7 @@ loc.sum$locationID <- as.factor(loc.sum$locationID)
 
 # this doesn't really do it
 # group <- c(1:length(loc.sum$locationID))
-group <- factor(c(loc.sum$locationID))
+# group <- factor(c(loc.sum$locationID))
 
 # base plot
 plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 

@@ -177,7 +177,7 @@ shinyUI(
     
     mainPanel(
       plotOutput("seriesPlot") ,
-      verbatimTextOutput("summary"),
+      # verbatimTextOutput("summary"),
       DT::dataTableOutput("view")
       # ,
       # tableOutput("view")
