@@ -1,4 +1,4 @@
-#IMPREX Scoreboard
+#Scoreboard 2
 setwd("~/R/shinysb1/sbdtest1")
 readRenviron("~/R/shinysb1/.Renviron")
 REhost =     Sys.getenv('pgserver')
@@ -16,30 +16,6 @@ library(lazyeval)
 library(ggplot2)
 library(DT)
 
-# lead.time.units <- "days" #update from DB based on selection
-# lead.time.min <- 1
-# lead.time.max <- 90
-
-# test db existance and grab date brackets for ENTIRE dataset
-# tmpcon <-
-#   dbConnect(
-#     PostgreSQL(),
-#     host = REhost,
-#     user = REuser,
-#     password = REpassword,
-#     dbname = REdbname
-#   ) #add error checking here
-# qry1e <-
-#   "SELECT DISTINCT(\"dateValue\") FROM \"tblScores\" ORDER BY \"dateValue\" LIMIT 1;"
-# rs1e <- dbSendQuery(tmpcon, qry1e)
-# dttFirstInDB <- fetch(rs1e, n = -1)
-# #if this is NULL then the table is empty / broken...
-# qryDernier <-
-#   "SELECT DISTINCT(\"dateValue\") FROM \"tblScores\" ORDER BY \"dateValue\" DESC LIMIT 1;"
-# rsDernier <- dbSendQuery(tmpcon, qryDernier)
-# dttLastInDB <- fetch(rsDernier, n = -1)
-# rm(tmpcon)  #kill connection
-
 # REACTIVE? based on daterange, update "Time scale" control to
 #   if ((dttLastInDB - dttFirstInDB) < year(1)) [All] ELSE [Monthly , Annual]
 
@@ -51,8 +27,6 @@ db <- src_postgres(
   password = REpassword
 )
 tbl_scores <- tbl(db, "tblScores")
-tbl_data_load <- tbl(db, "tblDataLoad")
-tbl_interface <- tbl(db, "tblInterface")
 
 #selectInput boxes
 
@@ -78,21 +52,17 @@ ctlForecastType <- collect(tmpForecastType)
 
 tmpLocationName <-
   distinct(select(tbl_scores, locationID, dataPackageGUID))
+    # filter(tbl(db, "tblScores"),
+    #      ObjectName == "Location Name")
 ctlLocationName <- collect(tmpLocationName)
-ctlLocationName <- arrange_(ctlLocationName, "dataPackageGUID", "locationID")
 
 tmpCaseStudy <-
   filter(tbl(db, "tblInterface"),
          ObjectName == "Case Study" & LanguageID == RElanguage)
 ctlCaseStudy <- collect(tmpCaseStudy)
 
-# tmpDataPackageList <- filter(tbl(db, "tblDataLoad"))
-tmpDataPackageList <- distinct(select(tbl_data_load, dataPackageGUID, importResponsable, dataPkgFriendlyName, validPackage))
+tmpDataPackageList <- filter(tbl(db, "tblDataLoad"))
 ctlDataPackageList <- collect(tmpDataPackageList)
-ctlDataPackageList <- arrange_(ctlDataPackageList, "dataPackageGUID", "dataPkgFriendlyName")
-
-tmpInterface <- distinct(select(tbl_interface, ObjectName, ObjectItemName, LanguageID))
-ctlInterface <- collect(tmpInterface)
 
 
 # Define UI for application that draws a histogram
@@ -118,10 +88,10 @@ shinyUI(fluidPage(
         selectInput(
           "rtnLocid",
           multiple = TRUE,
-          # selected = "A1080330",
+          selected = "A1080330",
           #need a default ?
           "Location:",
-          c(structure(ctlLocationName$locationID)) # , selected=NULL
+          c(structure(ctlLocationName$ObjectItemName)) # , selected=NULL
         ),
         
         selectInput("rtnModelVariable",
@@ -147,7 +117,7 @@ shinyUI(fluidPage(
                     c("All Skill Scores", sort.int(
                       ctlScoreType$ObjectItemName
                     ))),
-
+        # TODO pull from dataset based on 1eme requête
         # max.leadtime.in.db <- c(6.0), # if there are fewer than X LTs, show all by default
         # if (max.leadtime.in.db < 15) {
         show.max.LT <- 90,

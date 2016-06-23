@@ -1,4 +1,4 @@
-#IMPREX Scoreboard
+#Scoreboard 2
 setwd("~/R/shinysb1/sbdtest1")
 readRenviron("~/R/shinysb1/.Renviron")
 REhost =     Sys.getenv('pgserver')
@@ -59,21 +59,22 @@ shinyServer(function(input, output) {
     # }
 
     summarize.by <- "All"
-    # if (input$rtnTimeScale == "All"){
-    #   summarize.by <- c(1:12) # monthly is default
-    # } else if (input$rtnTimeScale == "Month"){
-    #   summarize.by <- c(1:12)
-    # } else if (input$rtnTimeScale == "Spring (MAM)"){
-    #   summarize.by <- c(3:5) # "Spring (MAM)"
-    # } else if (input$rtnTimeScale == "Winter (DJF)"){
-    #   summarize.by <- c(12,1:2) # "Winter (DJF)"
-    # } else if (input$rtnTimeScale == "Monsoon (JJAS)"){
-    #   summarize.by <- c(6:9) # "Monsoon (JJAS)"
-    # } else if (input$rtnTimeScale == "Year"){
-    #   summarize.by <- c(1:12) # "Year"
-    # } else { # default
-    #   summarize.by <- c(1:12)
-    # }
+    # input$rtnTimeScale
+    if (input$rtnTimeScale == "All"){
+      summarize.by <- c(1:12) # monthly is default
+    } else if (input$rtnTimeScale == "Month"){
+      summarize.by <- c(1:12)
+    } else if (input$rtnTimeScale == "Spring (MAM)"){
+      summarize.by <- c(3:5) # "Spring (MAM)"
+    } else if (input$rtnTimeScale == "Winter (DJF)"){
+      summarize.by <- c(12,1:2) # "Winter (DJF)"
+    } else if (input$rtnTimeScale == "Monsoon (JJAS)"){
+      summarize.by <- c(6:9) # "Monsoon (JJAS)"
+    } else if (input$rtnTimeScale == "Year"){
+      summarize.by <- c(1:12) # "Year"
+    } else { # default
+      summarize.by <- c(1:12)
+    }
     
     # timescale may be: All; some combination of months (Seasonal); or ?
     if(input$rtnTimeScale != "All") {
