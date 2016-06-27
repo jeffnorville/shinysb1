@@ -122,7 +122,7 @@ shinyUI(
       4,
       wellPanel(selectInput(
         "rtnByPackage",
-        "Package:",
+        "Data source:",
         c(ctlDataPackageList$dataPkgFriendlyName)
       )),
       
@@ -141,7 +141,8 @@ shinyUI(
                     "Variable:",
                     c(
                       sort.int(ctlModelVariable$ObjectItemName)
-                    )),
+                    ),
+                    selected="Streamflow"),
         selectInput("rtnForecastType",
                     "Forecast System:",
                     c(
@@ -177,7 +178,7 @@ shinyUI(
     
     mainPanel(
       plotOutput("seriesPlot") ,
-      # verbatimTextOutput("summary"),
+      verbatimTextOutput("summary"),
       DT::dataTableOutput("view")
       # ,
       # tableOutput("view")

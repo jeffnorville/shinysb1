@@ -166,7 +166,7 @@ shinyServer(function(input, output) {
         #   # if (do.facets == TRUE){facet_wrap(~ locationID) } +
         # scale_y_discrete() +
         scale_y_continuous(breaks = c(min.LT:max.LT)) +
-        xlab("Lead Times") + ylab(paste(input$rtnScoreType, " removed ", na.count, " NAs"))
+        xlab("Lead Times") + ylab(paste(input$rtnScoreType)) # , " removed ", na.count, " NAs"))
       
     } # end else
   }) # end renderPlot
