@@ -2,6 +2,8 @@
 library(shiny)
 # require("uuid")
 library(uuid)
+options(shiny.maxRequestSize=50*1024^2) # 50 mb (SMHI datafile is 40-something)
+
 
 shinyServer(function(input, output) {
   output$contents <- renderTable({
@@ -19,8 +21,14 @@ shinyServer(function(input, output) {
     else
       generated.guid <- UUIDgenerate(TRUE) # got a file, generate a unique id based on user timestamp
 
-    read.csv(inFile$datapath, header=input$header, sep=input$sep, 
-             quote=input$quote)
+    # read.csv(inFile$datapath, header=input$header, sep=input$sep, 
+    #          quote=input$quote)
+    
+    load(inFile$datapath, imported.data <- new.env())
+    
+    str(imported.data)
+    # ls.str(imported.data)
+    
   })
   
 })
