@@ -132,6 +132,7 @@ pd <- position_dodge(0.2)
 min.LT <- min(loc.sum$leadtimeValue)
 max.LT <- max(loc.sum$leadtimeValue)
 
+
 ggplot(loc.sum, aes(color = locationID, x = leadtimeValue, y = scoreValue )) +
   geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), position = pd) + # , color="grey"
   geom_line() +
