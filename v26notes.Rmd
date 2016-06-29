@@ -38,10 +38,13 @@ barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
  - Renaming?
  
 ```{r setup, include=TRUE}
+library(dplyr)
+library(lazyeval)
+library(ggplot2)
 
 play.data <- read.delim("~/R/shinysb1/play.data.txt")
 play.data$locationID <- as.factor(play.data$locationID)
-plot(play.data$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 
+plot(play.data$leadtimeValue, play.data$scoreValue, col=play.data$locationID, 
      xlab = "Lead Times", ylab = "Score")
      
 # get fancier
