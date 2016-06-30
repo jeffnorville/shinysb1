@@ -30,16 +30,16 @@ shinyServer(function(input, output) {
   #filter DB dataframe based on (default) selections
   filtInput <- reactive({
     #allows ONE leadtime (LT=1:1), or a combination
-    toto <- as.numeric(input$lead.times)
-    all.lead.times <-
-      as.integer(unlist(input$lead.times))  # strsplit(input$lead.times, split = ":"))
-    
-    if (all.lead.times[1] == all.lead.times[2]) {
-      toto = toto
-    }
-    else {
-      toto = all.lead.times[1]:all.lead.times[2]
-    }
+    # toto <- as.numeric(input$lead.times)
+    # all.lead.times <-
+    #   as.integer(unlist(input$lead.times))  # strsplit(input$lead.times, split = ":"))
+    # 
+    # if (all.lead.times[1] == all.lead.times[2]) {
+    #   toto = toto
+    # }
+    # else {
+    #   toto = all.lead.times[1]:all.lead.times[2]
+    # }
     
     # if 1 locID is chosen ... "remote" is the 'local' cursor, hasnt hit db yet
     if (length(input$rtnLocid) == 1) {
@@ -88,8 +88,8 @@ shinyServer(function(input, output) {
       scoreNA == FALSE & #more like "bad data" now, contains -Infinity too
       modelVariable == input$rtnModelVariable &
         forecastType == input$rtnForecastType &
-        scoreType == input$rtnScoreType &
-        leadtimeValue %in% toto # note - this %in% HAS to be last criteria
+        scoreType == input$rtnScoreType # &
+        # leadtimeValue %in% toto # note - this %in% HAS to be last criteria
     )
     
     getit <- structure(collect(remote)) #database hit
