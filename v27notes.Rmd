@@ -1,7 +1,7 @@
 ---
 title: "Rapport d'étape - fin Juin"
 author: "Jeff"
-date: "29 juin 2016"
+date: "4 julliet 2016"
 output: pdf_document
 ---
 
@@ -9,11 +9,11 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 # Week 27, 2016
-Welcome to week 18 of 34. This document updated 29 juin 2016.
+Welcome to week 18 of 25. This document updated 29 juin 2016.
 
 ```{r plot il reste}
-thesis.duration <- 34
-this.week <- 17
+thesis.duration <- 25
+this.week <- 18
 yikes <- c(this.week, thesis.duration - this.week) / thesis.duration
 barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
 # library(ggplot2)

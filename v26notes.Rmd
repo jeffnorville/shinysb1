@@ -9,15 +9,15 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 # Week 26, 2016
-Welcome to week 17 of 34. This document updated 27 juin 2016.
+Welcome to week 17 of 25. This document updated 30 juin 2016. Note that I have been making a gross over-assumtion of my remaining time -- this isn't a 34-week internship, but about 26 (or 25 with vacation). The 34th week of the year (beginning August 22) will be my last week, but since my 2nd week was week 10, my plot has been quite wrong.
 
 ```{r plot il reste}
-thesis.duration <- 34
+thesis.duration <- 25
 this.week <- 17
-yikes <- c(this.week, thesis.duration - this.week) / thesis.duration
-barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
-# library(ggplot2)
-# ggplot(yikes, aes(x = "time", y = thesis.duration))
+double.yikes <- c(this.week, thesis.duration - this.week) / thesis.duration
+barplot(as.matrix(double.yikes), horiz=TRUE, beside=FALSE)
+library(ggplot2)
+ggplot(double.yikes, aes(x = "time", y = thesis.duration))
 
 ```
 
