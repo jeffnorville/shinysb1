@@ -20,13 +20,16 @@ shinyServer(function(input, output) {
       return(NULL)
     else
       generated.guid <- UUIDgenerate(TRUE) # got a file, generate a unique id based on user timestamp
-
-    # read.csv(inFile$datapath, header=input$header, sep=input$sep, 
-    #          quote=input$quote)
-    
-    load(inFile$datapath, imported.data <- new.env())
-    
-    str(imported.data)
+      # read.csv(inFile$datapath, header=input$header, sep=input$sep, 
+      #          quote=input$quote)
+    #testing
+    inFile <- fileInput("file1", "C:/Users/jeffrey.norville/Documents/R/win-library/3.2/lme4/testdata/trees513.Rdata")
+    inFile$datapath = "C:/Users/jeffrey.norville/Documents/R/win-library/3.2/lme4/testdata/trees513.Rdata"
+      
+      load(inFile$datapath, imported.data <- new.env())
+      
+      peek <- head(imported.data, 20)
+      output$table1 <- renderTable({peek})
     # ls.str(imported.data)
     
   })

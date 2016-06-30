@@ -26,7 +26,8 @@ shinyUI(fluidPage(
     #   ),
     mainPanel(
       # tableOutput(head('contents'))
-      tableOutput('contents')
+      
+      tableOutput('table1')
       # ,
       # if (is.null(generated.guid))
       #   "Choose a file"
