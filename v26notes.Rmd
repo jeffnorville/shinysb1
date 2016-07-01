@@ -30,12 +30,10 @@ Note that I have been making a gross over-assumtion of my remaining time -- this
   2. ultra-clear Database HOWTO guide (howto add data, DDL, etc) (so MHR can direct others setting up new DBs)
   3. longer write-up for data submitters
 
+- Adding function to "turn off" data packages if erroneous, outdated, whatever
 
 
 
- - Got rid of summary() field
- - Added 2nd plot window
- - using DT better
  - not complete:
    - renderUI()
    - two plot regimes:
@@ -45,9 +43,12 @@ Note that I have been making a gross over-assumtion of my remaining time -- this
    - "All Skill Score" plot which should show red, grey, green "improving or not" scores
  - Review EVS Documentation and datafile in / out
 
-## Modified database schema:
- - Renaming?
+## Whiteboard shots:
+![photo 1 of 2]('~/R/shinysb1/figures/20160629rv1de2.png')
+![photo 1 of 2](figures/20160629rv1de2.png)
 
+
+![photo 2 of 2]('~/R/shinysb1/figures/20160629rv2de2.png')
 
  
 ```{r plot plot from shiny}
