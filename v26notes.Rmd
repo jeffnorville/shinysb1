@@ -2,7 +2,7 @@
 title: "Rapport d'étape - Juin"
 author: "Jeff"
 date: "21 juin 2016"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
