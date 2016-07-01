@@ -23,13 +23,19 @@ shinyServer(function(input, output) {
       # read.csv(inFile$datapath, header=input$header, sep=input$sep, 
       #          quote=input$quote)
     #testing
-    inFile <- fileInput("file1", "C:/Users/jeffrey.norville/Documents/R/win-library/3.2/lme4/testdata/trees513.Rdata")
-    inFile$datapath = "C:/Users/jeffrey.norville/Documents/R/win-library/3.2/lme4/testdata/trees513.Rdata"
+    # inFile <- fileInput("file1", "C:/Users/jeffrey.norville/Documents/R/win-library/3.2/lme4/testdata/trees513.Rdata")
+    # inFile$datapath = "C:/Users/jeffrey.norville/Documents/R/win-library/3.2/lme4/testdata/trees513.Rdata"
       
-      load(inFile$datapath, imported.data <- new.env())
-      
-      peek <- head(imported.data, 20)
-      output$table1 <- renderTable({peek})
+      # print(load(inFile$datapath, imported.data <- new.env()))
+    imported.data <- as.data.frame(load(inFile$datapath, import<- new.env()))
+    imported.data$dataPackageGUID <- generated.guid
+
+    # playing with DT
+    # imported.data <- datatable(load(inFile$datapath, import<- new.env()))
+    # output$table1 <- renderDataTable({imported.data})
+    
+    peek <- head(imported.data, 30)
+    output$table1 <- renderTable({peek})
     # ls.str(imported.data)
     
   })

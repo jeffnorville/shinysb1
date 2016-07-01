@@ -24,31 +24,55 @@ barplot(as.matrix(double.yikes), horiz=TRUE, beside=FALSE)
 Note that I have been making a gross over-assumtion of my remaining time -- this isn't a 34-week internship, but about 26 (or 25 with vacation). The 34th week of the year (beginning August 22) will be my last week, but since my 2nd week was week 10, my plot has been quite wrong.
 
 ## What's new:
-- Discussed conditional criteria for Scoreboard
+- New Workflow Outlined (see whiteboard photos, below):
+  1. Forecast Type
+    a. short-range
+    b. medium-range
+    c. monthly
+  2. Forecast System
+    a. GR4J
+    b. MORDOR
+    c. free-text entry to DB?
+    
+  
+  3. Region(s) / Location(s)
+  
+  4. Score 
+    a. Note -- will be conditional on above selections!
+       - short-range -- only date unit is hours
+       - m-r: date unit = days
+       - monthly: date unit = months
+
+       - if selected more than one Forecast System
+          then only show Skill Scores
+      
+  5. Download FIGURE and SELECT / FILTER CRITERIA as PDF
+  
+  
+- Commencing *conditional criteria* for Scoreboard
+
+- Commencing *upload, preview, verify* utility
+
+- Commencing *download PDF* utility
+
 - Designated three documents for delivery at end of stage:
   1. short userguide (part of shiny app?) - English
   2. ultra-clear Database HOWTO guide (howto add data, DDL, etc) (so MHR can direct others setting up new DBs)
   3. longer write-up for data submitters
 
-- Adding function to "turn off" data packages if erroneous, outdated, whatever
+- Adding function to "turn off" data uploads if erroneous, outdated, whatever
 
+
+## Whiteboard shots:
+![photo 1 of 2](figures/20160629rv1de2.png)
+<!-- ![photo 1 of 2](figures/20160629rv1de2.png) -->
+
+
+![photo 2 of 2](figures/20160629rv2de2.png)
 
 
  - not complete:
-   - renderUI()
-   - two plot regimes:
-     - stats on daily values (se, ci)
-     - direct score plots
- - goal is to view skill scores (comparable) in addition to raw scores (not so comparable)
-   - "All Skill Score" plot which should show red, grey, green "improving or not" scores
- - Review EVS Documentation and datafile in / out
-
-## Whiteboard shots:
-![photo 1 of 2]('~/R/shinysb1/figures/20160629rv1de2.png')
-![photo 1 of 2](figures/20160629rv1de2.png)
-
-
-![photo 2 of 2]('~/R/shinysb1/figures/20160629rv2de2.png')
+   - Review EVS Documentation and datafile in / out
 
  
 ```{r plot plot from shiny}

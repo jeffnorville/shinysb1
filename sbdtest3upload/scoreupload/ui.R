@@ -6,7 +6,7 @@ shinyUI(fluidPage(
   titlePanel("Uploading Files"),
   sidebarLayout(
     sidebarPanel(
-      fileInput('file1', 'Choose .Rdata File'),
+      fileInput('file1', 'Choose .Rdata File', accept = ".Rdata"),
       tags$hr(),
       checkboxInput('metadata', 'Metadata inside?', TRUE)
       # ,
