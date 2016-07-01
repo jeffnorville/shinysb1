@@ -102,7 +102,7 @@ shinyServer(function(input, output) {
   
   output$summary <- renderPrint({
     dataset <- filtInput()
-    summary(dataset)
+    head(dataset) # was summary
   })
   
   output$dataset <- renderPrint({

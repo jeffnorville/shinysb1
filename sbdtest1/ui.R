@@ -157,29 +157,23 @@ shinyUI(
                     "Skill Score:",
                     c(
                       "All Skill Scores", sort.int(ctlScoreType$ObjectItemName)
-                    )),
-        # max.leadtime.in.db <- c(6.0), # if there are fewer than X LTs, show all by default
-        # if (max.leadtime.in.db < 15) {
-        show.max.LT <- 90,
-        # }
-        sliderInput(
-          "lead.times",
-          "Lead time window:",
-          # "Compare lead times (", lead.time.units ,"):",
-          min = 1,
-          # lead.time.min,
-          max = show.max.LT,
-          # lead.time.max,
-          value = c(5, 10)
-        ) # default
+                    ))
+        # ,
+        # sliderInput(
+        #   "lead.times",
+        #   "Lead time window:",
+        #   min = 1,
+        #   max = 90,
+        #   value = c(5, 10)
+        # ) # default
       ) # close wellPanel
      # close column?) # close fluidRow?
     ),
     
     mainPanel(
       plotOutput("seriesPlot") ,
-      verbatimTextOutput("summary"),
-      DT::dataTableOutput("view")
+      # verbatimTextOutput("summary"),
+      DT::dataTableOutput("summary")
       # ,
       # tableOutput("view")
       
