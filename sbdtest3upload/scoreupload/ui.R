@@ -27,12 +27,12 @@ shinyUI(fluidPage(
     mainPanel(
       # tableOutput(head('contents'))
       
-      tableOutput('table1')
+      tableOutput('table1') 
       # ,
       # if (is.null(generated.guid))
       #   "Choose a file"
       # else
-      #   "Your GUID for this datapackage is: ", generated.guid
+      #   "Your GUID for this datapackage is: ", input$guid
     )
   )
 ))

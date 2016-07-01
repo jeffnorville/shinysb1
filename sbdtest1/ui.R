@@ -118,66 +118,73 @@ shinyUI(
     img(src = "imprex.png", height = 100),
     titlePanel("Scoreboard"),
     
-    fluidRow(column(
-      4,
-      wellPanel(selectInput(
-        "rtnByPackage",
-        "Data source:",
-        c(ctlDataPackageList$dataPkgFriendlyName)
-      )),
-      
-      wellPanel(
-        h4("Filter Criteria"),
+    fluidRow(
+      column(
+        4,
+        wellPanel(selectInput(
+          "rtnByPackage",
+          "Data source:",
+          c(ctlDataPackageList$dataPkgFriendlyName)
+        )),
         
-        selectInput("rtnLocid",
-                    multiple = TRUE,
-                    # selected = "A1080330", #need a default ?
-                    "Location:",
-                    c(structure(
-                      ctlLocationName$locationID
-                    ))),
-        # , selected=NULL),),
-        selectInput("rtnModelVariable",
-                    "Variable:",
-                    c(
-                      sort.int(ctlModelVariable$ObjectItemName)
-                    ),
-                    selected="Streamflow"),
-        selectInput("rtnForecastType",
-                    "Forecast System:",
-                    c(
-                      sort.int(ctlForecastType$ObjectItemName)
-                    )),
-        selectInput("rtnScoreType",
-                    "Score:",
-                    c(sort.int(
-                      ctlScoreType$ObjectItemName
-                    ))),
-        selectInput("rtnScoreType",
-                    "Skill Score:",
-                    c(
-                      "All Skill Scores", sort.int(ctlScoreType$ObjectItemName)
-                    ))
-        # ,
-        # sliderInput(
-        #   "lead.times",
-        #   "Lead time window:",
-        #   min = 1,
-        #   max = 90,
-        #   value = c(5, 10)
-        # ) # default
-      ) # close wellPanel
-     # close column?) # close fluidRow?
-    ),
-    
-    mainPanel(
-      plotOutput("seriesPlot") ,
-      # verbatimTextOutput("summary"),
-      DT::dataTableOutput("summary")
-      # ,
-      # tableOutput("view")
-      
-    ) #mainPanel
+        wellPanel(
+          h4("Filter Criteria"),
+          selectInput("rtnLocid",
+                      multiple = TRUE,
+                      # selected = "A1080330", #need a default ?
+                      "Location:",
+                      c(structure(
+                        ctlLocationName$locationID
+                      ))),
+          # , selected=NULL),),
+          selectInput("rtnModelVariable",
+                      "Variable:",
+                      c(
+                        sort.int(ctlModelVariable$ObjectItemName)
+                      ),
+                      selected = "Streamflow"),
+          selectInput("rtnForecastType",
+                      "Forecast System:",
+                      c(
+                        sort.int(ctlForecastType$ObjectItemName)
+                      )),
+          selectInput("rtnScoreType",
+                      "Score:",
+                      c(sort.int(
+                        ctlScoreType$ObjectItemName
+                      ))),
+          selectInput("rtnScoreType",
+                      "Skill Score:",
+                      c(
+                        "All Skill Scores", sort.int(ctlScoreType$ObjectItemName)
+                      ))
+        ),
+        
+        #output pdf
+        wellPanel(
+          h4("Save Plot") ,
+          # sidebarPanel(
+            checkboxInput('returnpdf', 'output pdf?', FALSE),
+            conditionalPanel(
+              condition = "input.returnpdf == true",
+              strong("PDF size (inches):"),
+              sliderInput(inputId="w", label = "width:", min=3, max=20, value=8, width=100, ticks=F),
+              sliderInput(inputId="h", label = "height:", min=3, max=20, value=6, width=100, ticks=F),
+              br(),
+              downloadLink('pdflink')
+            )
+          # )
+        )
+      ) #column
+      #fluidRow
+    ,
+
+      mainPanel(plotOutput("seriesPlot") ,
+                # verbatimTextOutput("summary"),
+                DT::dataTableOutput("summary")
+                # ,
+                # tableOutput("view")) #mainPanel)) #sidebarPanel) #sidebarLayout)
+      ) #mainPanel
   )
 ) #sidebarPanel
-) #sidebarLayout)
+)

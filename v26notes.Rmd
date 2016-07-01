@@ -2,7 +2,7 @@
 title: "Rapport d'étape - Juin"
 author: "Jeff"
 date: "21 juin 2016"
-output: pdf_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -108,7 +108,7 @@ We also simplified the wording on the display again; I need to follow this with 
 I'm also adding a layer of reactivity BEFORE the filter function; now we have a box filled by database which lists which packages are available:
 
 
-# Images of current interface
+# Images of OLD interface
 ![CRPS for 2 locs, 10 LTs](figures/2016-06-17_2locsCRPS.png)
 
 This week I need to: 

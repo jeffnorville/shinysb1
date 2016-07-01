@@ -18,10 +18,13 @@ shinyServer(function(input, output) {
     
     if (is.null(inFile))
       return(NULL)
-    else
+    else {
       generated.guid <- UUIDgenerate(TRUE) # got a file, generate a unique id based on user timestamp
+      # output$guid <- renderText({generated.guid}) 
+    }
       # read.csv(inFile$datapath, header=input$header, sep=input$sep, 
       #          quote=input$quote)
+    
     #testing
     # inFile <- fileInput("file1", "C:/Users/jeffrey.norville/Documents/R/win-library/3.2/lme4/testdata/trees513.Rdata")
     # inFile$datapath = "C:/Users/jeffrey.norville/Documents/R/win-library/3.2/lme4/testdata/trees513.Rdata"
