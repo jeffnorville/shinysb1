@@ -26,8 +26,8 @@ shinyServer(function(input, output) {
       #          quote=input$quote)
     
     #testing
-    # inFile <- fileInput("file1", "C:/Users/jeffrey.norville/Documents/R/win-library/3.2/lme4/testdata/trees513.Rdata")
-    # inFile$datapath = "C:/Users/jeffrey.norville/Documents/R/win-library/3.2/lme4/testdata/trees513.Rdata"
+    inFile <- fileInput("file1", "C:/Users/jeffrey.norville/Documents/R/win-library/3.2/lme4/testdata/trees513.Rdata")
+    inFile$datapath = "C:/Users/jeffrey.norville/Documents/R/win-library/3.2/lme4/testdata/trees513.Rdata"
       
       # print(load(inFile$datapath, imported.data <- new.env()))
     # imported.data <- as.data.frame(load(inFile$datapath, import <- new.env()))
@@ -41,7 +41,8 @@ shinyServer(function(input, output) {
     # output$table1 <- renderDataTable({imported.data})
     
     # peek <- head(imported.data, 30)
-    output$contents <- renderTable({head(imported.data, 50)})
+    # output$contents <- renderTable({head(imported.data, 50)})
+    output$contents <- renderTable({names(imported.data)})
     # ls.str(imported.data)
     
   })
