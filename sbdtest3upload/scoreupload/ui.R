@@ -1,6 +1,7 @@
 # IMPREX file picker
 library(shiny)
 library(uuid)
+library(DT)
 
 shinyUI(fluidPage(
   titlePanel("Uploading Files"),
@@ -27,7 +28,8 @@ shinyUI(fluidPage(
     mainPanel(
       # tableOutput(head('contents'))
       
-      tableOutput('table1') 
+      tableOutput('contents')
+      # dataTableOutput('contents') 
       # ,
       # if (is.null(generated.guid))
       #   "Choose a file"

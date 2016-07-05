@@ -30,15 +30,18 @@ shinyServer(function(input, output) {
     # inFile$datapath = "C:/Users/jeffrey.norville/Documents/R/win-library/3.2/lme4/testdata/trees513.Rdata"
       
       # print(load(inFile$datapath, imported.data <- new.env()))
-    imported.data <- as.data.frame(load(inFile$datapath, import<- new.env()))
+    # imported.data <- as.data.frame(load(inFile$datapath, import <- new.env()))
+    imported.data <- load(inFile$datapath, import <- new.env())
+    imported.data <- as.data.frame(imported.data)
     imported.data$dataPackageGUID <- generated.guid
 
+    # structure <- str(imported.data) # outputs "NULL"?
     # playing with DT
     # imported.data <- datatable(load(inFile$datapath, import<- new.env()))
     # output$table1 <- renderDataTable({imported.data})
     
-    peek <- head(imported.data, 30)
-    output$table1 <- renderTable({peek})
+    # peek <- head(imported.data, 30)
+    output$contents <- renderTable({head(imported.data, 50)})
     # ls.str(imported.data)
     
   })
