@@ -10,17 +10,19 @@ shinyUI(fluidPage(
       fileInput('file1', 'Choose .Rdata File', accept = ".Rdata"),
       tags$hr(),
       checkboxInput('metadata', 'Metadata inside?', TRUE)
-      # ,
-      # radioButtons('sep', 'Separator',
-      #              c(Comma=',',
-      #                Semicolon=';',
-      #                Tab='\t'),
-      #              ','),
-      # radioButtons('quote', 'Quote',
-      #              c(None='',
-      #                'Double Quote'='"',
-      #                'Single Quote'="'"),
-      #              '"')
+      ,
+      #conditionalInput
+      
+      radioButtons('sep', 'Separator',
+                   c(Comma=',',
+                     Semicolon=';',
+                     Tab='\t'),
+                   ','),
+      radioButtons('quote', 'Quote',
+                   c(None='',
+                     'Double Quote'='"',
+                     'Single Quote'="'"),
+                   '"')
     ),
     # sidebarPanel(
     #   "Load to Database:"
