@@ -23,7 +23,8 @@ title(main = paste("I must be ", yikes[1]*100, "% done!"), font = 3)
 ## Big changes:
 
 Upload App:
- * Upload second, replacement file is "buggy" in R
+
+ * When uploading a second/replacement file, interface is "buggy" - file not replaced; status bar sticks; etc
     + SO question: http://stackoverflow.com/questions/17352086/how-can-i-update-a-shiny-fileinput-object/33271056#33271056
     + https://gist.github.com/davidarndt/bc09d77fa92457e094c8
  * Rdata file defined (2016/07/04) AND 
@@ -39,6 +40,30 @@ loadRData <- function(fileName){
 d <- loadRData("~/Rhome/example.RData")
 ```
 
+Viewer App got a new workflow last week:
+
+* User begins by selecting Forecast Type between
+    + Seasonal
+    + Short Range, or
+    + Medium Range
+
+* then select a Forecast System:
+    + ECMWF
+    + GR4J
+    + user-added...
+    
+* User may alternatively begin with a clickable map of Case Studies
+    + 
+    
+
+* Am also considering a superuser-type tool to postgresql built in MS Access...
+    + Irstea has MS Office Pro (for Windows users)
+    + MS Access plays nicely with postgresql
+    + can import / export data
+    + should be able to RAD in August if not before
+    + just found a way to avoid per-machine DSN setup
+        + http://www.postgresonline.com/journal/archives/24-Using-MS-Access-with-PostgreSQL.html
+        
  
 
 ## Modified database schema:
