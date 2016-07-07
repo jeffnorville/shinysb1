@@ -1,6 +1,6 @@
 # IMPREX file picker
 library(shiny)
-# require("uuid")
+ require("uuid")
 library(uuid)
 options(shiny.maxRequestSize=50*1024^2) # 50 mb (SMHI datafile is 40-something)
 
