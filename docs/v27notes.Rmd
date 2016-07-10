@@ -1,8 +1,8 @@
 ---
-title: "Rapport d'étape - fin Juin"
+title: "Rapport d'étape - juillet"
 author: "Jeff"
 date: "6 julliet 2016"
-output: pdf_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -68,11 +68,26 @@ Viewer App got a new workflow last week:
 
 ## Modified database schema:
 
+Dates -- 7 july we discussed changing the date format type to "Julian dates". However, there seems to be a lot of disagreement to what exactly that means ...
+
+http://www.cpearson.com/excel/jdates.htm
+
+https://cran.r-project.org/web/packages/date/date.pdf
+Convert to Julian Dates
+Description
+Given a month, day, and year, returns the number of days since January 1, 1960.
+Usage
+mdy.date(month, day, year, nineteen = TRUE, fillday = FALSE,
+fillmonth = FALSE)
+
+
+
+
 We discussed adding the following details to the database:
     + location coordinates
     + more information about the uploader
 
-## To Read:
+## To Read
 I'm watching DataCamp's "writing functions in R" series, free so far, and useful!
 
 I note I'm not using R's functions well at all. Also pipes -- reading Yonicd's code (link below) mystifies me. Time to level up.
@@ -103,7 +118,7 @@ library(dplyr)
 library(lazyeval)
 library(ggplot2)
 
-play.data <- read.delim("~/R/shinysb1/play.data.txt")
+play.data <- read.delim("~/R/shinysb1/docs/play.data.txt")
 play.data$locationID <- as.factor(play.data$locationID)
 plot(play.data$leadtimeValue, play.data$scoreValue, col=play.data$locationID, 
      xlab = "Lead Times", ylab = "Score")
@@ -132,7 +147,7 @@ I'm also adding a layer of reactivity BEFORE the filter function; now we have a 
 
 
 # Images of current interface
-![CRPS for 2 locs, 10 LTs](figures/2016-06-17_2locsCRPS.png)
+![CRPS for 2 locs, 10 LTs](../figures/2016-06-17_2locsCRPS.png)
 
 This week I need to: 
 
