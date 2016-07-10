@@ -1,0 +1,106 @@
+---
+title: "Rapport d'étape - Juin"
+author: "Jeff"
+date: "21 juin 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Week 25, 2016
+Welcome to week 16 of 34. This document updated 17 juin 2016.
+
+```{r plot il reste}
+thesis.duration <- 34
+this.week <- 16
+yikes <- c(this.week, thesis.duration - this.week) / thesis.duration
+barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
+# library(ggplot2)
+# ggplot(yikes, aes(x = "time", y = thesis.duration))
+
+```
+
+## Big changes:
+ - Got rid of summary() field
+ - Added 2nd plot window
+ - using DT better
+ - not complete:
+   - renderUI()
+   - two plot regimes:
+     - stats on daily values (se, ci)
+     - direct score plots
+ - goal is to view skill scores (comparable) in addition to raw scores (not so comparable)
+   - "All Skill Score" plot which should show red, grey, green "improving or not" scores
+ - Review EVS Documentation and datafile in / out
+
+## Modified database schema:
+ - Renaming?
+
+We also simplified the wording on the display again; I need to follow this with database logic to be sure names are clear and sensible (self-documenting).
+
+I'm also adding a layer of reactivity BEFORE the filter function; now we have a box filled by database which lists which packages are available:
+
+
+# Images of current interface
+![CRPS for 2 locs, 10 LTs](figures/2016-06-17_2locsCRPS.png)
+
+This week I need to: 
+
+* prep slides for 10 minute "wave peaks" presentation
+    + less technic, more "qualitative" study
+    + underscore the utility in comparing score types
+    + examples of other scoreboards...?
+    
+* Enhance data import definition 
+    + example file
+    + user preview (?) before database import run
+    
+* Change interface:
+    + reduce "summary";
+    + reduce emphasis on conf interval plot (ci and se agglom function, summarySE);
+    + add ability to post 2eme Score Type to same page (or more?)
+    
+Planning:
+* ggplot libraries
+    + facet;
+    + map (GDAL);
+    
+
+
+
+### Old Notes (for my reference):
+
+Got access to a 2013 netCDF [development branch for SOS DB] (https://svn.52north.org/svn/swe/main/SOS/Service/branches/52n-sos-netCDF/), so I'll look into that this week to understand better our options for accomodating netCDF files (a soft requirement which we won't implement without motivation!).
+
+* Some helpful r debugging links:
+    + http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/
+    + http://shiny.rstudio.com/articles/debugging.html
+
+Keeps coming back up (particularly for multiple users in web app!) but not dealt with:
+    + http://shiny.rstudio.com/reference/shiny/latest/session.html
+
+NetCDF links:
+http://www.unidata.ucar.edu/software/netcdf/docs/faq.html#How-do-I-convert-netCDF-data-to-ASCII-or-text
+http://www.unidata.ucar.edu/software/netcdf/examples/files.html
+Discussion(s) of handling time using netCDF:
+http://www.unidata.ucar.edu/software/netcdf/time/
+http://www.unidata.ucar.edu/software/netcdf/time/recs.html
+
+Some NetCDF files from our friends at ECMWF:
+http://apps.ecmwf.int/datasets/
+
+O'Reilly always publishes goodness, re-reminging myself to remember this later:
+http://www.cookbook-r.com/Graphs/
+
+Something to look into on my time -- confidence Intervals discussed in different context:
+http://learnbayes.org/papers/confidenceIntervalsFallacy/introduction.html
+...with nifty Shiny app to illustrate Figs 1 - 5 from article:
+https://richarddmorey.shinyapps.io/confidenceFallacy/
+http://learnbayes.org/papers/confidenceIntervalsFallacy/
+
+Tools for LaTeX:
+https://www.codecogs.com/latex/eqneditor.php
+
