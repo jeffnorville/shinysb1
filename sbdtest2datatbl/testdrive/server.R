@@ -35,7 +35,7 @@ shinyServer(function(input, output) {
     # remote <- filter(tbl_scores, locationID == "I5221010" &&
     #                    LT %in% c(1,2,3,4,5) )
     remote <- filter(tbl_scores, locationID == input$dataset &&
-               LT == input$lead.times )
+               leadtimeValue == input$lead.times )
     getit <- structure(collect(remote))
 
   })

@@ -54,7 +54,7 @@ shinyUI(fluidPage(
     mainPanel(
       h3(textOutput("caption", container = span)),
       
-      verbatimTextOutput("summary"), 
+      # verbatimTextOutput("summary"), 
       "note: limited to uncorrected CRPS precipitation values on X BVs in France" ,
       tableOutput("view") #commenting this out removes the weird, date-stripping format error:
       #Warning in formatC(x = 4018, format = "f", digits = 2, decimal.mark = ".") :
