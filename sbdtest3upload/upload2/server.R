@@ -1,3 +1,5 @@
+require(DT)
+
 shinyServer(function(input, output, session) {
 
 	values <- reactiveValues(
@@ -16,6 +18,7 @@ shinyServer(function(input, output, session) {
 	
 	output$summary <- renderText({
 		return(paste("Uploaded file: ", values$file1$name))
+	  
 	})
 
 	output$resettableInput <- renderUI({

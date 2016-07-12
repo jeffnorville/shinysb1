@@ -1,0 +1,59 @@
+---
+title: "Data Import Template"
+author: "Jeff Norville"
+date: "12 juillet 2016"
+output: 
+  word_document: 
+    fig_caption: yes
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Import Format
+
+This document describes the data import for the Verification Score database.
+
+Each "deposit" of data into the database needs to be structured so the system stays "tidy" and the imports remain as automated as possible.
+
+# Guidelines
+
+We've designed the Loader application to accept text or Rdata files, to help guide the user through the import, but there are also some rules for the data you should know upfront:
+
+1. Names shouldn't exceed 200 characters (*and* the longer the name, the funnier the plots look)
+2. Required fields may be relied on to link to other data elements, or to calculate time or date ranges, etc. Please be as complete (and precise) as possible.
+3. Optional fields are ... self-explanatory
+4. If you make a mistake, that's fine -- but the nature of this database doesn't make corrections easy! You'll need to "turn off" your entire submission and do a second one, and the old submission will eventually be "garbage collected" out of the database
+
+## Rdata Format
+
+# Field names
+
+# Download example file
+Linked to it here:
+
+## Text File Format(s)
+Some users may use their own systems to output scores and avoid using R; the Loader supports imports from CSV (classically "comma-seperated value") files as well as text files in teh same format.
+
+There are two sections to each file:
+1. Metadata
+2. Data
+
+
+
+# Field names
+
+# Download example file
+Linked to it here:
+
+
+
+## Technical Details 
+
+
+## More Reading
+
+For more insights into the data format you can read this document which isn't finshed:
+

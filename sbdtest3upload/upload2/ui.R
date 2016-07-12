@@ -1,3 +1,5 @@
+require(DT)
+
 shinyUI(bootstrapPage(
 
 	tags$head(

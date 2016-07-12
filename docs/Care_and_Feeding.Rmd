@@ -9,22 +9,28 @@ output: word_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## 
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+## R and RStudio Updates
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+RStudio and/or Shiny updates are a regular occurance; when they happen, sometimes dplyr package has a hard time updating, fails, or doesn't launch again. I don't know if this is only on Windows or not.
 
-```{r cars}
-summary(cars)
+I have generally resolved this by running this script in the RStudio console:
+
+```{r}
+if (packageVersion("devtools") < 1.6) {
+  install.packages("devtools")
+}
+devtools::install_github("hadley/lazyeval")
+devtools::install_github("hadley/dplyr")
+
+if (!require("devtools"))
+  install.packages("devtools")
+devtools::install_github("rstudio/shiny")
 ```
 
-## Including Plots
+This forces the packages to update directly from github and to recompile on the local instance (where the console is running). Note that if this is done on the R server instance, the console where the script is run must be open on the remote server.
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
