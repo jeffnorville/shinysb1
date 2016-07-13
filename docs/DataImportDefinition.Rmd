@@ -89,7 +89,7 @@ proto.Rds
 
 Some users may use their own systems to output scores and avoid using R; the Loader supports imports from CSV (classically "comma-seperated value") files as well as text files in teh same format.
 
-There are two sections to each file:
+There are three sections to each file:
 
 1. **Metadata**
    + start.date
@@ -104,8 +104,14 @@ There are two sections to each file:
    + forecast.frequency
    + lead.time.interval
    + member.count
+   
+2. Location Details
+   + alt.name
+   + centerX (in WGS84)
+   + centerY (in WGS84)
+   + area (km2)
 
-2. **Data**
+3. **Data**
    + location.name
    + mean.error
    + lead.times
@@ -117,6 +123,27 @@ The Rds file import provides a less-complicated internal validation process, and
 For smaller dataloads, text file and/ or Excel file uploads may work most efficiently.
 
 However, note that only ONE SCORE TYPE may be submitted for each file import. Subsequent loads may be copy/pasted into the same file format, maintaining (largely) the same metadata.
+
+## Sample Format
+1. MetadataSection
+   + provider firstname
+   + provider lastname
+   + provider organization name
+   + provider email
+   + provider phone
+   + forecast system
+   + score name
+   + start.date
+   + end.date
+   + forecast frequency
+   + lead time interval
+   + member count
+
+2. LocationData
+(see Excel or CSV file)
+
+3. DataSection
+(see Excel or CSV file)
 
 
 ## Download example file
