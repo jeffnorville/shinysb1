@@ -12,13 +12,13 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Import Format
+# Import Format
 
 This document describes the data import for the Verification Score database.
 
 Each "deposit" of data into the database needs to be structured so the system stays "tidy" and the imports remain as automated as possible.
 
-# Guidelines
+## Guidelines
 
 We've designed the Loader application to accept text or Rdata files, to help guide the user through the import, but there are also some rules for the data you should know upfront:
 
@@ -27,33 +27,93 @@ We've designed the Loader application to accept text or Rdata files, to help gui
 3. Optional fields are ... self-explanatory
 4. If you make a mistake, that's fine -- but the nature of this database doesn't make corrections easy! You'll need to "turn off" your entire submission and do a second one, and the old submission will eventually be "garbage collected" out of the database
 
-## Rdata Format
+# Rdata Format (.rds)
 
-# Field names
+The methods to read and save **.rds** files is a little different from the standard Rdata file format, though it's useful to understand the difference.
+
+
+
+## Field names
+
+I adhere to R naming conventions where I can. Accordingly, I avoid spaces, "CamelCase", and use periods (.) to seperate terms.
+
+-----------|--------------
+*optional* | **mandatory**
+
+
+### Fieldname list
+*  **location.name**
+*  *provider.firstname*
+*  *provider.lastname*
+*  **provider.organization.name**
+*  **provider.email**
+*  **provider.phone**
+*  **forecast.system**
+*  **forecast.frequency**
+*  **lead.time.interval**
+*  member.count
+*  **mean.error**
+*  **start.date**
+*  **end.date**
+*  *members*
+*  **lead.times**
+*  **timestep**
+
 
 # Download example file
-Linked to it here:
 
-## Text File Format(s)
+*Link to it here:*
+
+
+# Text File Format(s)
+
 Some users may use their own systems to output scores and avoid using R; the Loader supports imports from CSV (classically "comma-seperated value") files as well as text files in teh same format.
 
 There are two sections to each file:
+
 1. Metadata
+ + start.date                
+ + end.date                  
+ + members                   
+ + lead.times                
+ + timestep                  
+ + provider.firstname        
+ + provider.lastname         
+ + provider.organization.name
+ + provider.email            
+ + provider.phone            
+ + forecast.system           
+ + forecast.frequency        
+ + lead.time.interval        
+ + member.count
+
 2. Data
+ + location.name
+ + mean.error
 
 
 
-# Field names
 
-# Download example file
+
+## Download example file
 Linked to it here:
 
+proto.Rds
 
 
-## Technical Details 
+# Technical Details 
+Loading each of these files -- whether a text (CSV or tab-delimited file) or Rds file format -- is done using the Shiny "Loader" tool. This is linked through the datamining tool website, or available directly from RStudio / github (*link*).
+
+Upper size limit: 60 mb
+
+This size limit is imposed by the server; larger files take more time to upload, process, and potentially cause user frustration. 
+
+Note that the Rds datafile format is binary, compressed, and much more "efficient" than (for example) a CSV (text) file. A 50 mb Rds file 
 
 
-## More Reading
+-----
+
+# More Reading
 
 For more insights into the data format you can read this document which isn't finshed:
 
