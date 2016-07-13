@@ -74,8 +74,6 @@ There are two sections to each file:
 1. Metadata
  + start.date                
  + end.date                  
- + members                   
- + lead.times                
  + timestep                  
  + provider.firstname        
  + provider.lastname         
@@ -90,25 +88,36 @@ There are two sections to each file:
 2. Data
  + location.name
  + mean.error
-
-
+ + lead.times
 
 
 
 ## Download example file
-Linked to it here:
+Link:
 
 proto.Rds
 
 
 # Technical Details 
-Loading each of these files -- whether a text (CSV or tab-delimited file) or Rds file format -- is done using the Shiny "Loader" tool. This is linked through the datamining tool website, or available directly from RStudio / github (*link*).
+Loading score files -- whether text (CSV or tab-delimited file) or Rds file format -- is done using the Shiny "Loader" tool. This is linked through the datamining tool website, or available directly from RStudio / github (*link*).
 
+The metadata are used to identify the 
+ * data source
+ * 
+
+## File Size Limit
 Upper size limit: 60 mb
 
 This size limit is imposed by the server; larger files take more time to upload, process, and potentially cause user frustration. 
 
-Note that the Rds datafile format is binary, compressed, and much more "efficient" than (for example) a CSV (text) file. A 50 mb Rds file 
+Note that the Rds datafile format is binary, compressed, and more "efficient" than (for example) a CSV (text) file. A 50 mb Rds file could be several hundred mb as text.
+
+## File Verification
+
+There is a light "verification" step during file upload; however, it's up to the loader to verify what the Loader echoes is correct. If the upload needs correction, cancel the upload and make corrections directly on your file.
+
+If the Loader has already been run when you catch an error, the entire "deposit" must be flagged (for automatic garbage collection).
+
 
 
 -----
