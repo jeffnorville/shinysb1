@@ -31,15 +31,28 @@ We've designed the Loader application to accept text or Rdata files, to help gui
 
 The methods to read and save **.rds** files is a little different from the standard Rdata file format, though it's useful to understand the difference.
 
+```{r}
+?readRDS
+?saveRDS
 
+```
 
 ## Field names
 
-I adhere to R naming conventions where I can. Accordingly, I avoid spaces, "CamelCase", and use periods (.) to seperate terms.
+I try to adhere to R naming conventions. Accordingly, I avoid spaces, "CamelCase", and use periods (.) to seperate terms. However, you can use most characters in your variable names; the following are NOT permitted: 
+```
+$, #, quotes, comma
+```
 
------------|--------------
-*optional* | **mandatory**
+Just one of many style guides:
+https://google.github.io/styleguide/Rguide.xml
 
+
+Fields are:   | or:
+--------------|--------------
+*optional*    | **mandatory**
+
+Optional fields may either be left blank or ommitted.
 
 ### Fieldname list
 *  **location.name**
@@ -60,42 +73,49 @@ I adhere to R naming conventions where I can. Accordingly, I avoid spaces, "Came
 *  **timestep**
 
 
-# Download example file
+### Download example file
 
 *Link to it here:*
 
+proto.Rds
+
+-----
 
 # Text File Format(s)
+
 
 Some users may use their own systems to output scores and avoid using R; the Loader supports imports from CSV (classically "comma-seperated value") files as well as text files in teh same format.
 
 There are two sections to each file:
 
 1. Metadata
- + start.date                
- + end.date                  
- + timestep                  
- + provider.firstname        
- + provider.lastname         
- + provider.organization.name
- + provider.email            
- + provider.phone            
- + forecast.system           
- + forecast.frequency        
- + lead.time.interval        
- + member.count
+   + start.date
+   + end.date
+   + timestep
+   + provider.firstname
+   + provider.lastname
+   + provider.organization.name
+   + provider.email
+   + provider.phone
+   + forecast.system
+   + forecast.frequency
+   + lead.time.interval
+   + member.count
 
 2. Data
- + location.name
- + mean.error
- + lead.times
+   + location.name
+   + mean.error
+   + lead.times
 
 
 
 ## Download example file
+
 Link:
 
-proto.Rds
+1. CSV file
+2. DAT file
+3. Excel file
 
 
 # Technical Details 
