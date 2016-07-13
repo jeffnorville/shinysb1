@@ -14,9 +14,9 @@ shinyUI(bootstrapPage(
 		
 		selectInput('uploadFormat', label = "Select upload format", 
 			choices = c(
-				"Option 1" = 'f1',
-				"Option 2" = 'f2',
-				"Option 3" = 'f3'),
+				"RDS" = 'rds',
+				"csv" = 'csv',
+				"tab-delim" = 'txt'),
 			selected = 'f1')
 
 	),

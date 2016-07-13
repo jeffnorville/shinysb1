@@ -22,7 +22,7 @@ shinyServer(function(input, output, session) {
 	})
 
 	#  Load in my data
-	x <- readRDS(mystorefile)
+	x <- readRDS(values$file1)
 		
 	output$resettableInput <- renderUI({
 		input$clearFile1

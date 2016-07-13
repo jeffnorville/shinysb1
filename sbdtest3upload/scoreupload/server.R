@@ -46,6 +46,7 @@ shinyServer(function(input, output, session) {
       # print(load(inFile$datapath, imported.data <- new.env()))
     # imported.data <- as.data.frame(load(inFile$datapath, import <- new.env()))
     imported.data <- load(inFile$datapath, import <- new.env())
+    browser()
     imported.data <- as.data.frame(imported.data)
     imported.data$dataPackageGUID <- generated.guid
 
