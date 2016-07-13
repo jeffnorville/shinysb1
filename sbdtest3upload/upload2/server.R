@@ -21,6 +21,9 @@ shinyServer(function(input, output, session) {
 	  
 	})
 
+	#  Load in my data
+	x <- readRDS(mystorefile)
+		
 	output$resettableInput <- renderUI({
 		input$clearFile1
 		input$uploadFormat

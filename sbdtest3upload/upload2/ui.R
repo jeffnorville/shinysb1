@@ -6,7 +6,7 @@ shinyUI(bootstrapPage(
 		tags$style(".clearButton {float:right; font-size:12px;}")
 	),
 	
-	headerPanel("Reset file input example"),
+	headerPanel("File input example"),
 
 	sidebarPanel(
 		HTML("<button id='clearFile1' class='action-button clearButton'>Clear</button>"),
@@ -24,6 +24,7 @@ shinyUI(bootstrapPage(
 	mainPanel(
 		h4("Summary"),
 		verbatimTextOutput("summary")
+		
 	)
 
 	)
