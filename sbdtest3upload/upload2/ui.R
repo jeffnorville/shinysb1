@@ -1,5 +1,8 @@
+# with adjustment from
+# https://gist.github.com/davidarndt/bc09d77fa92457e094c8
 
 require(DT)
+library(uuid)
 
 shinyUI(bootstrapPage(
 

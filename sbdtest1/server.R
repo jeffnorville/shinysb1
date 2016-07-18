@@ -42,7 +42,10 @@ shinyServer(function(input, output) {
     # }
     
     # if 1 locID is chosen ... "remote" is the 'local' cursor, hasnt hit db yet
-    if (length(input$rtnLocid) == 1) {
+    if (is.null(input$rtnLocid)) {
+      return(NULL)
+    }
+    else if (length(input$rtnLocid) == 1) {
       remote <- filter(tbl_scores,
                        locationID == input$rtnLocid)
     }
@@ -59,31 +62,16 @@ shinyServer(function(input, output) {
     #   do.facets = FALSE
     # }
     
-    summarize.by <- "All"
-    # if (input$rtnTimeScale == "All"){
-    #   summarize.by <- c(1:12) # monthly is default
-    # } else if (input$rtnTimeScale == "Month"){
-    #   summarize.by <- c(1:12)
-    # } else if (input$rtnTimeScale == "Spring (MAM)"){
-    #   summarize.by <- c(3:5) # "Spring (MAM)"
-    # } else if (input$rtnTimeScale == "Winter (DJF)"){
-    #   summarize.by <- c(12,1:2) # "Winter (DJF)"
-    # } else if (input$rtnTimeScale == "Monsoon (JJAS)"){
-    #   summarize.by <- c(6:9) # "Monsoon (JJAS)"
-    # } else if (input$rtnTimeScale == "Year"){
-    #   summarize.by <- c(1:12) # "Year"
-    # } else { # default
-    #   summarize.by <- c(1:12)
-    # }
-    
+    # summarize.by <- "All"
+
     # timescale may be: All; some combination of months (Seasonal); or ?
     # if (input$rtnTimeScale != "All") {
     #   remote$month <- format(remote$dateValue, "%m")
     #   remote <- filter(tbl_scores,
     #                    months %in% summarize.by)
     # }
-    
     #     remote <- filter(tbl_scores,
+    
     remote <- filter(remote,
       scoreNA == FALSE & #more like "bad data" now, contains -Infinity too
       modelVariable == input$rtnModelVariable &
@@ -142,8 +130,14 @@ shinyServer(function(input, output) {
         sum(filtered.input$scoreNA) # should report to user since value hidden by summarySE()
     } # end else
     
-    # if(nrow(filtInput()) == 0 || length(filtInput()) == 0) {
-    if (nrow(filtInput()) == 0) {
+    if(length(filtInput()) == 0) {
+      plot(1, 1, col = "white")
+      text(1,
+           1,
+           "Select one or more data elements from the Filter to begin")
+      }
+    else if(nrow(filtInput()) == 0) {
+    # if (nrow(filtInput()) == 0) {
       # print error/ warning message
       plot(1, 1, col = "white")
       text(1,
@@ -157,7 +151,7 @@ shinyServer(function(input, output) {
       min.LT <- min(loc.sum$leadtimeValue)
       max.LT <- max(loc.sum$leadtimeValue)
       
-      ggplot(loc.sum,
+      g <- ggplot(loc.sum,
              aes(color = locationID, x = leadtimeValue, y = scoreValue)) +
         geom_errorbar(aes(ymin = scoreValue - ci, ymax = scoreValue + ci), position = pd) + # , color="grey"
         geom_line() +
@@ -171,15 +165,15 @@ shinyServer(function(input, output) {
     } # end else
   }) # end renderPlot
   
-  # PDX export
-  
+  # PDF export
   plotInput <- reactive({
     if(input$returnpdf){
       pdf("plot.pdf", width=as.numeric(input$w), height=as.numeric(input$h))
       plot(rnorm(sample(100:1000,1)))
       dev.off()
     }
-    plot(rnorm(sample(100:1000,1)))
+    # plot(rnorm(sample(100:1000,1)))
+    g # ref active ggplot above?
   })
   
   output$myplot <- renderPlot({ plotInput() })

@@ -16,32 +16,6 @@ library(lazyeval)
 library(ggplot2)
 library(DT)
 
-# lead.time.units <- "days" #update from DB based on selection
-# lead.time.min <- 1
-# lead.time.max <- 90
-
-# test db existance and grab date brackets for ENTIRE dataset
-# tmpcon <-
-#   dbConnect(
-#     PostgreSQL(),
-#     host = REhost,
-#     user = REuser,
-#     password = REpassword,
-#     dbname = REdbname
-#   ) #add error checking here
-# qry1e <-
-#   "SELECT DISTINCT(\"dateValue\") FROM \"tblScores\" ORDER BY \"dateValue\" LIMIT 1;"
-# rs1e <- dbSendQuery(tmpcon, qry1e)
-# dttFirstInDB <- fetch(rs1e, n = -1)
-# #if this is NULL then the table is empty / broken...
-# qryDernier <-
-#   "SELECT DISTINCT(\"dateValue\") FROM \"tblScores\" ORDER BY \"dateValue\" DESC LIMIT 1;"
-# rsDernier <- dbSendQuery(tmpcon, qryDernier)
-# dttLastInDB <- fetch(rsDernier, n = -1)
-# rm(tmpcon)  #kill connection
-
-# REACTIVE? based on daterange, update "Time scale" control to
-#   if ((dttLastInDB - dttFirstInDB) < year(1)) [All] ELSE [Monthly , Annual]
 
 db <- src_postgres(
   dbname = REdbname,
@@ -116,7 +90,17 @@ shinyUI(
   fluidPage(
     # Application title
     img(src = "imprex.png", height = 100),
+    
     titlePanel("Scoreboard"),
+    
+    navbarPage(title=div("Verification Scoreboard")
+               
+    ),
+    tabPanel("Score Forecast(s)",
+             h4("Navigate using tabs at top of screen"),
+             p("Created an maintained by IRSTEA for xxxxx")
+             ),
+    
     
     fluidRow(
       column(
@@ -131,7 +115,6 @@ shinyUI(
           h4("Filter Criteria"),
           selectInput("rtnLocid",
                       multiple = TRUE,
-                      # selected = "A1080330", #need a default ?
                       "Location:",
                       c(structure(
                         ctlLocationName$locationID

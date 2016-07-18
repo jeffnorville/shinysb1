@@ -45,9 +45,17 @@ shinyServer(function(input, output, session) {
       
       # print(load(inFile$datapath, imported.data <- new.env()))
     # imported.data <- as.data.frame(load(inFile$datapath, import <- new.env()))
-    imported.data <- load(inFile$datapath, import <- new.env())
+    
+    # imported.data <- load(inFile$datapath, import <- new.env()) # works for .Rdata
+    imported.data <- readRDS(inFile$datapath)
+    
+    # switch(name) # parse file extension or check filetype
+    #   case
+    
     browser()
-    imported.data <- as.data.frame(imported.data)
+    
+    
+    imported.data <- as.data.frame(imported.data) # err
     imported.data$dataPackageGUID <- generated.guid
 
     # structure <- str(imported.data) # outputs "NULL"?
@@ -57,7 +65,11 @@ shinyServer(function(input, output, session) {
     
     # peek <- head(imported.data, 30)
     # output$contents <- renderTable({head(imported.data, 50)})
-    output$contents <- renderTable({names(imported.data)})
+   #  output$contents <- renderTable({names(imported.data)})
+    output$contents <- renderTable({
+      head(imported.data)
+      })
+    
     # ls.str(imported.data)
     
   })

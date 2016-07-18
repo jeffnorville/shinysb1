@@ -1,6 +1,11 @@
-
+# IMPREX Loader v2 (formerly File Picker)
+# with adjustment from
+# https://gist.github.com/davidarndt/bc09d77fa92457e094c8
 
 require(DT)
+require("uuid")
+library(uuid)
+options(shiny.maxRequestSize=50*1024^2) # 50 mb (SMHI datafile is 40-something)
 
 shinyServer(function(input, output, session) {
 
@@ -16,16 +21,27 @@ shinyServer(function(input, output, session) {
 	
 	observe({
 		values$file1 <- input$file1
+		browser()
+		
 	})
 	
+	# load file here?
+# 	if(is.null(values$file1))
+# 	  return(NULL)
+#   else {
+#     imported.data <- readRDS(values$file1$datapath)
+#   }
+
 	output$summary <- renderText({
 		return(paste("Uploaded file: ", values$file1$name))
 	  
+	  
 	})
 
-	#  Load in my data
-	x <- readRDS(values$file1)
-		
+	#  Load in my data?
+	# x <- readRDS(values$file1)
+	browser()
+	
 	output$resettableInput <- renderUI({
 		input$clearFile1
 		input$uploadFormat
