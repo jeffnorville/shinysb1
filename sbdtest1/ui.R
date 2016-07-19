@@ -96,6 +96,7 @@ shinyUI(
     navbarPage(title=div("Verification Scoreboard")
                
     ),
+    # new layout
     tabPanel("Score Forecast(s)",
              h4("Navigate using tabs at top of screen"),
              p("Created an maintained by IRSTEA for xxxxx")
