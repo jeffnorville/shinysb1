@@ -28,11 +28,11 @@ shinyUI(fluidPage(
     #   "Load to Database:"
     #   ),
     mainPanel(
-      # tableOutput(head('contents'))
-      
+      verbatimTextOutput('summary'),
+
       tableOutput('contents')
-      # dataTableOutput('contents') 
-      # ,
+      # DT::dataTableOutput("contents")
+      
       # if (is.null(generated.guid))
       #   "Choose a file"
       # else

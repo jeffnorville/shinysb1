@@ -21,9 +21,12 @@ shinyServer(function(input, output, session) {
 	
 	observe({
 		values$file1 <- input$file1
-		browser()
-		
 	})
+	
+# 	observe({
+#   	values$fh.rds <- readRDS(file = input$file1)
+# 	})
+	
 	
 	# load file here?
 # 	if(is.null(values$file1))
@@ -34,13 +37,11 @@ shinyServer(function(input, output, session) {
 
 	output$summary <- renderText({
 		return(paste("Uploaded file: ", values$file1$name))
-	  
-	  
 	})
 
 	#  Load in my data?
 	# x <- readRDS(values$file1)
-	browser()
+	# browser()
 	
 	output$resettableInput <- renderUI({
 		input$clearFile1

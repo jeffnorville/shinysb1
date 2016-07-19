@@ -28,6 +28,10 @@ shinyUI(bootstrapPage(
 	mainPanel(
 		h4("Summary"),
 		verbatimTextOutput("summary")
+		# ,
+		# verbatimTextOutput("fh.rds")
+		# "output$fh.rds"
+		# toto <- readRDS()
 		
 	)
 

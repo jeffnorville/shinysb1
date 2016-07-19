@@ -96,12 +96,6 @@ shinyUI(
     navbarPage(title=div("Verification Scoreboard")
                
     ),
-    # new layout
-    tabPanel("Score Forecast(s)",
-             h4("Navigate using tabs at top of screen"),
-             p("Created an maintained by IRSTEA for xxxxx")
-             ),
-    
     
     fluidRow(
       column(
@@ -163,11 +157,31 @@ shinyUI(
       #fluidRow
     ,
 
-      mainPanel(plotOutput("seriesPlot") ,
-                # verbatimTextOutput("summary"),
-                DT::dataTableOutput("summary")
-                # ,
-                # tableOutput("view")) #mainPanel)) #sidebarPanel) #sidebarLayout)
+      mainPanel(
+        # new layout
+        tabsetPanel(type = "tabs", 
+                    
+          tabPanel("Plot",
+                   h4("Select and filter data to create "),
+                   p("Create a plot by selecting data"),
+                   plotOutput("seriesPlot")
+                   
+          ),
+          tabPanel("Panel plots",
+                   h4("Select and filter data to create "),
+                   p("Create a plot by selecting data"),
+                   plotOutput("facetPlot")
+                   
+                   ),
+        
+          tabPanel("Table",
+                   h4("Table of corresponding values"),
+                   p("Create a plot by selecting data"),
+                   DT::dataTableOutput("table")
+                   
+                   )
+            ) # tabsetPanel
+          
       ) #mainPanel
   )
 ) #sidebarPanel

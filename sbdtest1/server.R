@@ -26,22 +26,10 @@ db <- src_postgres(
 tbl_scores <- tbl(db, "tblScores")
 # do.facets = FALSE
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   #filter DB dataframe based on (default) selections
   filtInput <- reactive({
-    #allows ONE leadtime (LT=1:1), or a combination
-    # toto <- as.numeric(input$lead.times)
-    # all.lead.times <-
-    #   as.integer(unlist(input$lead.times))  # strsplit(input$lead.times, split = ":"))
-    # 
-    # if (all.lead.times[1] == all.lead.times[2]) {
-    #   toto = toto
-    # }
-    # else {
-    #   toto = all.lead.times[1]:all.lead.times[2]
-    # }
-    
-    # if 1 locID is chosen ... "remote" is the 'local' cursor, hasnt hit db yet
+
     if (is.null(input$rtnLocid)) {
       return(NULL)
     }
@@ -55,23 +43,6 @@ shinyServer(function(input, output) {
                        locationID %in% input$rtnLocid)
     }
     
-    # if (input$wants.facets == "TRUE") {
-    #   do.facets = TRUE
-    # }
-    # else {
-    #   do.facets = FALSE
-    # }
-    
-    # summarize.by <- "All"
-
-    # timescale may be: All; some combination of months (Seasonal); or ?
-    # if (input$rtnTimeScale != "All") {
-    #   remote$month <- format(remote$dateValue, "%m")
-    #   remote <- filter(tbl_scores,
-    #                    months %in% summarize.by)
-    # }
-    #     remote <- filter(tbl_scores,
-    
     remote <- filter(remote,
       scoreNA == FALSE & #more like "bad data" now, contains -Infinity too
       modelVariable == input$rtnModelVariable &
@@ -84,13 +55,10 @@ shinyServer(function(input, output) {
     
   }) #end reactive
   
-  # if (input$rtnTimeScale == "Monthly") {
-  # mutate...
-  # }
-  
-  output$summary <- renderPrint({
-    dataset <- filtInput()
-    head(dataset) # was summary
+
+  output$table <- renderDataTable({
+    table <- filtInput()
+    # head(dataset) # was summary
   })
   
   output$dataset <- renderPrint({
@@ -113,11 +81,12 @@ shinyServer(function(input, output) {
   
   output$seriesPlot <- renderPlot({
     if (nrow(filtInput()) == 0 || length(filtInput()) == 0) {
-      text(1, 1, "filtInput() was empty, try a different combo")
+      text(1, 1, "filtInput() was empty, try a different combo") # this is never hit I think
     } else {
-      # have data
+      # we have data
       filtered.input <-
         filtInput() # unneccesary step? debugging "rename" call in summarySE
+      
       loc.sum <-
         summarySE(
           filtered.input,
@@ -125,9 +94,13 @@ shinyServer(function(input, output) {
           groupvars = c("locationID", "leadtimeValue"),
           na.rm = TRUE
         )
+      
       loc.sum$locationID <- as.factor(loc.sum$locationID)
-      na.count <-
-        sum(filtered.input$scoreNA) # should report to user since value hidden by summarySE()
+      
+      # unimportant 2016-juillet conv MH
+      # na.count <-
+      #   sum(filtered.input$scoreNA) # should report to user since value hidden by summarySE
+      
     } # end else
     
     if(length(filtInput()) == 0) {
@@ -151,7 +124,7 @@ shinyServer(function(input, output) {
       min.LT <- min(loc.sum$leadtimeValue)
       max.LT <- max(loc.sum$leadtimeValue)
       
-      g <- ggplot(loc.sum,
+      ggplot(loc.sum,
              aes(color = locationID, x = leadtimeValue, y = scoreValue)) +
         geom_errorbar(aes(ymin = scoreValue - ci, ymax = scoreValue + ci), position = pd) + # , color="grey"
         geom_line() +
@@ -160,7 +133,7 @@ shinyServer(function(input, output) {
         #   # if (do.facets == TRUE){facet_wrap(~ locationID) } +
         # scale_y_discrete() +
         scale_y_continuous(breaks = c(min.LT:max.LT)) +
-        xlab("Lead Times") + ylab(paste(input$rtnScoreType)) # , " removed ", na.count, " NAs"))
+        xlab("Lead Times") + ylab(paste(input$rtnScoreType)) 
       
     } # end else
   }) # end renderPlot
@@ -169,7 +142,16 @@ shinyServer(function(input, output) {
   plotInput <- reactive({
     if(input$returnpdf){
       pdf("plot.pdf", width=as.numeric(input$w), height=as.numeric(input$h))
-      plot(rnorm(sample(100:1000,1)))
+      ### copy paste as above plot is refined
+      ggplot(loc.sum,
+             aes(color = locationID, x = leadtimeValue, y = scoreValue)) +
+        geom_errorbar(aes(ymin = scoreValue - ci, ymax = scoreValue + ci), position = pd) +
+        geom_line() +
+        geom_point(aes(color = locationID), position = pd) +
+        scale_y_continuous(breaks = c(min.LT:max.LT)) +
+        xlab("Lead Times") + ylab(paste(input$rtnScoreType)) 
+      
+      ###
       dev.off()
     }
     # plot(rnorm(sample(100:1000,1)))

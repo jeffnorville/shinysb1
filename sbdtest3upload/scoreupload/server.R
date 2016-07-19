@@ -52,7 +52,7 @@ shinyServer(function(input, output, session) {
     # switch(name) # parse file extension or check filetype
     #   case
     
-    browser()
+    # browser()
     
     
     imported.data <- as.data.frame(imported.data) # err
@@ -66,6 +66,12 @@ shinyServer(function(input, output, session) {
     # peek <- head(imported.data, 30)
     # output$contents <- renderTable({head(imported.data, 50)})
    #  output$contents <- renderTable({names(imported.data)})
+    
+    output$summary <- renderText({
+      summary(imported.data)
+    })
+    
+    
     output$contents <- renderTable({
       head(imported.data)
       })
