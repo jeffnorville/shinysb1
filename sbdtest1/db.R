@@ -98,8 +98,14 @@ getit <- structure(collect(remote))
 
 
 # base plot "all skill scores"
-plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 
-     xlab = "Lead Times", ylab = "Score")
+unique(getit$scoreType)
+getit <- filter(getit, leadtimeValue %in% 1:2)
+getit <- filter(getit, scoreType %in% c("CRPSS", "RMSES", "CORR"))
+
+ggplot(getit, aes(x = leadtimeValue, y = scoreValue, colour = scoreType))
+
+
+            # xlab = "Lead Times", ylab = "Score")
 
 
 
