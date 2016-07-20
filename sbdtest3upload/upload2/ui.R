@@ -10,7 +10,7 @@ shinyUI(bootstrapPage(
 		tags$style(".clearButton {float:right; font-size:12px;}")
 	),
 	
-	headerPanel("File input example"),
+	headerPanel("Loader (v2, resettable)"),
 
 	sidebarPanel(
 		HTML("<button id='clearFile1' class='action-button clearButton'>Clear</button>"),
@@ -21,13 +21,15 @@ shinyUI(bootstrapPage(
 				"RDS" = 'rds',
 				"csv" = 'csv',
 				"tab-delim" = 'txt'),
-			selected = 'f1')
+			selected = 'rds')
 
 	),
 
 	mainPanel(
 		h4("Summary"),
-		verbatimTextOutput("summary")
+		verbatimTextOutput("filename"),
+		verbatimTextOutput("names")
+		
 		# ,
 		# verbatimTextOutput("fh.rds")
 		# "output$fh.rds"
