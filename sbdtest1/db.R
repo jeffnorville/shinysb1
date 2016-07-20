@@ -95,6 +95,15 @@ getit <- structure(collect(remote))
 #   
 # }
 
+
+
+# base plot "all skill scores"
+plot(loc.sum$leadtimeValue, loc.sum$scoreValue, col=loc.sum$locationID, 
+     xlab = "Lead Times", ylab = "Score")
+
+
+
+
 # CRPSS, CRPSS
 # reduced <- filter(getit, scoreType == "RMSES")
 reduced <- filter(getit, scoreType == "CRPS")
