@@ -64,7 +64,7 @@ list.lots.basins.ehype <- c(
 # broken into 2 
 remote <- filter(tbl_scores, 
                    scoreNA == FALSE &
-                   locationID %in% list.lots.basins.ehype &
+                   # locationID %in% list.lots.basins.ehype &
                    # locationID %in% c('S2242510', 'L4411710') &
                    modelVariable == "Streamflow" &
                    forecastType  == "Linear Scaling (Seasonal_LS_month)" &
@@ -100,15 +100,63 @@ getit <- structure(collect(remote))
 # base plot "all skill scores"
 unique(getit$scoreType)
 # getit <- filter(getit, leadtimeValue %in% 1:2)
-getit <- filter(getit, scoreType %in% c("CRPS Skill Score", "CPRSS", "RMSE Skill Score", "Brier Skill Score")) # , "CORR"
+getit <- filter(getit, scoreType %in% c("CRPS Skill Score", "CRPSS", "RMSE Skill Score", "RMSES", "Brier Skill Score")) # , "CORR"
+unique(getit$scoreType)
+unique(getit$forecastType)
+unique(getit$datePartValue)
+
+mngetit <- summarySE(
+  getit,
+  measurevar = "scoreValue",
+  groupvars = c("locationID", "leadtimeValue", "scoreType"),
+  na.rm = TRUE
+)
+
+# this shows all months
+ggplot(getit, aes(x = leadtimeValue, y = scoreValue, na.rm = TRUE, colour = locationID)) +
+  geom_point() +
+  facet_grid(~ scoreType)
+
+# avgd scores by month
+# this shows all months
+ggplot(mngetit, aes(x = leadtimeValue, y = scoreValue, na.rm = TRUE, colour = locationID)) +
+  geom_point() +
+  facet_grid(scoreType ~ .)
+
+# this shows all months with CI bars
+pd <- position_dodge(0.2)
+ggplot(mngetit, aes(x = leadtimeValue, y = scoreValue, na.rm = TRUE, colour = locationID)) +
+  # geom_line() +
+  geom_point(aes(color = locationID), position = pd, size = 2) +
+  geom_errorbar(aes(ymin = scoreValue - ci, ymax = scoreValue + ci), position = pd) +
+  facet_grid(scoreType ~ .)
 
 
-ggplot(getit, aes(x = leadtimeValue, y = scoreValue,na.rm = TRUE, colour = locationID)) +
+# all skill scores - attempt 3
+pd <- position_dodge(0.2)
+ggplot(mngetit[], aes(x = leadtimeValue, y = scoreValue, na.rm = TRUE, colour = se)) +
+  # geom_line() +
+  # geom_point(aes(color = locationID), position = pd, size = 2) +
+  # geom_errorbar(aes(ymin = scoreValue - ci, ymax = scoreValue + ci), position = pd) +
+  facet_grid(locationID ~ .)
+
+mngetit['locationID'=="8000277"]
+length(mngetit$locationID)
+
+# ALL SKILL SCORES
+
+
+
   geom_linerange()
   geom_qq()
   geom_dotplot()
 
-plot(getit$leadtimeValue, getit$scoreValue, col=getit$locationID)
+
+?pch
+plot -- adding points to a plot  
+  
+  
+  plot(getit$leadtimeValue, getit$scoreValue, col=getit$locationID)
 
 
             # xlab = "Lead Times", ylab = "Score")
