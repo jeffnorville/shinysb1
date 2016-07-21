@@ -99,10 +99,16 @@ getit <- structure(collect(remote))
 
 # base plot "all skill scores"
 unique(getit$scoreType)
-getit <- filter(getit, leadtimeValue %in% 1:2)
-getit <- filter(getit, scoreType %in% c("CRPSS", "RMSES", "CORR"))
+# getit <- filter(getit, leadtimeValue %in% 1:2)
+getit <- filter(getit, scoreType %in% c("CRPS Skill Score", "CPRSS", "RMSE Skill Score", "Brier Skill Score")) # , "CORR"
 
-ggplot(getit, aes(x = leadtimeValue, y = scoreValue, colour = scoreType))
+
+ggplot(getit, aes(x = leadtimeValue, y = scoreValue,na.rm = TRUE, colour = locationID)) +
+  geom_linerange()
+  geom_qq()
+  geom_dotplot()
+
+plot(getit$leadtimeValue, getit$scoreValue, col=getit$locationID)
 
 
             # xlab = "Lead Times", ylab = "Score")
