@@ -27,8 +27,8 @@ db <- src_postgres(dbname = REdbname,
                    port = REport,
                    user = REuser,
                    password = REpassword)
-tbl_scores <- tbl(db, "tblScores")
-
+tbl.scores <- tbl(db, "tblScores")
+tbl.locations <- tbl(db, "tblLocation")
 
 
 # db "windows?
@@ -37,18 +37,8 @@ tbl_scores <- tbl(db, "tblScores")
 # ? vs ??
 
 #  TODO time the influence of breaking this into two calls
-int.list <- c(1:15)
-# toto <- as.numeric(int.list)
-# all.lead.times <- as.integer(unlist(int.list))  # strsplit(input$lead.times, split = ":"))
-# 
-# if (all.lead.times[1] == all.lead.times[2]) {
-#   toto = toto
-# } else {
-#   toto = all.lead.times[1]:all.lead.times[2]
-# }
-# doesn't make sense here, only with slider where [2] is the MAX of the series
-toto <- int.list
-
+# int.list <- c(1:15) # was leadtimes, not used
+# toto <- int.list
 
 list.lots.basins.ehype <- c(
   '8000100',
@@ -61,46 +51,32 @@ list.lots.basins.ehype <- c(
 )
 
 
-# broken into 2 
-remote <- filter(tbl_scores, 
-                   scoreNA == FALSE &
+remote <- filter(tbl.scores, 
+                   # scoreNA == FALSE &
                    # locationID %in% list.lots.basins.ehype &
                    # locationID %in% c('S2242510', 'L4411710') &
+                   # dataPackageGUID == "" &
                    modelVariable == "Streamflow" &
                    forecastType  == "Linear Scaling (Seasonal_LS_month)" &
+                   scoreType %in% c("CRPS Skill Score", "CRPSS", "RMSE Skill Score", "RMSES", "Brier Skill Score")
+                   # "Linear Scaling (Seasonal_LS_month)"
                    # forecastType  == "Seasonal_EDMD_month" &
                    # summarizeByTime == "All" &
                    # scoreType    == "CRPS" &
-                   leadtimeValue %in% toto
+                   # leadtimeValue %in% toto
   )
 
 
 getit <- structure(collect(remote))
 
+# getit <- filter(getit, scoreType %in% c("CRPS Skill Score", "CRPSS", "RMSE Skill Score", "RMSES", "Brier Skill Score")) # , "CORR"
 
 # move to REACTIVE section so this can be datamined "live"
 # reduced <- filter(getit, locationID %in% c('S2242510', 'L4411710') & scoreType == "CRPS")
 
-# ADD DATE, SEASONAL FILTER  ... dateValue
-# if (summarizeByTime == "All"){
-#   summarize.by <- "Month"
-# } else if (summarizeByTime == "Month"){
-#   summarize.by <- "Month"
-# } else if (summarizeByTime == "Spring (MAM)"){
-#   
-# } else if (summarizeByTime == "Winter (DJF)"){
-# } else if (summarizeByTime == "Monsoon (JJAS)"){
-# } else if (summarizeByTime == "Year"){
-# } else {
-#   
-# }
-
-
 
 # base plot "all skill scores"
-unique(getit$scoreType)
 # getit <- filter(getit, leadtimeValue %in% 1:2)
-getit <- filter(getit, scoreType %in% c("CRPS Skill Score", "CRPSS", "RMSE Skill Score", "RMSES", "Brier Skill Score")) # , "CORR"
 unique(getit$scoreType)
 unique(getit$forecastType)
 unique(getit$datePartValue)
@@ -111,6 +87,9 @@ mngetit <- summarySE(
   groupvars = c("locationID", "leadtimeValue", "scoreType"),
   na.rm = TRUE
 )
+
+qplot(factor(leadtimeValue), y = scoreValue, data = mngetit, facets=locationID)
+
 
 # this shows all months
 ggplot(getit, aes(x = leadtimeValue, y = scoreValue, na.rm = TRUE, colour = locationID)) +
