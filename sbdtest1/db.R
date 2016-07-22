@@ -81,6 +81,7 @@ unique(getit$scoreType)
 unique(getit$forecastType)
 unique(getit$datePartValue)
 
+# average scores by locn, LT and scoreType
 mngetit <- summarySE(
   getit,
   measurevar = "scoreValue",
@@ -101,6 +102,15 @@ ggplot(getit, aes(x = leadtimeValue, y = scoreValue, na.rm = TRUE, colour = loca
 ggplot(mngetit, aes(x = leadtimeValue, y = scoreValue, na.rm = TRUE, colour = locationID)) +
   geom_point() +
   facet_grid(scoreType ~ .)
+
+unique(mngetit$locationID[1:40])
+length(mngetit$locationID==8000133)
+
+ggplot(subset(mngetit, locationID %in% locationID[1:42]), aes(x = leadtimeValue, y = scoreValue, na.rm = TRUE, colour = scoreType)) +
+  geom_line() +
+  geom_point() +
+  facet_grid(locationID ~ .)
+
 
 # this shows all months with CI bars
 pd <- position_dodge(0.2)
