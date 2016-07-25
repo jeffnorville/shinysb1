@@ -1,3 +1,4 @@
+?cfh
 #IMPREX Scoreboard
 setwd("~/R/shinysb1/sbdtest1")
 readRenviron("~/R/shinysb1/.Renviron")
@@ -24,9 +25,9 @@ db <- src_postgres(
   user = REuser,
   password = REpassword
 )
-tbl_scores <- tbl(db, "tblScores")
-tbl_data_load <- tbl(db, "tblDataLoad")
-tbl_interface <- tbl(db, "tblInterface")
+tbl.scores <- tbl(db, "tblScores")
+tbl.dataload <- tbl(db, "tblDataLoad")
+tbl.interface <- tbl(db, "tblInterface")
 
 #selectInput boxes
 
@@ -55,7 +56,7 @@ tmpForecastType <-
 ctlForecastType <- collect(tmpForecastType)
 
 tmpLocationName <-
-  distinct(select(tbl_scores, locationID, dataPackageGUID))
+  distinct(select(tbl.scores, locationID, dataPackageGUID))
 ctlLocationName <- collect(tmpLocationName)
 ctlLocationName <-
   arrange_(ctlLocationName, "dataPackageGUID", "locationID")
@@ -69,7 +70,7 @@ ctlCaseStudy <- collect(tmpCaseStudy)
 tmpDataPackageList <-
   distinct(
     select(
-      tbl_data_load,
+      tbl.dataload,
       dataPackageGUID,
       importResponsable,
       dataPkgFriendlyName,
@@ -81,7 +82,7 @@ ctlDataPackageList <-
   arrange_(ctlDataPackageList, "dataPackageGUID", "dataPkgFriendlyName")
 
 tmpInterface <-
-  distinct(select(tbl_interface, ObjectName, ObjectItemName, LanguageID))
+  distinct(select(tbl.interface, ObjectName, ObjectItemName, LanguageID))
 ctlInterface <- collect(tmpInterface)
 
 

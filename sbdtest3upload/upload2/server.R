@@ -45,10 +45,8 @@ shinyServer(function(input, output, session) {
 
 	
 		
-	observe({
-
-
-	}) # observe
+	# observe({
+	# }) # observe
 
 	output$filename <- renderText({
 		return(paste("Uploaded file: ", values$file1$name))
