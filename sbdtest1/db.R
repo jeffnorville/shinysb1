@@ -66,10 +66,14 @@ remote <- filter(tbl.scores,
                    # leadtimeValue %in% toto
   )
 
+remote <- filter(remote, dataPackageGUID == "SMHI2222")
 
-getit <- structure(collect(remote))
+getit <- structure(collect(remote, n = Inf))
 
-# getit <- filter(getit, scoreType %in% c("CRPS Skill Score", "CRPSS", "RMSE Skill Score", "RMSES", "Brier Skill Score")) # , "CORR"
+# getit <- filter(getit, dataPackageGUID == "SMHI2222")
+
+# getit <- filter(getit, locationID %in% list.lots.basins.ehype)
+
 
 # move to REACTIVE section so this can be datamined "live"
 # reduced <- filter(getit, locationID %in% c('S2242510', 'L4411710') & scoreType == "CRPS")
@@ -77,6 +81,7 @@ getit <- structure(collect(remote))
 
 # base plot "all skill scores"
 # getit <- filter(getit, leadtimeValue %in% 1:2)
+unique(getit$dataPackageGUID)
 unique(getit$scoreType)
 unique(getit$forecastType)
 unique(getit$datePartValue)
@@ -89,7 +94,9 @@ mngetit <- summarySE(
   na.rm = TRUE
 )
 
-qplot(factor(leadtimeValue), y = scoreValue, data = mngetit, facets=locationID)
+length(unique(mngetit$locationID))
+
+qplot(factor(leadtimeValue), y = scoreValue, data = mngetit, facets = scoreType ~ locationID)
 
 
 # this shows all months

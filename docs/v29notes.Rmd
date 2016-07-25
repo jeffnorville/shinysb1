@@ -1,0 +1,249 @@
+---
+title: "Rapport d'étape - juillet"
+author: "Jeff"
+date: "25 julliet 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Week 29, 2016
+Welcome to week 20 of 25.
+
+```{r plot il reste, echo = FALSE}
+thesis.duration <- 25
+this.week <- 20
+yikes <- c(this.week, thesis.duration - this.week) / thesis.duration
+barplot(as.matrix(yikes), horiz=TRUE, beside=FALSE)
+title(main = paste("I must be ", yikes[1]*100, "% done!"), font = 3)
+
+```
+
+### Big changes:
+
+Got a little feedback on the RDS file import, adding a text (csv, .dat) import format too.
+
+TODOs:
+ * New docs this week -- to be announced
+ * New plots needed in tool
+ * When uploading a second/replacement file, interface is "buggy" - file not replaced; status bar sticks; etc
+ * we still have to solve the problem of loading without overwriting conflicting variables by name...
+
+Lingering notes from June discission:
+ - upload
+ - display
+ - modify (active / off point data)
+ 
+ 
+Research into FTP file server vs upload realtime / physical 
+
+New "landing" page
+
+ 
+```{r eval=FALSE}
+#clever function which loads an RData file, and returns it
+loadRData <- function(fileName){
+    load(fileName)
+    get(ls()[ls() != "fileName"])
+}
+d <- loadRData("~/Rhome/example.RData")
+```
+
+Viewer App got a new workflow last week:
+
+* MAPS -- introducing rworldmap and leaflet
+    + user sees locations selected for comparison with country/coast outline
+    + user selects "Case Study" from map
+    
+The map implementation got a little complicated, and I'll add a summary here to copier / collier to the memoire later...
+
+Roughly, ggmap is fine, shows simple little static maps, but has the misfortune of looking like google maps (because that's the static base) -- so it's a UI nightmare for those expecting to be able to click & zoom. Not great.
+
+**rworldmaps** is a nice database of raster data which is generally used to show country outlines, then build chloropleth maps on top; since (at this moment) we're not interested in political boundaries but things like watershed boundaries (maybe) or model boundaries (more arbitrary) this might not be useful.
+
+**leaflet** -- naturally the most complicated of the lot, this provides the interface to click on the map; see data updated in an adjacent column; and filter the panel data to be reflected on the map.
+
+To allow all this leaflet implements a layer system which makes adding data a little more complex ... should probably not dig TOO much into this as it's a time sponge!!
+
+  
+
+* User begins by selecting Forecast Type between
+    + Seasonal
+    + Short Range, or
+    + Medium Range
+
+* then select a Forecast System:
+    + ECMWF
+    + GR4J
+    + user-added...
+
+* or selects a Casy Study from map
+
+
+* Am still considering a superuser-type tool to postgresql built in MS Access...
+    + Irstea has MS Office Pro (for Windows users)
+    + MS Access plays nicely with postgresql
+    + can import / export data
+    + should be able to RAD in August if not before
+    +  a way to avoid per-machine DSN setup
+        + http://www.postgresonline.com/journal/archives/24-Using-MS-Access-with-PostgreSQL.html
+        
+ 
+### Modified database stuff:
+
+I'm still getting to know PostgreSQL. This week I'm changing stuff (again):
+
+ * datatype `numeric` to datatype `double`
+    + `numeric` is an "exact" datatype
+    + an approximation is better for score data
+    + and also for lat / long
+    + `numeric` is great for monetary DBs, not so great for doing maths
+    + https://www.postgresql.org/docs/current/static/datatype-numeric.html#DATATYPE-FLOAT
+    + 
+
+These ideas brought to you by `postgresql.org`:
+
+https://www.postgresql.org/docs/9.1/static/datatype-numeric.html#DATATYPE-NUMERIC-DECIMAL
+
+valid floating point values include:
+    + Infinity
+    + -Infinity
+    + NaN
+
+Resolved the date issue -- infile specifies simply
+
+ * start date
+ * end date (optional)
+ * time steps
+ 
+ 
+
+Dates -- 7 july we discussed changing the date format type to "Julian dates". However, there seems to be a lot of disagreement to what exactly that means ...
+
+http://www.cpearson.com/excel/jdates.htm
+
+https://cran.r-project.org/web/packages/date/date.pdf
+
+Convert to Julian Dates
+Description
+Given a month, day, and year, returns the number of days since January 1, 1960.
+Usage
+mdy.date(month, day, year, nineteen = TRUE, fillday = FALSE,
+fillmonth = FALSE)
+
+### To Read
+I'm watching DataCamp's "writing functions in R" series, free so far, and useful!
+
+I note I'm not using R's functions well at all. Also pipes -- reading Yonicd's code (link below) mystifies me. Time to level up.
+
+* to fix my fileInput dialogue:
+    + https://gist.github.com/davidarndt/bc09d77fa92457e094c8
+    
+* need some of the magic Yonicd uses in this elections Shiny app:
+    + https://github.com/yonicd/Elections
+
+* button export (image only) to PDF
+    + http://stackoverflow.com/questions/27276994/outputting-shiny-non-ggplot-plot-to-pdf
+    + https://gist.github.com/yihui/6091942
+    
+* little map demo
+    + leaflet:
+    + https://rstudio.github.io/leaflet/shiny.html
+    +     
+    
+ 
+
+```{r plot plot from shiny}
+library(dplyr)
+library(lazyeval)
+library(ggplot2)
+
+play.data <- read.delim("~/R/shinysb1/docs/play.data.txt")
+play.data$locationID <- as.factor(play.data$locationID)
+plot(play.data$leadtimeValue, play.data$scoreValue, col=play.data$locationID, 
+     xlab = "Lead Times", ylab = "Score")
+     
+# get fancier
+pd <- position_dodge(0.2)
+min.LT <- min(play.data$leadtimeValue)
+max.LT <- max(play.data$leadtimeValue)
+
+ggplot(play.data, aes(color = locationID, x = leadtimeValue, y = scoreValue )) +
+  geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), position = pd) + # , color="grey"
+  geom_line() +
+  geom_point(aes(color = locationID), position = pd) +
+  geom_hline(aes(yintercept=0), color="blue", linetype="dashed") + 
+  scale_y_continuous(breaks=c(min.LT:max.LT)) +
+  xlab("Lead Times") + ylab("Score")
+     
+```
+
+ 
+ 
+
+We also simplified the wording on the display again; I need to follow this with database logic to be sure names are clear and sensible (self-documenting).
+
+I'm also adding a layer of reactivity BEFORE the filter function; now we have a box filled by database which lists which packages are available:
+
+
+# Images of current interface
+![CRPS for 2 locs, 10 LTs](../figures/2016-06-17_2locsCRPS.png)
+
+This week I need to: 
+
+* prep slides for 10 minute "wave peaks" presentation
+    + less technic, more "qualitative" study
+    + underscore the utility in comparing score types
+    + examples of other scoreboards...?
+    
+* Enhance data import definition 
+    + example file
+    + user preview (?) before database import run
+    
+* Change interface:
+    + reduce "summary";
+    + reduce emphasis on conf interval plot (ci and se agglom function, summarySE);
+    + add ability to post 2eme Score Type to same page (or more?)
+    
+Planning:
+* ggplot libraries
+    + facet;
+    + map (GDAL);
+    
+
+
+
+### Old Notes (for my reference):
+
+Got access to a 2013 netCDF [development branch for SOS DB] (https://svn.52north.org/svn/swe/main/SOS/Service/branches/52n-sos-netCDF/), so I'll look into that this week to understand better our options for accomodating netCDF files (a soft requirement which we won't implement without motivation!).
+
+* Some helpful r debugging links:
+    + http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/
+    + http://shiny.rstudio.com/articles/debugging.html
+
+Keeps coming back up (particularly for multiple users in web app!) but not dealt with:
+    + http://shiny.rstudio.com/reference/shiny/latest/session.html
+
+NetCDF links:
+http://www.unidata.ucar.edu/software/netcdf/docs/faq.html#How-do-I-convert-netCDF-data-to-ASCII-or-text
+http://www.unidata.ucar.edu/software/netcdf/examples/files.html
+Discussion(s) of handling time using netCDF:
+http://www.unidata.ucar.edu/software/netcdf/time/
+http://www.unidata.ucar.edu/software/netcdf/time/recs.html
+
+Some NetCDF files from our friends at ECMWF:
+http://apps.ecmwf.int/datasets/
+
+O'Reilly always publishes goodness, re-reminging myself to remember this later:
+http://www.cookbook-r.com/Graphs/
+
+Something to look into on my time -- confidence Intervals discussed in different context:
+http://learnbayes.org/papers/confidenceIntervalsFallacy/introduction.html
+...with nifty Shiny app to illustrate Figs 1 - 5 from article:
+https://richarddmorey.shinyapps.io/confidenceFallacy/
+http://learnbayes.org/papers/confidenceIntervalsFallacy/
+
+Tools for LaTeX:
+https://www.codecogs.com/latex/eqneditor.php
+
