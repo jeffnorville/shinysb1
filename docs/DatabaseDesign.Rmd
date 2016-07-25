@@ -1,0 +1,69 @@
+---
+title: "Database Design Document"
+author: "Jeff Norville"
+date: "25 juillet 2016"
+output: 
+  word_document: 
+    fig_caption: yes
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Score Database
+
+This document describes the database or "backend" referred to as the Verification Score database.
+
+## Guidelines
+
+
+
+We've designed the Loader application to accept text or Rdata files, to help guide the user through the import, but there are also some rules for the data you should know upfront:
+
+1. Names shouldn't exceed 200 characters (*and* the longer the name, the funnier the plots look)
+2. Required fields may be relied on to link to other data elements, or to calculate time or date ranges, etc. Please be as complete (and precise) as possible.
+3. Optional fields are ... self-explanatory
+4. If you make a mistake, that's fine -- but the nature of this database doesn't make corrections easy! You'll need to "turn off" your entire submission and do a second one, and the old submission will eventually be "garbage collected" out of the database
+
+# SQL database
+
+What is meant by SQL database is
+
+
+
+
+## Field names
+
+I try to adhere to R naming conventions. Accordingly, I avoid spaces, "CamelCase", and use periods (.) to seperate terms. However, you can use most characters in your variable names; the following are NOT permitted: 
+
+
+
+## Departure from Rds file
+
+The Rds file import provides a less-complicated internal validation process, and is encouraged. However, it may be more complicated - or impractical - to implement for some users.
+
+For smaller dataloads, text file and/ or Excel file uploads may work most efficiently.
+
+However, note that only ONE SCORE TYPE may be submitted for each file import. Subsequent loads may be copy/pasted into the same file format, maintaining (largely) the same metadata.
+
+## Sample Format
+
+
+
+# Technical Details 
+
+## Additions
+
+
+## Editing data
+
+
+
+-----
+
+# More Reading
+
+For more insights into the data format you can read this document:
+
