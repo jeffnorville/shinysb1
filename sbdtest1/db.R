@@ -68,11 +68,12 @@ remote <- filter(tbl.scores,
 
 remote <- filter(remote, dataPackageGUID == "SMHI2222")
 
+remote <- filter(remote, locationID %in% list.lots.basins.ehype)
+
 getit <- structure(collect(remote, n = Inf))
 
 # getit <- filter(getit, dataPackageGUID == "SMHI2222")
 
-# getit <- filter(getit, locationID %in% list.lots.basins.ehype)
 
 
 # move to REACTIVE section so this can be datamined "live"
@@ -85,18 +86,58 @@ unique(getit$dataPackageGUID)
 unique(getit$scoreType)
 unique(getit$forecastType)
 unique(getit$datePartValue)
+unique(getit$modelVariable)
+
+
+
+
 
 # average scores by locn, LT and scoreType
 mngetit <- summarySE(
   getit,
   measurevar = "scoreValue",
-  groupvars = c("locationID", "leadtimeValue", "scoreType"),
+  groupvars = c("locationID", "leadtimeValue", "scoreType", "forecastType"),
   na.rm = TRUE
 )
 
+
 length(unique(mngetit$locationID))
 
-qplot(factor(leadtimeValue), y = scoreValue, data = mngetit, facets = scoreType ~ locationID)
+# SkillScoreDashboard
+ggplot(mngetit, aes(x = leadtimeValue,  y = scoreValue, na.rm = TRUE, colour = locationID) ) +
+  geom_line() +
+  geom_point() +
+  scale_shape_identity() +
+  facet_grid(scoreType ~.)
+
+
+### Working on arror trend
+ggplot(mngetit, aes(x = leadtimeValue,  y = scoreValue, na.rm = TRUE, colour = locationID) ) +
+  if (mngetit$scoreValue[[1]] > mngetit$scoreValue[[-1]]) {
+    111    
+  } else {
+    222
+  }
+  geom_line() +
+  geom_point() +
+  scale_shape_identity() +
+  facet_grid(scoreType ~.)
+
+# ColorBrewer for color ramps
+
+
+# B&W faceted, not bad
+qplot(factor(leadtimeValue), 
+      y = scoreValue, 
+      data = mngetit, 
+      facets = scoreType ~ locationID)
+
+ggplot(data = mngetit,
+       aes(x = leadtimeValue, 
+      y = scoreValue, 
+      facets = scoreType ~ locationID))
+
+
 
 
 # this shows all months
