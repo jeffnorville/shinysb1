@@ -59,6 +59,7 @@ shinyServer(function(input, output, session) {
     
     remote <- filter(remote,
       scoreNA == FALSE & #more like "bad data" now, contains -Infinity too
+        
       modelVariable == input$rtnModelVariable &
         forecastType == input$rtnForecastType &
         scoreType == input$rtnScoreType # &

@@ -90,13 +90,20 @@ unique(getit$modelVariable)
 
 
 
-
-
-# average scores by locn, LT and scoreType
+# average scores by locn, LT and scoreType (builds stats based on month)
 mngetit <- summarySE(
   getit,
   measurevar = "scoreValue",
   groupvars = c("locationID", "leadtimeValue", "scoreType", "forecastType"),
+  na.rm = TRUE
+)
+
+
+# average scores by locn, LT and scoreType AND MONTH
+mngetit <- summarySE(
+  getit,
+  measurevar = "scoreValue",
+  groupvars = c("locationID", "leadtimeValue", "scoreType", "forecastType", "datePartValue"),
   na.rm = TRUE
 )
 
@@ -111,17 +118,35 @@ ggplot(mngetit, aes(x = leadtimeValue,  y = scoreValue, na.rm = TRUE, colour = l
   facet_grid(scoreType ~.)
 
 
-### Working on arror trend
-ggplot(mngetit, aes(x = leadtimeValue,  y = scoreValue, na.rm = TRUE, colour = locationID) ) +
-  if (mngetit$scoreValue[[1]] > mngetit$scoreValue[[-1]]) {
-    111    
-  } else {
-    222
-  }
-  geom_line() +
-  geom_point() +
+unique(playdata$scoreType)
+unique(playdata$locationID)
+
+playdata <- mngetit
+
+### Working on error trend
+ggplot(playdata, aes(x = leadtimeValue,  y = scoreValue, na.rm = TRUE, colour = locationID) ) +
+  scale_y_continuous(name="") +
+  scale_x_continuous(name="") +
   scale_shape_identity() +
-  facet_grid(scoreType ~.)
+  geom_point(shape=24, size=5) + # color=
+  facet_grid(locationID ~ scoreType)
+# locationID
+# for production: scoreType
+
+
+
+
+ggplot(playdata, aes(x = leadtimeValue,  y = scoreValue, na.rm = TRUE, colour = locationID) ) +
+  scale_y_continuous(name="") +
+  scale_x_continuous(name="") +
+  scale_shape_identity() +
+  if (playdata$scoreValue[[1]] < playdata$scoreValue[[2]]) {
+    geom_point(shape=24) 
+  } else {
+    geom_point(shape=25) 
+  } +
+  facet_grid(locationID ~.)
+
 
 # ColorBrewer for color ramps
 
@@ -147,9 +172,17 @@ ggplot(getit, aes(x = leadtimeValue, y = scoreValue, na.rm = TRUE, colour = loca
 
 # avgd scores by month
 # this shows all months
+weedsubset(mngetit, locationID %in% list.lots.basins.ehype)
+
 ggplot(mngetit, aes(x = leadtimeValue, y = scoreValue, na.rm = TRUE, colour = locationID)) +
-  geom_point() +
-  facet_grid(scoreType ~ .)
+  if (mngetit$scoreValue[[1]] < mngetit$scoreValue[[2]]) {
+    geom_point(shape=24)
+  } else {
+    geom_point(shape=25)
+  } +
+  facet_grid(locationID ~ .)
+
+# facet_grid(scoreType ~ .)
 
 unique(mngetit$locationID[1:40])
 length(mngetit$locationID==8000133)

@@ -3,6 +3,26 @@
 
 require(DT)
 library(uuid)
+expected.names <- c('location.name', 
+                    'mean.error', 
+                    'start.date', 
+                    'end.date', 
+                    'members', 
+                    'lead.times', 
+                    'timestep', 
+                    'provider.organization.name', 
+                    'forecast.system', 
+                    'member.count', 
+                    'area', 
+                    'provider.firstname', 
+                    'provider.lastname', 
+                    'provider.email', 
+                    'provider.phone', 
+                    'forecast.frequency', 
+                    'lead.time.interval', 
+                    'centerX', 
+                    'centerY')
+
 
 shinyUI(bootstrapPage(
 
@@ -28,12 +48,17 @@ shinyUI(bootstrapPage(
 	mainPanel(
 		h4("Summary"),
 		verbatimTextOutput("filename"),
-		verbatimTextOutput("names")
+		verbatimTextOutput("rds.names"),
+
+		h4(paste("The following fields were expected in the RDS file upload: " , expected.names)) ,
+	
 		
-		# ,
-		# verbatimTextOutput("fh.rds")
-		# "output$fh.rds"
-		# toto <- readRDS()
+		# find the missing names
+		missing.name <- setdiff(expected.names, "rds.names"),
+		
+		# find the "extra", or unexpected, names
+		extra.name <- setdiff("rds.names", expected.names)
+		
 		
 	)
 

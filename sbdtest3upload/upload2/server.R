@@ -53,7 +53,8 @@ shinyServer(function(input, output, session) {
 	})
 
 	
-	output$names <- renderText({
+	output$rds.names <- renderText({
+	  file.content <- readRDS(file = input$file1$datapath) # going direct?
 	  return(names(file.content))
 	})
 	

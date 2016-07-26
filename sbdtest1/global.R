@@ -8,6 +8,33 @@ mse <- function(x, series){
   mean((series - x)^2)
 }
 
+# accepts dataframe
+# gives ggplot object with triangle trend, 
+# oriented H = horizontal or V vertical
+triangle.plot <- function(data = NULL, plotvar, groupvars=NULL, oriented = "H", na.fm=FALSE, color.ramp = TRUE){
+  library(ggplot2)
+  #handling NAs as in other funcs
+  len2 <- function (x, na.rm=FALSE) {
+    if (na.rm) sum(!is.na(x))
+    else       length(x)
+  }
+  
+  # for each group's df, return a plot of N-1 triangles showing trend (typical btw LTs)
+  # if colorramp = T, colored by magnitude of variation (within df)
+  data2 <- plyr::ddply(data, groupvars, .drop=.drop,
+                       .fun = function(xx, col) {
+                         c(N    = length2(xx[[col]], na.rm=na.rm),
+                           mean = mean   (xx[[col]], na.rm=na.rm)
+                         )
+          }
+      )
+                         
+    
+  g <- qplot(data2, groupvars)
+  
+}
+
+
 ## Gives count, mean, standard deviation, standard error of the mean, and confidence interval (default 95%).
 ##   data: a data frame.
 ##   measurevar: the name of a column that contains the variable to be summariezed
@@ -29,7 +56,6 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
   
   # This does the summary. For each group's data frame, return a vector with
   # N, mean, and sd
-  
   datac <- plyr::ddply(data, groupvars, .drop=.drop,
                  .fun = function(xx, col) {
                    c(N    = length2(xx[[col]], na.rm=na.rm),
