@@ -16,8 +16,13 @@ library(RPostgreSQL)
 library(lazyeval)
 library(ggplot2)
 library(DT)
+library(leaflet)
 
+# leaflet
+r_colors <- rgb(t(col2rgb(colors()) / 255))
+names(r_colors) <- colors()
 
+# dplyr
 db <- src_postgres(
   dbname = REdbname,
   host = REhost,
@@ -91,21 +96,38 @@ shinyUI(
   fluidPage(
     # Application title
     img(src = "imprex.png", height = 100),
-    
-    titlePanel("Scoreboard"),
-    
-    navbarPage(title=div("Verification Scoreboard")
-               
-    ),
+    # navbarPage(title=div("Verification Scoreboard")
+    # ),
     
     fluidRow(
       column(
         4,
-        wellPanel(selectInput(
-          "rtnByPackage",
-          "Data source:",
-          c(ctlDataPackageList$dataPkgFriendlyName)
-        )),
+        wellPanel(
+          # first input is forecast type
+          selectInput(
+            "rtnForecastRangeType",
+            "Forecast Range:",
+             c("Short Range Forecast" = "days", 
+              "Medium-Range Forecasts" = "months",
+              "Long-Range Forecasts" = "years")
+          ),
+          
+          # second:  forecast system
+          selectInput(
+            "rtnForecastSystem",
+            "System:",
+            c("System 1" = "sys1", 
+              "System 2" = "sys2",
+              "System 3" = "sys3")
+          )
+          
+          
+        #   selectInput(
+        #   "rtnByPackage",
+        #   "Data source:",
+        #   c(ctlDataPackageList$dataPkgFriendlyName)
+        # )
+        ), # wellPanel
         
         wellPanel(
           h4("Filter Criteria"),
@@ -146,9 +168,9 @@ shinyUI(
             checkboxInput('returnpdf', 'output pdf?', FALSE),
             conditionalPanel(
               condition = "input.returnpdf == true",
-              strong("PDF size (inches):"),
-              sliderInput(inputId="w", label = "width:", min=3, max=20, value=8, width=100, ticks=F),
-              sliderInput(inputId="h", label = "height:", min=3, max=20, value=6, width=100, ticks=F),
+              strong("PDF size (cm):"),
+              sliderInput(inputId="w", label = "width:", min=5, max=50, value=16, width=200, ticks=F),
+              sliderInput(inputId="h", label = "height:", min=5, max=50, value=12, width=200, ticks=F),
               br(),
               downloadLink('pdflink')
             )
@@ -158,7 +180,11 @@ shinyUI(
       #fluidRow
     ,
 
-      mainPanel(
+    column(
+      8,
+      ### scoreboard
+      titlePanel("Scoreboard"),
+      # mainPanel(
         # new layout
         tabsetPanel(type = "tabs", 
                     
@@ -181,9 +207,20 @@ shinyUI(
                    DT::dataTableOutput("table")
                    
                    )
-            ) # tabsetPanel
-          
-      ) #mainPanel
+            ), # tabsetPanel
+      
+          wellPanel(
+            h4("Map of selected locations"),
+            # map
+            leafletOutput("mymap"),
+            p(),
+            actionButton("recalc", "New points")
+            
+            
+          )
+      
+      
+      ) #column = 8
   )
 ) #sidebarPanel
 )

@@ -23,23 +23,37 @@ db <- src_postgres(
   user = REuser,
   password = REpassword
 )
-tbl_scores <- tbl(db, "tblScores")
+tbl.scores <- tbl(db, "tblScores")
 # do.facets = FALSE
 
 shinyServer(function(input, output, session) {
+  
+  
   #filter DB dataframe based on (default) selections
   filtInput <- reactive({
 
+    if ("rtnForecastRangeType" == "days") {
+      remote <- filter(tbl.scores,
+                       datePartUnit == input$rtnForecastRangeType)
+    } else if ("rtnForecastRangeType" == "months") {
+      remote <- filter(tbl.scores,
+                       datePartUnit == input$rtnForecastRangeType)
+    } else if ("rtnForecastRangeType" == "years") {
+      remote <- filter(tbl.scores,
+                       datePartUnit == input$rtnForecastRangeType)
+    }
+    
+    
     if (is.null(input$rtnLocid)) {
       return(NULL)
     }
     else if (length(input$rtnLocid) == 1) {
-      remote <- filter(tbl_scores,
+      remote <- filter(tbl.scores,
                        locationID == input$rtnLocid)
     }
     else {
       # more than one locID chosen
-      remote <- filter(tbl_scores,
+      remote <- filter(tbl.scores,
                        locationID %in% input$rtnLocid)
     }
     
@@ -54,6 +68,20 @@ shinyServer(function(input, output, session) {
     getit <- structure(collect(remote)) #database hit
     
   }) #end reactive
+
+  # map
+  points <- eventReactive(input$recalc, {
+    cbind(rnorm(40) * 2 + 13, rnorm(40) + 48)
+  }, ignoreNULL = FALSE)
+  
+  output$mymap <- renderLeaflet({
+    leaflet() %>%
+      addProviderTiles("Stamen.TonerLite",
+                       options = providerTileOptions(noWrap = TRUE)
+      ) %>%
+      addMarkers(data = points())
+  })
+  # end map
   
 
   output$table <- renderDataTable({
