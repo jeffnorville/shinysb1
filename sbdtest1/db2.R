@@ -20,7 +20,7 @@ library(ggplot2)
 
 if (is.null(RElanguage) || RElanguage=="")  {
   language = 1
-  } else {
+} else {
   language = RElanguage
 }
 
@@ -54,19 +54,19 @@ list.lots.basins.ehype <- c(
 
 
 remote <- filter(tbl.scores, 
-                   # scoreNA == FALSE &
-                   # locationID %in% list.lots.basins.ehype &
-                   # locationID %in% c('S2242510', 'L4411710') &
-                   # dataPackageGUID == "" &
-                   modelVariable == "Streamflow" &
+                 # scoreNA == FALSE &
+                 # locationID %in% list.lots.basins.ehype &
+                 # locationID %in% c('S2242510', 'L4411710') &
+                 # dataPackageGUID == "" &
+                 modelVariable == "Streamflow" &
                    forecastType  == "Linear Scaling (Seasonal_LS_month)" &
                    scoreType %in% c("CRPS Skill Score", "CRPSS", "RMSE Skill Score", "RMSES", "Brier Skill Score")
-                   # "Linear Scaling (Seasonal_LS_month)"
-                   # forecastType  == "Seasonal_EDMD_month" &
-                   # summarizeByTime == "All" &
-                   # scoreType    == "CRPS" &
-                   # leadtimeValue %in% toto
-  )
+                 # "Linear Scaling (Seasonal_LS_month)"
+                 # forecastType  == "Seasonal_EDMD_month" &
+                 # summarizeByTime == "All" &
+                 # scoreType    == "CRPS" &
+                 # leadtimeValue %in% toto
+)
 
 remote <- filter(remote, dataPackageGUID == "SMHI2222")
 
@@ -105,24 +105,19 @@ mngetit <- summarySE(
 mngetit <- summarySE(
   getit,
   measurevar = "scoreValue",
-  groupvars = c("locationID", "leadtimeValue", "scoreType", "forecastType"),
+  groupvars = c("locationID", "leadtimeValue", "scoreType", "forecastType", "datePartValue"),
   na.rm = TRUE
 )
 
 
-(unique(mngetit$N))
-(unique(mngetit$locationID))
-
-
+length(unique(mngetit$locationID))
 
 # SkillScoreDashboard
 ggplot(mngetit, aes(x = leadtimeValue,  y = scoreValue, na.rm = TRUE, colour = locationID) ) +
   geom_line() +
   geom_point() +
   scale_shape_identity() +
-  facet_grid(scoreType ~.) +
-  xlab("Lead Times") + ylab("Score")
-
+  facet_grid(scoreType ~.)
 
 
 unique(playdata$scoreType)
@@ -131,15 +126,12 @@ unique(playdata$locationID)
 playdata <- mngetit
 
 ### Working on error trend
-ggplot(mngetit, aes(x = leadtimeValue,  y = scoreValue, na.rm = TRUE, colour = scoreValue) ) +
-  geom_point() +  
-  # scale_y_continuous(name="") +
-  # scale_x_continuous(name="") +
-  # scale_shape_identity() +
-  # geom_point(shape=24, size=5) + # color=
-  facet_grid(scoreType ~ locationID) +
-  xlab("Lead Times") + ylab("Score")
-
+ggplot(playdata, aes(x = leadtimeValue,  y = scoreValue, na.rm = TRUE, colour = locationID) ) +
+  scale_y_continuous(name="") +
+  scale_x_continuous(name="") +
+  scale_shape_identity() +
+  geom_point(shape=24, size=5) + # color=
+  facet_grid(locationID ~ scoreType)
 # locationID
 # for production: scoreType
 
@@ -173,8 +165,8 @@ qplot(factor(leadtimeValue),
 
 ggplot(data = mngetit,
        aes(x = leadtimeValue, 
-      y = scoreValue, 
-      facets = scoreType ~ locationID))
+           y = scoreValue, 
+           facets = scoreType ~ locationID))
 
 
 
@@ -231,19 +223,19 @@ length(mngetit$locationID)
 
 
 
-  geom_linerange()
-  geom_qq()
-  geom_dotplot()
+geom_linerange()
+geom_qq()
+geom_dotplot()
 
 
 ?pch
 plot -- adding points to a plot  
-  
-  
-  plot(getit$leadtimeValue, getit$scoreValue, col=getit$locationID)
 
 
-            # xlab = "Lead Times", ylab = "Score")
+plot(getit$leadtimeValue, getit$scoreValue, col=getit$locationID)
+
+
+# xlab = "Lead Times", ylab = "Score")
 
 
 
@@ -333,7 +325,7 @@ ggplot(local, aes(x = leadtimeValue, y = scoreValue, fill  = locationID)) +
   geom_boxplot()
 
 
-  geom_point(aes(color = locationID)) +
+geom_point(aes(color = locationID)) +
   geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci),width=.1, position=pd) +
   xlab("Lead Times") + ylab("Score") 
 
@@ -409,5 +401,5 @@ ma <- function(x, n=2, partial=TRUE){
     res[-c(seq(1,n-1,1))] #remove the n-1 first,i.e., res[c(-3,-4,...)]
   }
 }
-  # ggp + facet_grid(scoreValue ~ leadtimeValue)
+# ggp + facet_grid(scoreValue ~ leadtimeValue)
 

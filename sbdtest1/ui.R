@@ -35,19 +35,20 @@ tbl.interface <- tbl(db, "tblInterface")
 
 #selectInput boxes
 
-tmpScoreType <-
-  filter(tbl(db, "tblInterface"),
-         ObjectName == "Score Type" & LanguageID == RElanguage)
-ctlScoreType <- collect(tmpScoreType)
+# tmpScoreType <-
+#   filter(tbl(db, "tblInterface"),
+#          ObjectName == "Score Type" & LanguageID == RElanguage)
+# ctlScoreType <- collect(tmpScoreType)
 
-tmpSkillScoreType <-
-  filter(
-    tbl(db, "tblInterface"),
-    ObjectName == "Score Type" &
-      ObjectItemName %like% "%Skill Score" &
-      LanguageID == RElanguage
-  )
-ctlSkillScoreType <- collect(tmpSkillScoreType)
+# tmpSkillScoreType <-
+#   filter(
+#     tbl(db, "tblInterface"),
+#     ObjectName == "Score Type" &
+#       ObjectItemName %like% "%Skill Score" &
+#       LanguageID == RElanguage
+#   )
+# 
+# ctlSkillScoreType <- collect(tmpSkillScoreType)
 
 tmpModelVariable <-
   filter(tbl(db, "tblInterface"),
@@ -65,23 +66,24 @@ ctlForecastType <- collect(tmpForecastType)
 # ctlCaseStudy <- collect(tmpCaseStudy)
 
 # tmpDataPackageList <- filter(tbl(db, "tblDataLoad"))
-tmpDataPackageList <-
-  distinct(
-    select(
-      tbl.dataload,
-      dataPackageGUID,
-      importResponsable,
-      dataPkgFriendlyName,
-      validPackage
-    )
-  )
-ctlDataPackageList <- collect(tmpDataPackageList)
-ctlDataPackageList <-
-  arrange_(ctlDataPackageList, "dataPackageGUID", "dataPkgFriendlyName")
 
-tmpInterface <-
-  distinct(select(tbl.interface, ObjectName, ObjectItemName, LanguageID))
-ctlInterface <- collect(tmpInterface)
+# tmpDataPackageList <-
+#   distinct(
+#     select(
+#       tbl.dataload,
+#       dataPackageGUID,
+#       importResponsable,
+#       dataPkgFriendlyName,
+#       validPackage
+#     )
+#   )
+# ctlDataPackageList <- collect(tmpDataPackageList)
+# ctlDataPackageList <-
+#   arrange_(ctlDataPackageList, "dataPackageGUID", "dataPkgFriendlyName")
+
+# tmpInterface <-
+#   distinct(select(tbl.interface, ObjectName, ObjectItemName, LanguageID))
+# ctlInterface <- collect(tmpInterface)
 
 
 # Define UI for application that draws a histogram
@@ -101,12 +103,13 @@ shinyUI(fluidPage(# Application title
           c(
             "Central European Rivers" = 1,
             "South-East French Catchments" = 2,
-            "Júcar River Basin in eastern Spain" = 3,
-            "Lake Come basin in the Italian Alpine region" = 4,
-            "Upper River Umeälven in Sweden" = 5,
-            "Segura River Basin in the Iberian Peninsula" = 6,
-            "The Llobregat River Basin in north-eastern Spain" = 7,
-            "The Messara valley in Crete" = 8
+            "Júcar River Basin (Spain)" = 3,
+            "Lake Como Basin (Italy)" = 4,
+            "Upper Umeälven River (Sweden)" = 5,
+            "Segura River Basin (Iberian Peninsula)" = 6,
+            "The Llobregat River Basin (Spain)" = 7,
+            "The Messara Valley (Crete)" = 8,
+            "Test Case Study (LC)" = 9
           ),
           selected = 1
         ),
@@ -172,6 +175,19 @@ shinyUI(fluidPage(# Application title
       ### scoreboard
       titlePanel("Scoreboard"),
       # mainPanel(
+      wellPanel(
+        h4("Filter Criteria"),
+        # conditionalPanel(
+        #   # check we have data from DB
+        #   condition = !is.na("table"), # DT::dataTableOutput("table")
+
+          column(2,uiOutput("Location")),
+          column(2,uiOutput("Variable")),
+          column(2,uiOutput("Forecast System")),
+          column(2,uiOutput("Score Type"))
+
+        # ) # conditionalPanel
+      ), #wellPanel
       
       tabsetPanel(
         type = "tabs",
@@ -179,63 +195,23 @@ shinyUI(fluidPage(# Application title
         tabPanel(
           "Plot",
           h4("Select and filter data to create "),
-          p("Create a plot by selecting data"),
+          p("Create plot by selecting data"),
           plotOutput("seriesPlot")
           
         ),
         tabPanel(
           "Panel plots",
           h4("Select and filter data to create "),
-          p("Create a plot by selecting data"),
+          p("Create plots by selecting data"),
           plotOutput("facetPlot")
         ),
         tabPanel(
           "Table",
           h4("Table of corresponding values"),
-          p("Create a plot by selecting data"),
+          p("Create table by selecting data"),
           DT::dataTableOutput("table")
         )
-      ),
-      # tabsetPanel
-      
-      
-      wellPanel(
-        h4("Filter Criteria"),
-        conditionalPanel(
-          # first.select <- 1,
-          # condition = length(first.select)>0,
-
-          # tmpLocationName <-
-          #   distinct(select(tbl.scores, locationID, dataPackageGUID))
-          ctlLocationName <- data.frame(getit$locationID),
-          ctlLocationName <- distinct(ctlLocationName),
-          browser(),
-          
-          selectInput("rtnLocid",
-                      multiple = TRUE,
-                      "Location:", c(structure(
-                        ctlLocationName # $locationID
-                      ))),
-          # , selected=NULL),),
-          selectInput("rtnModelVariable",
-                      "Variable:", c(
-                        sort.int(ctlModelVariable$ObjectItemName)
-                      ),
-                      selected = "Streamflow"),
-          selectInput("rtnForecastType",
-                      "Forecast System:", c(
-                        sort.int(ctlForecastType$ObjectItemName)
-                      )),
-          selectInput("rtnScoreType",
-                      "Score:", c(sort.int(
-                        ctlScoreType$ObjectItemName
-                      ))),
-          selectInput("rtnScoreType",
-                      "Skill Score:", c(
-                        "All Skill Scores", sort.int(ctlScoreType$ObjectItemName)
-                      ))
-        ) # conditionalPanel
-      ) #wellPanel
+      )  # tabsetPanel
       
       # wellPanel(
       #   h4("Map of selected locations"),

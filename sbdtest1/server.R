@@ -31,16 +31,16 @@ shinyServer(function(input, output, session) {
   
   
   #filter DB dataframe based on (default) selections
-  filtInput <- reactive({
+  # was filtInput
+  initial.query <- reactive({
 
     ############### first select
-    
     # ForecastSystem
     if (length(input$rtnForecastSystem) == 1){
-      remote <- filter(tbl.scores, forecast.system == input$rtnForecastSystem)
+      remote <- filter(tbl.scores, forecastSystem == input$rtnForecastSystem)
     }
     else if (length(input$rtnForecastSystem) > 1){
-      remote <- filter(tbl.scores, forecast.system %in% input$rtnForecastSystem)
+      remote <- filter(tbl.scores, forecastSystem %in% input$rtnForecastSystem)
     }
     # ForecastType
     if (length(input$rtnForecastType) == 1){
@@ -58,36 +58,93 @@ shinyServer(function(input, output, session) {
     )
     
     getit <- structure(collect(remote)) #database hit
+  }) #end reactive
 
+  # define Filters
+  output$Location <- renderUI({
+      Location=structure(unique(initial.query()$locationID))
+      selectInput("Location","Location Filter", choices = Location, multiple=T)
+  })
+
+  output$ModelVariable <- renderUI({
+    ModelVariable=c(unique(initial.query()$modelVariable))
+    selectInput("ModelVariable","Variable Filter", choices = ModelVariable, selected = "Streamflow", multiple=F)
+  })
+  
+  output$ForecastType <- renderUI({
+    ForecastType=c(unique(initial.query()$forecastType))
+    selectInput("ForecastType","Forecast Type", choices = ForecastType,  multiple=T)
+  })
+
+  output$ScoreType <- renderUI({
+    ScoreType=c(unique(initial.query()$scoreType))
+    selectInput("ScoreType","Score", choices = ScoreType, selected = "CRPS", multiple=T)
+  })
+  
+  # selectInput("rtnLocid",
+  #             multiple = TRUE,
+  #             "Location:", c(structure(
+  #               ctlLocationName # $locationID
+  #             ))),
+  # # , selected=NULL),),
+  # selectInput("rtnModelVariable",
+  #             "Variable:", c(
+  #               sort.int(ctlModelVariable$ObjectItemName)
+  #             ),
+  #             selected = "Streamflow"),
+  # selectInput("rtnForecastType",
+  #             "Forecast System:", c(
+  #               sort.int(ctlForecastType$ObjectItemName)
+  #             )),
+  # selectInput("rtnScoreType",
+  #             "Score:", c(sort.int(
+  #               ctlScoreType$ObjectItemName
+  #               #             ))),
+  #               # selectInput("rtnScoreType",
+  #               #             "Skill Score:", c(
+  #               #               "All Skill Scores", sort.int(ctlScoreType$ObjectItemName)
+  #             ))
+
+  second.query <- reactive({
+    
     ############### then filter by location, scoreType, etc
     # locationID
     
-    if (length(input$rtnLocid) == 1) {
-      filtered.cursor <- filter(getit,
-                       locationID == input$rtnLocid)
-    }
-    else  if (length(input$rtnLocid) > 1) {
-      # more than one locID chosen
-      filtered.cursor <- filter(getit,
-                       locationID %in% input$rtnLocid)
-    }
+    if (length(input$Location)>0)
+      # browser()
+      second = second %>% filter(locationID %in% initial.query())
+
+    # if (length(input$rtnLocid) == 1) {
+    #   second <- filter(initial.query(),
+    #                    locationID == input$rtnLocid)
+    # }
+    # else  if (length(input$rtnLocid) > 1) {
+    #   # more than one locID chosen
+    #   second <- filter(initial.query(),
+    #                    locationID %in% input$rtnLocid)
+    # }
+    
     # ScoreType    
     if (length(input$rtnScoreType) == 1){
-      filtered.cursor <- filter(getit, score.type == input$rtnScoreType)
+      second <- filter(initial.query(),
+                        score.type == input$rtnScoreType)
     }
     else if (length(input$rtnScoreType) > 1){
-      filtered.cursor <- filter(getit, score.type %in% input$rtnScoreType)
+      second <- filter(initial.query(),
+                        score.type %in% input$rtnScoreType)
     }
     
-    remote <- filter(getit,
+    second <- filter(initial.query(),
       scoreNA == FALSE & #more like "bad data" now, contains -Infinity too
       modelVariable == input$rtnModelVariable &
       scoreType == input$rtnScoreType
     )
     
-    filtered.cursor <- structure(collect(getit)) 
+    second <- structure(collect(second)) 
     
   }) #end reactive
+  
+  
 
   # map
   # points <- eventReactive(input$recalc, {
@@ -105,38 +162,27 @@ shinyServer(function(input, output, session) {
   
 
   output$table <- renderDataTable({
-    table <- filtInput()
+    table <- second.query()
+    # table <- initial.query()
     # head(dataset) # was summary
   })
   
   output$dataset <- renderPrint({
-    dataset <- filtInput()
+    dataset <- second.query()
+    # dataset <- initial.query()
   })
   
   
-  # if (do.facets == TRUE) {
-  #   output$seriesPlot <- renderPlot({
-  #
-  #   ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
-  #     geom_point(aes(color = locationID, size=2)) +
-  #     facet_wrap(~ locationID) +
-  #     geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) +
-  #     geom_hline(aes(yintercept=0), colour="black", linetype="dashed") +
-  #     xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
-  #   })
-  #
-  # } else {
-  
   output$seriesPlot <- renderPlot({
-    if (nrow(filtInput()) == 0 || length(filtInput()) == 0) {
-      text(1, 1, "filtInput() was empty, try a different combo") # this is never hit I think
+    if (nrow(second.query()) == 0 || length(second.query()) == 0) {
+      text(1, 1, "second.query() was empty, try a different combo") # this is never hit I think
     } else {
       # we have data
       filtered.input <-
-        filtInput() # unneccesary step? debugging "rename" call in summarySE
+        second.query() # unneccesary step? debugging "rename" call in summarySE
       
       # do stats for error bars
-      if (input$rtnForecastRangeType == "days") {
+      if (input$rtnForecastRangeType == "day") {
       loc.sum <-
         summarySE(
           filtered.input,
@@ -152,17 +198,15 @@ shinyServer(function(input, output, session) {
       }
       
       loc.sum$locationID <- as.factor(loc.sum$locationID)
-      
-
     } # end else
     
-    if(length(filtInput()) == 0) {
+    if(length(second.query()) == 0) {
       plot(1, 1, col = "white")
       text(1,
            1,
            "Select one or more data elements from the Filter to begin")
       }
-    else if(nrow(filtInput()) == 0) {
+    else if(nrow(second.query()) == 0) {
     # if (nrow(filtInput()) == 0) {
       # print error/ warning message
       plot(1, 1, col = "white")
@@ -207,8 +251,7 @@ shinyServer(function(input, output, session) {
       ###
       dev.off()
     }
-    # plot(rnorm(sample(100:1000,1)))
-    g # ref active ggplot above?
+    #     g # ref active ggplot above?
   })
   
   output$myplot <- renderPlot({ plotInput() })
@@ -218,8 +261,5 @@ shinyServer(function(input, output, session) {
       file.copy("plot.pdf", file)
     }
   )
-  
-  
-  
   
 }) # end shinyServer
