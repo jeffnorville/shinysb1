@@ -58,17 +58,11 @@ tmpForecastType <-
   filter(tbl(db, "tblInterface"),
          ObjectName == "Forecast Type" & LanguageID == RElanguage)
 ctlForecastType <- collect(tmpForecastType)
-
-tmpLocationName <-
-  distinct(select(tbl.scores, locationID, dataPackageGUID))
-ctlLocationName <- collect(tmpLocationName)
-ctlLocationName <-
-  arrange_(ctlLocationName, "dataPackageGUID", "locationID")
-
-tmpCaseStudy <-
-  filter(tbl(db, "tblInterface"),
-         ObjectName == "Case Study" & LanguageID == RElanguage)
-ctlCaseStudy <- collect(tmpCaseStudy)
+# 
+# tmpCaseStudy <-
+#   filter(tbl(db, "tblInterface"),
+#          ObjectName == "Case Study" & LanguageID == RElanguage)
+# ctlCaseStudy <- collect(tmpCaseStudy)
 
 # tmpDataPackageList <- filter(tbl(db, "tblDataLoad"))
 tmpDataPackageList <-
@@ -114,17 +108,17 @@ shinyUI(fluidPage(# Application title
             "The Llobregat River Basin in north-eastern Spain" = 7,
             "The Messara valley in Crete" = 8
           ),
-          selected = "Central European Rivers"
+          selected = 1
         ),
         selectInput(
           "rtnForecastRangeType",
           "Forecast Range:",
           c(
-            "Short Range Forecast" = "days",
-            "Medium-Range Forecasts" = "months",
-            "Long-Range Forecasts" = "years"
+            "Short Range Forecast" = "day",
+            "Medium-Range Forecasts" = "month",
+            "Long-Range Forecasts" = "year"
           ),
-          selected = "Medium-Range Forecasts"
+          selected = "month"
         ),
         
         # second:  forecast system
@@ -178,6 +172,7 @@ shinyUI(fluidPage(# Application title
       ### scoreboard
       titlePanel("Scoreboard"),
       # mainPanel(
+      
       tabsetPanel(
         type = "tabs",
         
@@ -206,29 +201,40 @@ shinyUI(fluidPage(# Application title
       
       wellPanel(
         h4("Filter Criteria"),
-        selectInput("rtnLocid",
-                    multiple = TRUE,
-                    "Location:", c(structure(
-                      ctlLocationName$locationID
-                    ))),
-        # , selected=NULL),),
-        selectInput("rtnModelVariable",
-                    "Variable:", c(
-                      sort.int(ctlModelVariable$ObjectItemName)
-                    ),
-                    selected = "Streamflow"),
-        selectInput("rtnForecastType",
-                    "Forecast System:", c(
-                      sort.int(ctlForecastType$ObjectItemName)
-                    )),
-        selectInput("rtnScoreType",
-                    "Score:", c(sort.int(
-                      ctlScoreType$ObjectItemName
-                    ))),
-        selectInput("rtnScoreType",
-                    "Skill Score:", c(
-                      "All Skill Scores", sort.int(ctlScoreType$ObjectItemName)
-                    ))
+        conditionalPanel(
+          # first.select <- 1,
+          # condition = length(first.select)>0,
+
+          # tmpLocationName <-
+          #   distinct(select(tbl.scores, locationID, dataPackageGUID))
+          ctlLocationName <- data.frame(getit$locationID),
+          ctlLocationName <- distinct(ctlLocationName),
+          browser(),
+          
+          selectInput("rtnLocid",
+                      multiple = TRUE,
+                      "Location:", c(structure(
+                        ctlLocationName # $locationID
+                      ))),
+          # , selected=NULL),),
+          selectInput("rtnModelVariable",
+                      "Variable:", c(
+                        sort.int(ctlModelVariable$ObjectItemName)
+                      ),
+                      selected = "Streamflow"),
+          selectInput("rtnForecastType",
+                      "Forecast System:", c(
+                        sort.int(ctlForecastType$ObjectItemName)
+                      )),
+          selectInput("rtnScoreType",
+                      "Score:", c(sort.int(
+                        ctlScoreType$ObjectItemName
+                      ))),
+          selectInput("rtnScoreType",
+                      "Skill Score:", c(
+                        "All Skill Scores", sort.int(ctlScoreType$ObjectItemName)
+                      ))
+        ) # conditionalPanel
       ) #wellPanel
       
       # wellPanel(
@@ -240,6 +246,7 @@ shinyUI(fluidPage(# Application title
       #)
       
     ) #column = 8
-    ) #sidebarPanel
+  ) #sidebarPanel
   ) #fluidRow
   ) #fluidPage
+  

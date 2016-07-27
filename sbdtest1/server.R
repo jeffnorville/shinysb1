@@ -24,7 +24,8 @@ db <- src_postgres(
   password = REpassword
 )
 tbl.scores <- tbl(db, "tblScores")
-# do.facets = FALSE
+tbl.dataload <- tbl(db, "tblDataLoad")
+tbl.interface <- tbl(db, "tblInterface")
 
 shinyServer(function(input, output, session) {
   
@@ -32,38 +33,16 @@ shinyServer(function(input, output, session) {
   #filter DB dataframe based on (default) selections
   filtInput <- reactive({
 
-    # if ("rtnForecastRangeType" == "days") {
-    #   remote <- filter(tbl.scores,
-    #                    datePartUnit == input$rtnForecastRangeType)
-    # } else if ("rtnForecastRangeType" == "months") {
-    #   remote <- filter(tbl.scores,
-    #                    datePartUnit == input$rtnForecastRangeType)
-    # } else if ("rtnForecastRangeType" == "years") {
-    #   remote <- filter(tbl.scores,
-    #                    datePartUnit == input$rtnForecastRangeType)
-    # }
+    ############### first select
     
-    
-    if (is.null(input$rtnLocid)) {
-      return(NULL)
-    }
-    else if (length(input$rtnLocid) == 1) {
-      remote <- filter(tbl.scores,
-                       locationID == input$rtnLocid)
-    }
-    else {
-      # more than one locID chosen
-      remote <- filter(tbl.scores,
-                       locationID %in% input$rtnLocid)
-    }
-    
+    # ForecastSystem
     if (length(input$rtnForecastSystem) == 1){
       remote <- filter(tbl.scores, forecast.system == input$rtnForecastSystem)
     }
     else if (length(input$rtnForecastSystem) > 1){
       remote <- filter(tbl.scores, forecast.system %in% input$rtnForecastSystem)
     }
-    
+    # ForecastType
     if (length(input$rtnForecastType) == 1){
       remote <- filter(tbl.scores, forecastType == input$rtnForecastType)
     }
@@ -71,26 +50,42 @@ shinyServer(function(input, output, session) {
       remote <- filter(tbl.scores, forecastType %in% input$rtnForecastType)
     }
 
-    # ScoreType    
-    if (length(input$rtnScoreType) == 1){
-      remote <- filter(tbl.scores, score.type == input$rtnScoreType)
-    }
-    else if (length(input$rtnScoreType) > 1){
-      remote <- filter(tbl.scores, score.type %in% input$rtnScoreType)
-    }
-    
-    
     remote <- filter(remote,
-      caseStudy == input$rtnCaseStudy &
-      # forecast.system == input$rtnForecastSystem &
-      forecast.range == input$rtnForecastRangeType &
-      scoreNA == FALSE & #more like "bad data" now, contains -Infinity too
-      modelVariable == input$rtnModelVariable
-      # forecastType == input$rtnForecastType 
-      # scoreType == input$rtnScoreType
+                       caseStudy == input$rtnCaseStudy &
+                       forecastSystem == input$rtnForecastSystem &
+                       forecastRange == input$rtnForecastRangeType 
+                       # scoreNA == FALSE #more like "bad data" now, contains -Infinity too
     )
     
     getit <- structure(collect(remote)) #database hit
+
+    ############### then filter by location, scoreType, etc
+    # locationID
+    
+    if (length(input$rtnLocid) == 1) {
+      filtered.cursor <- filter(getit,
+                       locationID == input$rtnLocid)
+    }
+    else  if (length(input$rtnLocid) > 1) {
+      # more than one locID chosen
+      filtered.cursor <- filter(getit,
+                       locationID %in% input$rtnLocid)
+    }
+    # ScoreType    
+    if (length(input$rtnScoreType) == 1){
+      filtered.cursor <- filter(getit, score.type == input$rtnScoreType)
+    }
+    else if (length(input$rtnScoreType) > 1){
+      filtered.cursor <- filter(getit, score.type %in% input$rtnScoreType)
+    }
+    
+    remote <- filter(getit,
+      scoreNA == FALSE & #more like "bad data" now, contains -Infinity too
+      modelVariable == input$rtnModelVariable &
+      scoreType == input$rtnScoreType
+    )
+    
+    filtered.cursor <- structure(collect(getit)) 
     
   }) #end reactive
 
@@ -150,6 +145,9 @@ shinyServer(function(input, output, session) {
           na.rm = TRUE
         )
       } else { # don't get stats
+        ci = 0
+        se = 0
+        N = 1
         loc.sum <- filtered.input
       }
       
