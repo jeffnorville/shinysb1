@@ -113,16 +113,16 @@ shinyUI(fluidPage(# Application title
           ),
           selected = 1
         ),
-        selectInput(
-          "rtnForecastRangeType",
-          "Forecast Range:",
-          c(
-            "Short Range Forecast" = "day",
-            "Medium-Range Forecasts" = "month",
-            "Long-Range Forecasts" = "year"
-          ),
-          selected = "month"
-        ),
+        # selectInput(
+        #   "rtnForecastRangeType",
+        #   "Forecast Range:",
+        #   c(
+        #     "Short Range Forecast" = "day",
+        #     "Medium-Range Forecasts" = "month",
+        #     "Long-Range Forecasts" = "year"
+        #   ),
+        #   selected = "month"
+        # ),
         
         # second:  forecast system
         selectInput(
@@ -131,12 +131,24 @@ shinyUI(fluidPage(# Application title
           c(
             "ECMWF EFAS" = 1,
             "E-HYPE" = 2,
-            "System 3" = 3
+            "System 3" = 3,
+            "ECMWF LS Seasonal month" = 4,
+            "ECMWF EDMD Seasonal month" = 5,
+            "ECMWF LS Seasonal week" = 6,
+            "ECMWF EDMD Seasonal week" = 7
           )
         )
       ),
       # wellPanel
-      
+
+      wellPanel(
+        h4("Filters"),
+        uiOutput("Location"),
+        uiOutput("ModelVariable"),
+        uiOutput("ForecastType"),
+        uiOutput("ScoreType")
+      ),
+            
       #output pdf
       wellPanel(
         h4("Save Plot") ,
@@ -175,19 +187,19 @@ shinyUI(fluidPage(# Application title
       ### scoreboard
       titlePanel("Scoreboard"),
       # mainPanel(
-      wellPanel(
-        h4("Filter Criteria"),
-        # conditionalPanel(
-        #   # check we have data from DB
-        #   condition = !is.na("table"), # DT::dataTableOutput("table")
-
-          column(2,uiOutput("Location")),
-          column(2,uiOutput("Variable")),
-          column(2,uiOutput("Forecast System")),
-          column(2,uiOutput("Score Type"))
-
-        # ) # conditionalPanel
-      ), #wellPanel
+      # wellPanel(
+      #   h4("Filter Criteria"),
+      #   # conditionalPanel(
+      #   #   # check we have data from DB
+      #   #   condition = !is.na("table"), # DT::dataTableOutput("table")
+      #   column(2,uiOutput("Location")),
+      #   column(2,uiOutput("Variable")),
+      #   column(2,uiOutput("Forecast System")),
+      #   column(2,uiOutput("Score Type"))
+      #   
+      # 
+      #   # ) # conditionalPanel
+      # ), #wellPanel
       
       tabsetPanel(
         type = "tabs",

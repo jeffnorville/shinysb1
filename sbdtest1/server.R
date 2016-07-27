@@ -29,9 +29,8 @@ tbl.interface <- tbl(db, "tblInterface")
 
 shinyServer(function(input, output, session) {
   
-  
-  #filter DB dataframe based on (default) selections
-  # was filtInput
+  #filter DB dataframe based on (default) selections (was filtInput)
+
   initial.query <- reactive({
 
     ############### first select
@@ -43,27 +42,32 @@ shinyServer(function(input, output, session) {
       remote <- filter(tbl.scores, forecastSystem %in% input$rtnForecastSystem)
     }
     # ForecastType
-    if (length(input$rtnForecastType) == 1){
-      remote <- filter(tbl.scores, forecastType == input$rtnForecastType)
-    }
-    else if (length(input$rtnForecastType) > 1){
-      remote <- filter(tbl.scores, forecastType %in% input$rtnForecastType)
-    }
+    # if (length(input$rtnForecastType) == 1){
+    #   remote <- filter(tbl.scores, forecastType == input$rtnForecastType)
+    # }
+    # else if (length(input$rtnForecastType) > 1){
+    #   remote <- filter(tbl.scores, forecastType %in% input$rtnForecastType)
+    # }
 
     remote <- filter(remote,
                        caseStudy == input$rtnCaseStudy &
-                       forecastSystem == input$rtnForecastSystem &
-                       forecastRange == input$rtnForecastRangeType 
+                       forecastSystem == input$rtnForecastSystem 
+                       # forecastRange == input$rtnForecastRangeType 
                        # scoreNA == FALSE #more like "bad data" now, contains -Infinity too
     )
     
     getit <- structure(collect(remote)) #database hit
   }) #end reactive
+  
 
   # define Filters
   output$Location <- renderUI({
-      Location=structure(unique(initial.query()$locationID))
-      selectInput("Location","Location Filter", choices = Location, multiple=T)
+    if(!is.null(initial.query())) {
+      Location <- initial.query()$locationID
+      Location <- structure(Location)
+      # Location=unique(initial.query()$locationID)
+    }
+    selectInput("Location","Location Filter", choices = structure(Location), multiple=T)
   })
 
   output$ModelVariable <- renderUI({
