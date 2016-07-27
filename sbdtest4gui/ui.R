@@ -29,7 +29,7 @@ db <- src_postgres('postgres',
                    port = 5432,
                    user = REuser,
                    password = REpassword)
-tbl_scores <- tbl(db, "tblScores")
+tbl.scores <- tbl(db, "tblScores")
 
 #selectInput boxes
 tmpScoreType <- filter(tbl(db, "tblInterface"),ObjectName=="Score Type" & LanguageID == RElanguage)

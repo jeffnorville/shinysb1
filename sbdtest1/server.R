@@ -32,16 +32,16 @@ shinyServer(function(input, output, session) {
   #filter DB dataframe based on (default) selections
   filtInput <- reactive({
 
-    if ("rtnForecastRangeType" == "days") {
-      remote <- filter(tbl.scores,
-                       datePartUnit == input$rtnForecastRangeType)
-    } else if ("rtnForecastRangeType" == "months") {
-      remote <- filter(tbl.scores,
-                       datePartUnit == input$rtnForecastRangeType)
-    } else if ("rtnForecastRangeType" == "years") {
-      remote <- filter(tbl.scores,
-                       datePartUnit == input$rtnForecastRangeType)
-    }
+    # if ("rtnForecastRangeType" == "days") {
+    #   remote <- filter(tbl.scores,
+    #                    datePartUnit == input$rtnForecastRangeType)
+    # } else if ("rtnForecastRangeType" == "months") {
+    #   remote <- filter(tbl.scores,
+    #                    datePartUnit == input$rtnForecastRangeType)
+    # } else if ("rtnForecastRangeType" == "years") {
+    #   remote <- filter(tbl.scores,
+    #                    datePartUnit == input$rtnForecastRangeType)
+    # }
     
     
     if (is.null(input$rtnLocid)) {
@@ -57,13 +57,37 @@ shinyServer(function(input, output, session) {
                        locationID %in% input$rtnLocid)
     }
     
+    if (length(input$rtnForecastSystem) == 1){
+      remote <- filter(tbl.scores, forecast.system == input$rtnForecastSystem)
+    }
+    else if (length(input$rtnForecastSystem) > 1){
+      remote <- filter(tbl.scores, forecast.system %in% input$rtnForecastSystem)
+    }
+    
+    if (length(input$rtnForecastType) == 1){
+      remote <- filter(tbl.scores, forecastType == input$rtnForecastType)
+    }
+    else if (length(input$rtnForecastType) > 1){
+      remote <- filter(tbl.scores, forecastType %in% input$rtnForecastType)
+    }
+
+    # ScoreType    
+    if (length(input$rtnScoreType) == 1){
+      remote <- filter(tbl.scores, score.type == input$rtnScoreType)
+    }
+    else if (length(input$rtnScoreType) > 1){
+      remote <- filter(tbl.scores, score.type %in% input$rtnScoreType)
+    }
+    
+    
     remote <- filter(remote,
+      caseStudy == input$rtnCaseStudy &
+      # forecast.system == input$rtnForecastSystem &
+      forecast.range == input$rtnForecastRangeType &
       scoreNA == FALSE & #more like "bad data" now, contains -Infinity too
-        
-      modelVariable == input$rtnModelVariable &
-        forecastType == input$rtnForecastType &
-        scoreType == input$rtnScoreType # &
-        # leadtimeValue %in% toto # note - this %in% HAS to be last criteria
+      modelVariable == input$rtnModelVariable
+      # forecastType == input$rtnForecastType 
+      # scoreType == input$rtnScoreType
     )
     
     getit <- structure(collect(remote)) #database hit
@@ -71,17 +95,17 @@ shinyServer(function(input, output, session) {
   }) #end reactive
 
   # map
-  points <- eventReactive(input$recalc, {
-    cbind(rnorm(40) * 2 + 13, rnorm(40) + 48)
-  }, ignoreNULL = FALSE)
-  
-  output$mymap <- renderLeaflet({
-    leaflet() %>%
-      addProviderTiles("Stamen.TonerLite",
-                       options = providerTileOptions(noWrap = TRUE)
-      ) %>%
-      addMarkers(data = points())
-  })
+  # points <- eventReactive(input$recalc, {
+  #   cbind(rnorm(40) * 2 + 13, rnorm(40) + 48)
+  # }, ignoreNULL = FALSE)
+  # 
+  # output$mymap <- renderLeaflet({
+  #   leaflet() %>%
+  #     addProviderTiles("Stamen.TonerLite",
+  #                      options = providerTileOptions(noWrap = TRUE)
+  #     ) %>%
+  #     addMarkers(data = points())
+  # })
   # end map
   
 
@@ -116,20 +140,22 @@ shinyServer(function(input, output, session) {
       filtered.input <-
         filtInput() # unneccesary step? debugging "rename" call in summarySE
       
+      # do stats for error bars
+      if (input$rtnForecastRangeType == "days") {
       loc.sum <-
         summarySE(
           filtered.input,
           measurevar = "scoreValue",
-          groupvars = c("locationID", "leadtimeValue"),
+          groupvars = c("locationID", "leadtimeValue", "scoreType", "forecastType"), 
           na.rm = TRUE
         )
+      } else { # don't get stats
+        loc.sum <- filtered.input
+      }
       
       loc.sum$locationID <- as.factor(loc.sum$locationID)
       
-      # unimportant 2016-juillet conv MH
-      # na.count <-
-      #   sum(filtered.input$scoreNA) # should report to user since value hidden by summarySE
-      
+
     } # end else
     
     if(length(filtInput()) == 0) {

@@ -28,7 +28,7 @@ db <- src_postgres(dbname = REdbname,
                    port = REport,
                    user = REuser,
                    password = REpassword)
-tbl_scores <- tbl(db, "tblScores")
+tbl.scores <- tbl(db, "tblScores")
 
 
 
@@ -51,7 +51,7 @@ int.list <- c(1:15)
 toto <- int.list
 
 # broken into 2 
-remote <- filter(tbl_scores, 
+remote <- filter(tbl.scores, 
                    scoreNA == FALSE &&
                    locationID %in% c('8000100','9771083') &&
                    modelVariable == "Streamflow" &&

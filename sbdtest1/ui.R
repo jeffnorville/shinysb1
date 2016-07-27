@@ -1,4 +1,3 @@
-?cfh
 #IMPREX Scoreboard
 setwd("~/R/shinysb1/sbdtest1")
 readRenviron("~/R/shinysb1/.Renviron")
@@ -92,135 +91,155 @@ ctlInterface <- collect(tmpInterface)
 
 
 # Define UI for application that draws a histogram
-shinyUI(
-  fluidPage(
-    # Application title
-    img(src = "imprex.png", height = 100),
-    # navbarPage(title=div("Verification Scoreboard")
-    # ),
-    
-    fluidRow(
-      column(
-        4,
-        wellPanel(
-          # first input is forecast type
-          selectInput(
-            "rtnForecastRangeType",
-            "Forecast Range:",
-             c("Short Range Forecast" = "days", 
-              "Medium-Range Forecasts" = "months",
-              "Long-Range Forecasts" = "years")
+shinyUI(fluidPage(# Application title
+  img(src = "imprex.png", height = 100),
+  # navbarPage(title=div("Verification Scoreboard")
+  # ),
+  
+  fluidRow(
+    column(
+      4,
+      wellPanel(
+        # first input is case studies
+        selectInput(
+          "rtnCaseStudy",
+          "Case Studies:",
+          c(
+            "Central European Rivers" = 1,
+            "South-East French Catchments" = 2,
+            "Júcar River Basin in eastern Spain" = 3,
+            "Lake Come basin in the Italian Alpine region" = 4,
+            "Upper River Umeälven in Sweden" = 5,
+            "Segura River Basin in the Iberian Peninsula" = 6,
+            "The Llobregat River Basin in north-eastern Spain" = 7,
+            "The Messara valley in Crete" = 8
           ),
-          
-          # second:  forecast system
-          selectInput(
-            "rtnForecastSystem",
-            "System:",
-            c("System 1" = "sys1", 
-              "System 2" = "sys2",
-              "System 3" = "sys3")
-          )
-          
-          
-        #   selectInput(
-        #   "rtnByPackage",
-        #   "Data source:",
-        #   c(ctlDataPackageList$dataPkgFriendlyName)
-        # )
-        ), # wellPanel
-        
-        wellPanel(
-          h4("Filter Criteria"),
-          selectInput("rtnLocid",
-                      multiple = TRUE,
-                      "Location:",
-                      c(structure(
-                        ctlLocationName$locationID
-                      ))),
-          # , selected=NULL),),
-          selectInput("rtnModelVariable",
-                      "Variable:",
-                      c(
-                        sort.int(ctlModelVariable$ObjectItemName)
-                      ),
-                      selected = "Streamflow"),
-          selectInput("rtnForecastType",
-                      "Forecast System:",
-                      c(
-                        sort.int(ctlForecastType$ObjectItemName)
-                      )),
-          selectInput("rtnScoreType",
-                      "Score:",
-                      c(sort.int(
-                        ctlScoreType$ObjectItemName
-                      ))),
-          selectInput("rtnScoreType",
-                      "Skill Score:",
-                      c(
-                        "All Skill Scores", sort.int(ctlScoreType$ObjectItemName)
-                      ))
+          selected = "Central European Rivers"
+        ),
+        selectInput(
+          "rtnForecastRangeType",
+          "Forecast Range:",
+          c(
+            "Short Range Forecast" = "days",
+            "Medium-Range Forecasts" = "months",
+            "Long-Range Forecasts" = "years"
+          ),
+          selected = "Medium-Range Forecasts"
         ),
         
-        #output pdf
-        wellPanel(
-          h4("Save Plot") ,
-          # sidebarPanel(
-            checkboxInput('returnpdf', 'output pdf?', FALSE),
-            conditionalPanel(
-              condition = "input.returnpdf == true",
-              strong("PDF size (cm):"),
-              sliderInput(inputId="w", label = "width:", min=5, max=50, value=16, width=200, ticks=F),
-              sliderInput(inputId="h", label = "height:", min=5, max=50, value=12, width=200, ticks=F),
-              br(),
-              downloadLink('pdflink')
-            )
-          # )
+        # second:  forecast system
+        selectInput(
+          "rtnForecastSystem",
+          "System:",
+          c(
+            "ECMWF EFAS" = 1,
+            "E-HYPE" = 2,
+            "System 3" = 3
+          )
         )
-      ) #column
-      #fluidRow
-    ,
-
+      ),
+      # wellPanel
+      
+      #output pdf
+      wellPanel(
+        h4("Save Plot") ,
+        # sidebarPanel(
+        checkboxInput('returnpdf', 'output pdf?', FALSE),
+        conditionalPanel(
+          condition = "input.returnpdf == true",
+          strong("PDF size (cm):"),
+          sliderInput(
+            inputId = "w",
+            label = "width:",
+            min = 5,
+            max = 50,
+            value = 16,
+            width = 200,
+            ticks = F
+          ),
+          sliderInput(
+            inputId = "h",
+            label = "height:",
+            min = 5,
+            max = 50,
+            value = 12,
+            width = 200,
+            ticks = F
+          ),
+          br(),
+          downloadLink('pdflink')
+        )
+      )
+    ),
+    #column 4
+    
     column(
       8,
       ### scoreboard
       titlePanel("Scoreboard"),
       # mainPanel(
-        # new layout
-        tabsetPanel(type = "tabs", 
-                    
-          tabPanel("Plot",
-                   h4("Select and filter data to create "),
-                   p("Create a plot by selecting data"),
-                   plotOutput("seriesPlot")
-                   
-          ),
-          tabPanel("Panel plots",
-                   h4("Select and filter data to create "),
-                   p("Create a plot by selecting data"),
-                   plotOutput("facetPlot")
-                   
-                   ),
+      tabsetPanel(
+        type = "tabs",
         
-          tabPanel("Table",
-                   h4("Table of corresponding values"),
-                   p("Create a plot by selecting data"),
-                   DT::dataTableOutput("table")
-                   
-                   )
-            ), # tabsetPanel
+        tabPanel(
+          "Plot",
+          h4("Select and filter data to create "),
+          p("Create a plot by selecting data"),
+          plotOutput("seriesPlot")
+          
+        ),
+        tabPanel(
+          "Panel plots",
+          h4("Select and filter data to create "),
+          p("Create a plot by selecting data"),
+          plotOutput("facetPlot")
+        ),
+        tabPanel(
+          "Table",
+          h4("Table of corresponding values"),
+          p("Create a plot by selecting data"),
+          DT::dataTableOutput("table")
+        )
+      ),
+      # tabsetPanel
       
-          wellPanel(
-            h4("Map of selected locations"),
-            # map
-            leafletOutput("mymap"),
-            p(),
-            actionButton("recalc", "New points")
-            
-            
-          )
       
+      wellPanel(
+        h4("Filter Criteria"),
+        selectInput("rtnLocid",
+                    multiple = TRUE,
+                    "Location:", c(structure(
+                      ctlLocationName$locationID
+                    ))),
+        # , selected=NULL),),
+        selectInput("rtnModelVariable",
+                    "Variable:", c(
+                      sort.int(ctlModelVariable$ObjectItemName)
+                    ),
+                    selected = "Streamflow"),
+        selectInput("rtnForecastType",
+                    "Forecast System:", c(
+                      sort.int(ctlForecastType$ObjectItemName)
+                    )),
+        selectInput("rtnScoreType",
+                    "Score:", c(sort.int(
+                      ctlScoreType$ObjectItemName
+                    ))),
+        selectInput("rtnScoreType",
+                    "Skill Score:", c(
+                      "All Skill Scores", sort.int(ctlScoreType$ObjectItemName)
+                    ))
+      ) #wellPanel
       
-      ) #column = 8
-  )
-) #sidebarPanel
-)
+      # wellPanel(
+      #   h4("Map of selected locations"),
+      #   # map
+      #   leafletOutput("mymap"),
+      #   p(),
+      #   actionButton("recalc", "New points")
+      #)
+      
+    ) #column = 8
+    ) #sidebarPanel
+  ) #fluidRow
+  ) #fluidPage

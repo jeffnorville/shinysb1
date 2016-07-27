@@ -19,6 +19,8 @@ triangle.plot <- function(data = NULL, plotvar, groupvars=NULL, oriented = "H", 
     else       length(x)
   }
   
+  
+  
   # for each group's df, return a plot of N-1 triangles showing trend (typical btw LTs)
   # if colorramp = T, colored by magnitude of variation (within df)
   data2 <- plyr::ddply(data, groupvars, .drop=.drop,

@@ -38,7 +38,7 @@ This (short 3 day) week I have these goals:
 
 
 ```{r db}
-dbsub <- filter(tbl_scores, dateValue > "2005-01-01" & dateValue < "2005-12-31")
+dbsub <- filter(tbl.scores, dateValue > "2005-01-01" & dateValue < "2005-12-31")
 db2005 <- collect(dbsub)
 summary(db2005)
 ```

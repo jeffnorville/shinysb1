@@ -26,7 +26,7 @@ db <- src_postgres(
   user = REuser,
   password = REpassword
 )
-tbl_scores <- tbl(db, "tblScores")
+tbl.scores <- tbl(db, "tblScores")
 
 #selectInput boxes
 
@@ -51,7 +51,7 @@ tmpForecastType <-
 ctlForecastType <- collect(tmpForecastType)
 
 tmpLocationName <-
-  distinct(select(tbl_scores, locationID, dataPackageGUID))
+  distinct(select(tbl.scores, locationID, dataPackageGUID))
     # filter(tbl(db, "tblScores"),
     #      ObjectName == "Location Name")
 ctlLocationName <- collect(tmpLocationName)

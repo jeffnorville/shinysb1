@@ -17,8 +17,8 @@ db <- src_postgres('postgres',
                    port = 5432,
                    user = REuser,
                    password = REpassword)
-tbl_scores <- tbl(db, "tblScores")
-# print(translate_sql( tbl = tbl_scores, window = TRUE))
+tbl.scores <- tbl(db, "tblScores")
+# print(translate_sql( tbl = tbl.scores, window = TRUE))
 
 
 # Define server logic required to draw a histogram
@@ -27,7 +27,7 @@ shinyServer(function(input, output) {
   #filter dataframe from db based on first selections
   filtInput <- reactive({
 
-    remote <- filter(tbl_scores, 
+    remote <- filter(tbl.scores, 
                      locationID == input$rtnLocid &&
                      leadtimeValue %in% input$lead.times &&
                      modelVariable == input$rtnModelVariable &&

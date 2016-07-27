@@ -14,7 +14,7 @@ db <- src_postgres('postgres',
                    port = 5432,
                    user = REuser,
                    password = REpassword)
-tbl_scores <- tbl(db, "tblScores")
+tbl.scores <- tbl(db, "tblScores")
 
 tmpLocationName <- filter(tbl(db, "tblInterface"),ObjectName=="Location Name" & LanguageID == RElanguage)
 ctlLocationName <- collect(tmpLocationName)

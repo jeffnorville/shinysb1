@@ -21,7 +21,7 @@ db <- src_postgres(dbname = REdbname,
                    port = REport,
                    user = REuser,
                    password = REpassword)
-tbl_scores <- tbl(db, "tblScores")
+tbl.scores <- tbl(db, "tblScores")
 do.facets = FALSE
 
 shinyServer(function(input, output) {
@@ -41,12 +41,12 @@ shinyServer(function(input, output) {
 
     # if 1 locID is chosen ... "remote" is the 'local' cursor, hasnt hit db yet
     if(length(input$rtnLocid) == 1) {
-      remote <- filter(tbl_scores, 
+      remote <- filter(tbl.scores, 
                        locationID == input$rtnLocid 
       )
     }
     else { # more than one locID chosen
-      remote <- filter(tbl_scores, 
+      remote <- filter(tbl.scores, 
                        locationID %in% input$rtnLocid
       )
     }
@@ -79,12 +79,12 @@ shinyServer(function(input, output) {
     # timescale may be: All; some combination of months (Seasonal); or ?
     if(input$rtnTimeScale != "All") {
       remote$month <- format(remote$dateValue, "%m")
-      remote <- filter(tbl_scores,
+      remote <- filter(tbl.scores,
                        months %in% summarize.by
       )
     }
 
-    #     remote <- filter(tbl_scores, 
+    #     remote <- filter(tbl.scores, 
     remote <- filter(remote, 
                      # scoreNA == FALSE &&
                      modelVariable == input$rtnModelVariable &&

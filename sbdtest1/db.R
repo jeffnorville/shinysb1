@@ -16,6 +16,8 @@ source("global.R")
 library(dplyr)
 library(ggplot2)
 
+
+
 if (is.null(RElanguage) || RElanguage=="")  {
   language = 1
   } else {
@@ -132,6 +134,10 @@ ggplot(playdata, aes(x = leadtimeValue,  y = scoreValue, na.rm = TRUE, colour = 
   facet_grid(locationID ~ scoreType)
 # locationID
 # for production: scoreType
+
+
+
+lapply(X = a, function(x) mean(x), simplify = "array")
 
 
 

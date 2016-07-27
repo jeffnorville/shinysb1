@@ -17,7 +17,7 @@ db <- src_postgres('postgres',
                    port = 5432,
                    user = REuser,
                    password = REpassword)
-tbl_scores <- tbl(db, "tblScores")
+tbl.scores <- tbl(db, "tblScores")
 
 # Define server logic required to summarize and view the selected
 # dataset
@@ -32,9 +32,9 @@ shinyServer(function(input, output) {
   #
   datasetInput <- reactive({
     # #for testing
-    # remote <- filter(tbl_scores, locationID == "I5221010" &&
+    # remote <- filter(tbl.scores, locationID == "I5221010" &&
     #                    LT %in% c(1,2,3,4,5) )
-    remote <- filter(tbl_scores, locationID == input$dataset &&
+    remote <- filter(tbl.scores, locationID == input$dataset &&
                leadtimeValue == input$lead.times )
     getit <- structure(collect(remote))
 
