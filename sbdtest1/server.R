@@ -59,6 +59,11 @@ shinyServer(function(input, output, session) {
     getit <- structure(collect(remote)) #database hit
   }) #end reactive
   
+browser()
+  # observe({
+  #   print(head(initial.query))
+  # })
+  
 
   # define Filters
   output$Location <- renderUI({
@@ -77,7 +82,7 @@ shinyServer(function(input, output, session) {
   
   output$ForecastType <- renderUI({
     ForecastType=c(unique(initial.query()$forecastType))
-    selectInput("ForecastType","Forecast Type", choices = ForecastType,  multiple=T)
+    selectInput("ForecastType","Forecast Identifier", choices = ForecastType,  multiple=T)
   })
 
   output$ScoreType <- renderUI({

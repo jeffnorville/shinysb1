@@ -31,6 +31,7 @@ db <- src_postgres(dbname = REdbname,
                    password = REpassword)
 tbl.scores <- tbl(db, "tblScores")
 tbl.locations <- tbl(db, "tblLocation")
+tbl.interface <- tbl(db, "tblInterface")
 
 
 # db "windows?
@@ -56,11 +57,10 @@ list.lots.basins.ehype <- c(
 remote <- filter(tbl.scores, 
                    # scoreNA == FALSE &
                    # locationID %in% list.lots.basins.ehype &
-                   # locationID %in% c('S2242510', 'L4411710') &
                    # dataPackageGUID == "" &
                    modelVariable == "Streamflow" &
-                   forecastType  == "Linear Scaling (Seasonal_LS_month)" &
-                   scoreType %in% c("CRPS Skill Score", "CRPSS", "RMSE Skill Score", "RMSES", "Brier Skill Score")
+                   forecastType  == "Linear Scaling (Seasonal_LS_month)"
+                   # scoreType %in% c("CRPS Skill Score", "CRPSS", "RMSE Skill Score", "RMSES", "Brier Skill Score")
                    # "Linear Scaling (Seasonal_LS_month)"
                    # forecastType  == "Seasonal_EDMD_month" &
                    # summarizeByTime == "All" &
@@ -70,7 +70,7 @@ remote <- filter(tbl.scores,
 
 remote <- filter(remote, dataPackageGUID == "SMHI2222")
 
-remote <- filter(remote, locationID %in% list.lots.basins.ehype)
+# remote <- filter(remote, locationID %in% list.lots.basins.ehype)
 
 getit <- structure(collect(remote, n = Inf))
 
