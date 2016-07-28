@@ -52,15 +52,14 @@ shinyUI(fluidPage(# Application title
         selectInput(
           "rtnForecastSystem",
           "System:",
-          c(
-            "ECMWF EFAS" = 1,
+          c("ECMWF EFAS" = 1,
             "E-HYPE" = 2,
             "System 3" = 3,
             "ECMWF LS Seasonal month" = 4,
             "ECMWF EDMD Seasonal month" = 5,
             "ECMWF LS Seasonal week" = 6,
             "ECMWF EDMD Seasonal week" = 7
-          )
+          ), multiple = TRUE
         )
       ),
       # wellPanel
@@ -110,21 +109,7 @@ shinyUI(fluidPage(# Application title
       8,
       ### scoreboard
       titlePanel("Scoreboard"),
-      # mainPanel(
-      # wellPanel(
-      #   h4("Filter Criteria"),
-      #   # conditionalPanel(
-      #   #   # check we have data from DB
-      #   #   condition = !is.na("table"), # DT::dataTableOutput("table")
-      #   column(2,uiOutput("Location")),
-      #   column(2,uiOutput("Variable")),
-      #   column(2,uiOutput("Forecast System")),
-      #   column(2,uiOutput("Score Type"))
-      #   
-      # 
-      #   # ) # conditionalPanel
-      # ), #wellPanel
-      
+
       tabsetPanel(
         type = "tabs",
         
@@ -132,7 +117,7 @@ shinyUI(fluidPage(# Application title
           "Plot",
           h4("Select and filter data to create "),
           p("Create plot by selecting data"),
-          plotOutput("seriesPlot")
+          plotOutput("aPlot")
           
         ),
         tabPanel(
@@ -149,14 +134,7 @@ shinyUI(fluidPage(# Application title
         )
       )  # tabsetPanel
       
-      # wellPanel(
-      #   h4("Map of selected locations"),
-      #   # map
-      #   leafletOutput("mymap"),
-      #   p(),
-      #   actionButton("recalc", "New points")
-      #)
-      
+
     ) #column = 8
   ) #sidebarPanel
 ) #fluidRow
