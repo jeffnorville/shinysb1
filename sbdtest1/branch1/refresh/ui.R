@@ -163,4 +163,4 @@ shinyUI(
   )
 ) #sidebarPanel
 ) #sidebarLayout
-)
+
