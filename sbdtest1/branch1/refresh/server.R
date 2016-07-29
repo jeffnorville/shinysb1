@@ -29,6 +29,10 @@ tbl_scores <- tbl(db, "tblScores")
 shinyServer(function(input, output, session) {
   
   filtInput <- reactive({
+    validate(
+      need(input$rtnLocid != "", "Please select at least one location")
+    )
+    
     if (length(input$rtnLocid) == 1) {
       remote <- filter(tbl_scores,
                        locationID == input$rtnLocid)
@@ -37,7 +41,6 @@ shinyServer(function(input, output, session) {
       remote <- filter(tbl_scores,
                        locationID %in% input$rtnLocid)
     }
-    
     remote <- filter(remote,
       caseStudy == input$rtnCaseStudy &
       forecastSystem == input$rtnForecastSystem  &
@@ -45,6 +48,32 @@ shinyServer(function(input, output, session) {
       modelVariable == input$rtnModelVariable &
       forecastType == input$rtnForecastType &
       scoreType == input$rtnScoreType
+    )
+    getit <- structure(collect(remote)) #database hit
+  }) #end reactive
+  
+  filtSkillScores <- reactive({
+    validate(
+      need(input$rtnLocid != "", "Please select at least one location and one or more scores (below)")
+    )
+    
+    list.skill.scores <- input$rtnAllScoreTypes
+
+    if (length(input$rtnLocid) == 1) {
+      remote <- filter(tbl_scores,
+                       locationID == input$rtnLocid)
+    }
+    else if (length(input$rtnLocid) > 1){
+      remote <- filter(tbl_scores,
+                       locationID %in% input$rtnLocid)
+    }
+    remote <- filter(remote,
+                     caseStudy == input$rtnCaseStudy &
+                       forecastSystem == input$rtnForecastSystem  &
+                       # scoreNA == FALSE & #more like "bad data" now, contains -Infinity too
+                       modelVariable == input$rtnModelVariable &
+                       forecastType == input$rtnForecastType &
+                       scoreType %in% list.skill.scores
     )
     getit <- structure(collect(remote)) #database hit
   }) #end reactive
@@ -98,15 +127,15 @@ shinyServer(function(input, output, session) {
   
   output$facetPlot <- renderPlot({
 
-    if (nrow(filtInput()) == 0 || length(filtInput()) == 0) {
+    if (nrow(filtSkillScores()) == 0 || length(filtSkillScores()) == 0) {
       plot(1, 1, col = "white")
       text(1,1,"Select one or more data elements from the Filter to begin")
     }
-    else if (nrow(filtInput()) == 0 || length(filtInput()) == 0) {
+    else if (nrow(filtSkillScores()) == 0 || length(filtSkillScores()) == 0) {
       text(1, 1, "filtInput() was empty, try a different combo")
     } else {
       # have data
-      filtered.input <- filtInput() # debug rename in summarySE
+      filtered.input <- filtSkillScores() # debug rename in summarySE
       loc.sum <- summarySE(
           filtered.input,
           measurevar = "scoreValue",
@@ -117,22 +146,33 @@ shinyServer(function(input, output, session) {
       na.count <- sum(filtered.input$scoreNA) # should report to user since value hidden by summarySE()
     }
 
-    if (nrow(filtInput()) == 0) {
+    if (nrow(filtSkillScores()) == 0) {
       plot(1, 1, col = "white")
       text(1, 1, "The database doesn't have information on this combination of variables (yet)")
     } else {
 
-      pd <- position_dodge(0.2)
+      # pd <- position_dodge(0.2)
+      loc.count <- length(loc.sum$locationID)
 
       ggplot(loc.sum, aes(x = leadtimeValue, y = scoreValue ) ) +
-        geom_point(aes(color = locationID, size=2)) +
-        facet_wrap(~ locationID) +
-        geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci), width=.1, color = group, position=pd) +
-        geom_hline(aes(yintercept=0), colour="black", linetype="dashed") +
-        xlab("Lead Times") + ylab(paste(input$rtnScoreType, " ")) # "Score"
+        geom_point(aes(color = locationID)) +
+        # facet_wrap(scoreType ~ locationID, nrow = loc.count) +
+        facet_grid(scoreType ~ locationID) + #margin = TRUE
+        # geom_hline(aes(yintercept=0), colour="black", linetype="dashed") +
+        xlab("Lead Times") +
+        ylab("Scores")
     }
     
   })
+  
+# main plot
+  output$downloadMainPlot <- downloadHandler(
+    
+    filename = function() { paste(input$dataset, '.png', sep='') },
+    content = function(file) {
+      ggsave(file, plot = seriesPlot(), device = "png")
+    }
+  )  
   
 }) # end shinyServer
 

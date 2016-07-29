@@ -77,7 +77,7 @@ shinyUI(
       wellPanel(
         selectInput(
         "rtnCaseStudy",
-        "Case Studies:",
+        "Case Study:",
         c(
           "Central European Rivers" = 1,
           "South-East French Catchments" = 2,
@@ -95,15 +95,15 @@ shinyUI(
         selectInput(
           "rtnForecastSystem",
           "System:",
-          c(
-            "ECMWF EFAS" = 1,
+          c("ECMWF EFAS" = 1,
             "E-HYPE" = 2,
             "System 3" = 3,
             "ECMWF LS Seasonal month" = 4,
             "ECMWF EDMD Seasonal month" = 5,
             "ECMWF LS Seasonal week" = 6,
             "ECMWF EDMD Seasonal week" = 7
-          )
+          ),
+          selected = 2
         )
         
       ), # wp
@@ -113,7 +113,7 @@ shinyUI(
         
         selectInput("rtnLocid",
                     multiple = TRUE,
-                    "Location:",
+                    "Location(s):",
                     c(ctlLocationName$locationID
                     )),
         # , selected=NULL),),
@@ -140,20 +140,44 @@ shinyUI(
 
         tabPanel(
           "Plot",
-          h4("Select and filter data to create "),
-          p("Create plot by selecting data"),
-          plotOutput("seriesPlot") 
+          h4("Plot"),
+          p("Plot a score over lead times for one or more locations"),
+          plotOutput("seriesPlot") ,
+          
+          #output pdf
+          wellPanel(
+            h4("Save Plot") ,
+            # sidebarPanel(
+            # checkboxInput('save', 'save your figure?', FALSE),
+            # conditionalPanel(
+              # condition = "input.save == true",
+              # br(),
+              downloadButton('downloadMainPlot')
+            # )
+          )
+
         ),
         tabPanel(
           "Panel plots",
           h4("Select and filter data to create "),
-          p("Create plots by selecting data"),
-          plotOutput("facetPlot")
+          p("Plot scores by selected location(s)"),
+          plotOutput("facetPlot"),
+          selectInput("rtnAllScoreTypes",
+                      multiple = TRUE,
+                      "Score(s):",
+                      c(sort.int(ctlScoreType$scoreType)),
+                      selected = c("RMSE Skill Score",
+                                  "Brier Skill Score",
+                                  "CRPS Skill Score"
+                      )
+          )
+          
         ),
+        
         tabPanel(
           "Summary",
-          h4("Summary of corresponding values"),
-          p("Create table by selecting data"),
+          h4("Summary of selected values"),
+          p(""),
           # DT::dataTableOutput("table")
           verbatimTextOutput("summary")
         )
