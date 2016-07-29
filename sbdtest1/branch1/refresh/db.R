@@ -66,16 +66,34 @@ remote <- filter(tbl_scores,
                    scoreNA == FALSE &
                    locationID %in% list.lots.basins.ehype &
                    # locationID %in% c('S2242510', 'L4411710') &
-                   modelVariable == "Streamflow" &
-                   forecastType  == "Linear Scaling (Seasonal_LS_month)" &
+                   modelVariable == "Streamflow"
+                   # forecastType  == "Linear Scaling (Seasonal_LS_month)" &
                    # forecastType  == "Seasonal_EDMD_month" &
                    # summarizeByTime == "All" &
                    # scoreType    == "CRPS" &
-                   leadtimeValue %in% toto
+                   # leadtimeValue %in% toto
   )
 
 
 getit <- structure(collect(remote))
+
+
+
+
+pd <- position_dodge(0.2)
+# min.LT <- min(loc.sum$leadtimeValue)
+# max.LT <- max(loc.sum$leadtimeValue)
+
+ggplot(loc.sum,
+       aes(color = locationID, x = leadtimeValue, y = scoreValue)) +
+  # geom_errorbar(aes(ymin = scoreValue - ci, ymax = scoreValue + ci), position = pd) + # , color="grey"
+  geom_line() +
+  geom_point(aes(color = locationID), position = pd) +
+  # geom_hline(aes(yintercept=0), color="blue", linetype="dashed") +
+  #   # if (do.facets == TRUE){facet_wrap(~ locationID) } +
+  # scale_y_discrete() +
+  # scale_y_continuous(breaks = c(min.LT:max.LT)) +
+  xlab("Lead Times") + ylab(paste(input$rtnScoreType))
 
 
 # move to REACTIVE section so this can be datamined "live"
@@ -102,12 +120,12 @@ reduced <- filter(getit, scoreType == "CRPS")
 
 local <- collect(reduced)
 
-# daily, monthly (should vectorize but doesn't matter since df here will be consistent)
-if(local$leadtimeUnit == "day") {
-  # local$month <- format(local$dateValue, "%m")
-  # getit$months <- months(getit$dateValue) # "février"
-  local$months <- format.Date(local$dateValue, "%m")
-}
+# # daily, monthly (should vectorize but doesn't matter since df here will be consistent)
+# if(local$leadtimeUnit == "day") {
+#   # local$month <- format(local$dateValue, "%m")
+#   # getit$months <- months(getit$dateValue) # "février"
+#   local$months <- format.Date(local$dateValue, "%m")
+# }
 
 #  as.POSIXlt(date1)$mon
 # season.winter <- c(12, 1, 2) # december, january, february
@@ -146,6 +164,17 @@ ggplot(loc.sum, aes(color = locationID, x = leadtimeValue, y = scoreValue )) +
 
 #with CIs
 pd <- position_dodge(0.1)
+
+# geom_point ... factors? howto tie color of geom_errorbar to geom_point? 
+ggplot(local, aes(x = leadtimeValue, y = scoreValue ) ) +
+  geom_point(aes(color = locationID)) +
+  geom_errorbar(aes(ymin=scoreValue-ci, ymax=scoreValue+ci),width=.1, position=pd) +
+  # geom_line(position=pd) +
+  geom_hline(aes(yintercept=0), colour="black", linetype="dashed") + # colour="#990000"
+  xlab("Lead Times") + ylab("Score") 
+
+
+
 
 # CONTINUE WORKING HERE -- DEFINE COLOR RAMP
 # geom_point ... factors? howto tie color of geom_errorbar to geom_point? 

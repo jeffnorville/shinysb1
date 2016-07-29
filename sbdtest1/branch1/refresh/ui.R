@@ -1,4 +1,4 @@
-#IMPREX Scoreboard
+#IMPREX Scoreboard v0.1
 setwd("~/R/shinysb1/sbdtest1")
 readRenviron("~/R/shinysb1/.Renviron")
 REhost =     Sys.getenv('pgserver')
@@ -34,29 +34,24 @@ tbl_interface <- tbl(db, "tblInterface")
 
 #selectInput boxes
 
-tmpScoreType <-
-  filter(tbl(db, "tblInterface"),
-         ObjectName == "Score Type" & LanguageID == RElanguage)
-ctlScoreType <- collect(tmpScoreType)
+# tmpScoreType <-
+#   filter(tbl(db, "tblInterface"),
+#          ObjectName == "Score Type" & LanguageID == RElanguage)
+# ctlScoreType <- collect(tmpScoreType)
 
-# tmpSkillScoreType <-
-#   filter(
-#     tbl(db, "tblInterface"),
-#     ObjectName == "Score Type" &
-#       ObjectItemName %like% "%Skill Score" &
-#       LanguageID == RElanguage
-#   )
-# ctlSkillScoreType <- collect(tmpSkillScoreType)
+tmpCaseStudy <-
+  filter(tbl(db, "tblInterface"),
+         ObjectName == "Case Study" & LanguageID == RElanguage)
+ctlCaseStudy <- collect(tmpCaseStudy)
+
+tmpScoreType <-
+  select(tbl_scores, scoreType)
+ctlScoreType <- arrange_(distinct(collect(tmpScoreType, n=Inf)))
 
 tmpModelVariable <-
   filter(tbl(db, "tblInterface"),
          ObjectName == "Model Variable" & LanguageID == RElanguage)
 ctlModelVariable <- collect(tmpModelVariable)
-
-tmpForecastType <-
-  filter(tbl(db, "tblInterface"),
-         ObjectName == "Forecast Type" & LanguageID == RElanguage)
-ctlForecastType <- collect(tmpForecastType)
 
 tmpLocationName <-
   distinct(select(tbl_scores, locationID, dataPackageGUID))
@@ -64,30 +59,9 @@ ctlLocationName <- collect(tmpLocationName)
 ctlLocationName <-
   arrange_(ctlLocationName, "dataPackageGUID", "locationID")
 
-tmpCaseStudy <-
-  filter(tbl(db, "tblInterface"),
-         ObjectName == "Case Study" & LanguageID == RElanguage)
-ctlCaseStudy <- collect(tmpCaseStudy)
-
-# tmpDataPackageList <- filter(tbl(db, "tblDataLoad"))
-tmpDataPackageList <-
-  distinct(
-    select(
-      tbl_data_load,
-      dataPackageGUID,
-      importResponsable,
-      dataPkgFriendlyName,
-      validPackage
-    )
-  )
-
-ctlDataPackageList <- collect(tmpDataPackageList)
-ctlDataPackageList <-
-  arrange_(ctlDataPackageList, "dataPackageGUID", "dataPkgFriendlyName")
-
-tmpInterface <-
-  distinct(select(tbl_interface, ObjectName, ObjectItemName, LanguageID))
-ctlInterface <- collect(tmpInterface)
+tmpForecastType <-
+  select(tbl_scores, forecastType)
+ctlForecastType <- arrange_(distinct(collect(tmpForecastType, n=Inf)))
 
 
 # Define UI for application that draws a histogram
@@ -116,7 +90,22 @@ shinyUI(
           "Test Case Study (LC)" = 9
         ),
         selected = 1
+        ),
+        # second:  forecast system
+        selectInput(
+          "rtnForecastSystem",
+          "System:",
+          c(
+            "ECMWF EFAS" = 1,
+            "E-HYPE" = 2,
+            "System 3" = 3,
+            "ECMWF LS Seasonal month" = 4,
+            "ECMWF EDMD Seasonal month" = 5,
+            "ECMWF LS Seasonal week" = 6,
+            "ECMWF EDMD Seasonal week" = 7
+          )
         )
+        
       ), # wp
       
       wellPanel(
@@ -124,43 +113,52 @@ shinyUI(
         
         selectInput("rtnLocid",
                     multiple = TRUE,
-                    # selected = "A1080330", #need a default ?
                     "Location:",
-                    c(structure(
-                      ctlLocationName$locationID
-                    ))),
+                    c(ctlLocationName$locationID
+                    )),
         # , selected=NULL),),
         selectInput("rtnModelVariable",
                     "Variable:",
-                    c(
-                      sort.int(ctlModelVariable$ObjectItemName)
-                    )),
+                    c(sort.int(ctlModelVariable$ObjectItemName)),
+                    selected = "Streamflow"
+                    ),
         selectInput("rtnForecastType",
                     "Forecast System:",
-                    c(
-                      sort.int(ctlForecastType$ObjectItemName)
-                    )),
+                    c(ctlForecastType$forecastType)
+                    ),
         selectInput("rtnScoreType",
                     "Score:",
-                    c(sort.int(
-                      ctlScoreType$ObjectItemName
-                    )))
+                    c(sort.int(ctlScoreType$scoreType))
+                    )
       )
     ),
 
     column(
       8,
-        # mainPanel(
-          plotOutput("seriesPlot") ,
-          # verbatimTextOutput("summary"),
-          DT::dataTableOutput("dataset")
-          # ,
-          # tableOutput("view")
-          
-        # ) #mainPanel
-    )    
+      tabsetPanel(
+        type = "tabs",
 
-  )
-) #sidebarPanel
-) #sidebarLayout
-
+        tabPanel(
+          "Plot",
+          h4("Select and filter data to create "),
+          p("Create plot by selecting data"),
+          plotOutput("seriesPlot") 
+        ),
+        tabPanel(
+          "Panel plots",
+          h4("Select and filter data to create "),
+          p("Create plots by selecting data")
+          # plotOutput("facetPlot")
+        ),
+        tabPanel(
+          "Summary",
+          h4("Summary of corresponding values"),
+          p("Create table by selecting data"),
+          # DT::dataTableOutput("table")
+          verbatimTextOutput("summary")
+        )
+      )  # tabsetPanel
+    )
+    )
+)
+)
