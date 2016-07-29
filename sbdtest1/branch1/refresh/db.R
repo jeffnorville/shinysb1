@@ -99,19 +99,6 @@ ggplot(loc.sum,
 # move to REACTIVE section so this can be datamined "live"
 # reduced <- filter(getit, locationID %in% c('S2242510', 'L4411710') & scoreType == "CRPS")
 
-# ADD DATE, SEASONAL FILTER  ... dateValue
-# if (summarizeByTime == "All"){
-#   summarize.by <- "Month"
-# } else if (summarizeByTime == "Month"){
-#   summarize.by <- "Month"
-# } else if (summarizeByTime == "Spring (MAM)"){
-#   
-# } else if (summarizeByTime == "Winter (DJF)"){
-# } else if (summarizeByTime == "Monsoon (JJAS)"){
-# } else if (summarizeByTime == "Year"){
-# } else {
-#   
-# }
 
 # CRPSS, CRPSS
 # reduced <- filter(getit, scoreType == "RMSES")
@@ -134,7 +121,7 @@ local <- collect(reduced)
 
 # lcsmry <- summarySE(local, measurevar = "scoreValue", groupvars = c("locationID","leadtimeValue"))
 # summarySE(local, measurevar="scoreValue", groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
-loc.sum <- summarySE(local, measurevar="scoreValue", groupvars=c("locationID", "leadtimeValue"), na.rm=TRUE)
+loc.sum <- summarySE(getit, measurevar="scoreValue", groupvars=c("locationID", "leadtimeValue", "scoreType", "forecastType"), na.rm=TRUE)
 loc.sum$locationID <- as.factor(loc.sum$locationID)
 
 # this doesn't really do it

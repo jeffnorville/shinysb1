@@ -59,7 +59,7 @@ shinyServer(function(input, output, session) {
     getit <- structure(collect(remote)) #database hit
   }) #end reactive
   
-browser()
+# browser()
   # observe({
   #   print(head(initial.query))
   # })

@@ -147,8 +147,8 @@ shinyUI(
         tabPanel(
           "Panel plots",
           h4("Select and filter data to create "),
-          p("Create plots by selecting data")
-          # plotOutput("facetPlot")
+          p("Create plots by selecting data"),
+          plotOutput("facetPlot")
         ),
         tabPanel(
           "Summary",
