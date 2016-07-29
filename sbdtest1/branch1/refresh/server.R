@@ -178,14 +178,14 @@ shinyServer(function(input, output, session) {
     
   })
   
-# main plot
-  output$downloadMainPlot <- downloadHandler(
-    
-    filename = function() { paste(input$dataset, '.png', sep='') },
-    content = function(file) {
-      ggsave(file, plot = "facetPlot", device = "png")
-    }
-  )  
+# # main plot
+#   output$downloadMainPlot <- downloadHandler(
+#     
+#     filename = function() { paste(input$dataset, '.png', sep='') },
+#     content = function(file) {
+#       ggsave(file, plot = "facetPlot", device = "png")
+#     }
+#   )  
   
 }) # end shinyServer
 
