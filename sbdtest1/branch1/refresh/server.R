@@ -26,6 +26,25 @@ db <- src_postgres(
 
 tbl_scores <- tbl(db, "tblScores")
 
+# Sample pdf-generating function:
+makePdf <- function(filename, plotObject){
+  pdf(file = filename)
+  g <- plotObject
+  
+  # plot(cars)
+  dev.off()
+}
+
+makePng <- function(filename, pngObject){
+  png::writePNG(pngObject)
+  # pdf(file = filename)
+  g <- pngObject
+  # plot(cars)
+  dev.off()
+}
+
+
+
 shinyServer(function(input, output, session) {
   
   filtInput <- reactive({
@@ -88,7 +107,6 @@ shinyServer(function(input, output, session) {
   
   output$seriesPlot <- renderPlot({
     if (nrow(filtInput()) == 0 || length(filtInput()) == 0) {
-    # if(length(filtInput()) == 0) {
       plot(1, 1, col = "white")
       text(1, 1,"Select one or more data elements from the Filter to begin")
     }
@@ -107,23 +125,19 @@ shinyServer(function(input, output, session) {
       na.count <- sum(filtered.input$scoreNA) 
     } # end else
     
-    # if(nrow(filtInput()) == 0 || length(filtInput()) == 0) {
     if (nrow(filtInput()) == 0) {
-      # print error/ warning message
       plot(1, 1, col = "white")
       text(1, 1, "The database doesn't have information on this combination of variables (yet)")
     } else {
       pd <- position_dodge(0.2)
       ggplot(loc.sum,
              aes(color = locationID, x = leadtimeValue, y = scoreValue)) +
-        # geom_errorbar(aes(ymin = scoreValue - ci, ymax = scoreValue + ci), position = pd) + # , color="grey"
         geom_line() +
-        geom_point(aes(color = locationID)) + # , position = pd
+        geom_point(aes(color = locationID)) + 
         xlab("Lead Times") + 
-        ylab(paste(input$rtnScoreType))
-
-    } # end else
-  }) # end renderPlot
+        ylab(paste("SCORE: ", input$rtnScoreType))
+    } 
+  }) 
   
   output$facetPlot <- renderPlot({
 
@@ -134,7 +148,6 @@ shinyServer(function(input, output, session) {
     else if (nrow(filtSkillScores()) == 0 || length(filtSkillScores()) == 0) {
       text(1, 1, "filtInput() was empty, try a different combo")
     } else {
-      # have data
       filtered.input <- filtSkillScores() # debug rename in summarySE
       loc.sum <- summarySE(
           filtered.input,
@@ -158,7 +171,7 @@ shinyServer(function(input, output, session) {
         geom_point(aes(color = locationID)) +
         # facet_wrap(scoreType ~ locationID, nrow = loc.count) +
         facet_grid(scoreType ~ locationID) + #margin = TRUE
-        # geom_hline(aes(yintercept=0), colour="black", linetype="dashed") +
+        geom_hline(aes(yintercept=0), colour="grey", linetype="dashed") +
         xlab("Lead Times") +
         ylab("Scores")
     }
@@ -170,7 +183,7 @@ shinyServer(function(input, output, session) {
     
     filename = function() { paste(input$dataset, '.png', sep='') },
     content = function(file) {
-      ggsave(file, plot = seriesPlot(), device = "png")
+      ggsave(file, plot = "facetPlot", device = "png")
     }
   )  
   

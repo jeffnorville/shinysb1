@@ -148,12 +148,12 @@ shinyUI(
           wellPanel(
             h4("Save Plot") ,
             # sidebarPanel(
-            # checkboxInput('save', 'save your figure?', FALSE),
-            # conditionalPanel(
-              # condition = "input.save == true",
-              # br(),
+            checkboxInput('save', 'save your Plot?', FALSE),
+            conditionalPanel(
+            condition = "input.save == true",
+            br(),
               downloadButton('downloadMainPlot')
-            # )
+            )
           )
 
         ),
@@ -170,7 +170,20 @@ shinyUI(
                                   "Brier Skill Score",
                                   "CRPS Skill Score"
                       )
+          ),
+          #output pdf
+          wellPanel(
+            h4("Save Plot") ,
+            # sidebarPanel(
+            checkboxInput('savePP', 'save your Panel Plot?', FALSE),
+            conditionalPanel(
+              condition = "input.savePP == true",
+              br(),
+              textInput("pngname", "Filename", "my.png"),
+              downloadButton("downloadPanelPlot", "Download File")
+            )
           )
+          
           
         ),
         
@@ -178,7 +191,6 @@ shinyUI(
           "Summary",
           h4("Summary of selected values"),
           p(""),
-          # DT::dataTableOutput("table")
           verbatimTextOutput("summary")
         )
       )  # tabsetPanel
