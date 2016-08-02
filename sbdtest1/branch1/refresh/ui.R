@@ -9,17 +9,11 @@ RElanguage = Sys.getenv('api_language')
 REpassword = Sys.getenv('pgpassword')
 
 library(shiny)
-# library(plyr)
 library(dplyr)
 library(RPostgreSQL)
 library(lazyeval)
 library(ggplot2)
 library(DT)
-
-# lead.time.units <- "days" #update from DB based on selection
-# lead.time.min <- 1
-# lead.time.max <- 90
-
 
 db <- src_postgres(
   dbname = REdbname,
@@ -28,24 +22,18 @@ db <- src_postgres(
   user = REuser,
   password = REpassword
 )
-tbl_scores <- tbl(db, "tblScores")
-tbl_data_load <- tbl(db, "tblDataLoad")
-tbl_interface <- tbl(db, "tblInterface")
+tbl.scores <- tbl(db, "tblScores")
+tbl.dataload <- tbl(db, "tblDataLoad")
+tbl.interface <- tbl(db, "tblInterface")
 
-#selectInput boxes
-
-# tmpScoreType <-
-#   filter(tbl(db, "tblInterface"),
-#          ObjectName == "Score Type" & LanguageID == RElanguage)
-# ctlScoreType <- collect(tmpScoreType)
-
+# TODO move to server; clean up DB and 3NF tables; speed up init
 tmpCaseStudy <-
   filter(tbl(db, "tblInterface"),
          ObjectName == "Case Study" & LanguageID == RElanguage)
 ctlCaseStudy <- collect(tmpCaseStudy)
 
 tmpScoreType <-
-  select(tbl_scores, scoreType)
+  select(tbl.scores, scoreType)
 ctlScoreType <- arrange_(distinct(collect(tmpScoreType, n=Inf)))
 
 tmpModelVariable <-
@@ -54,20 +42,17 @@ tmpModelVariable <-
 ctlModelVariable <- collect(tmpModelVariable)
 
 tmpLocationName <-
-  distinct(select(tbl_scores, locationID, dataPackageGUID))
+  distinct(select(tbl.scores, locationID, dataPackageGUID))
 ctlLocationName <- collect(tmpLocationName)
 ctlLocationName <-
   arrange_(ctlLocationName, "dataPackageGUID", "locationID")
 
 tmpForecastType <-
-  select(tbl_scores, forecastType)
+  select(tbl.scores, forecastType)
 ctlForecastType <- arrange_(distinct(collect(tmpForecastType, n=Inf)))
 
-
-# Define UI for application that draws a histogram
 shinyUI(
   fluidPage(
-    # Application title
     img(src = "imprex.png", height = 100),
     titlePanel("Scoreboard"),
     
@@ -91,7 +76,7 @@ shinyUI(
         ),
         selected = 1
         ),
-        # second:  forecast system
+
         selectInput(
           "rtnForecastSystem",
           "System:",
@@ -105,8 +90,7 @@ shinyUI(
           ),
           selected = 2
         )
-        
-      ), # wp
+      ),
       
       wellPanel(
         h4("Filter Criteria"),
@@ -116,7 +100,6 @@ shinyUI(
                     "Location(s):",
                     c(ctlLocationName$locationID
                     )),
-        # , selected=NULL),),
         selectInput("rtnModelVariable",
                     "Variable:",
                     c(sort.int(ctlModelVariable$ObjectItemName)),
@@ -155,7 +138,6 @@ shinyUI(
               downloadButton('downloadMainPlot')
             )
           )
-
         ),
         tabPanel(
           "Panel plots",
@@ -174,7 +156,6 @@ shinyUI(
           #output pdf
           wellPanel(
             h4("Save Plot") ,
-            # sidebarPanel(
             checkboxInput('savePP', 'save your Panel Plot?', FALSE),
             conditionalPanel(
               condition = "input.savePP == true",
@@ -192,8 +173,16 @@ shinyUI(
           h4("Summary of selected values"),
           p(""),
           verbatimTextOutput("summary")
+        ),
+        
+        # TODO define and test RDS, possibly CSV/TXT file uploads
+        tabPanel(
+          "Upload",
+          h4("Add score data to the IMPREX database"),
+          p("")
+
         )
-      )  # tabsetPanel
+      )
     )
     )
 )

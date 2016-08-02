@@ -9,7 +9,6 @@ RElanguage = Sys.getenv('api_language')
 REpassword = Sys.getenv('pgpassword')
 
 library(shiny)
-# library(plyr)
 library(dplyr)
 library(RPostgreSQL)
 library(lazyeval)
@@ -24,7 +23,7 @@ db <- src_postgres(
   password = REpassword
 )
 
-tbl_scores <- tbl(db, "tblScores")
+tbl.scores <- tbl(db, "tblScores")
 
 # Sample pdf-generating function:
 makePdf <- function(filename, plotObject){
@@ -53,11 +52,11 @@ shinyServer(function(input, output, session) {
     )
     
     if (length(input$rtnLocid) == 1) {
-      remote <- filter(tbl_scores,
+      remote <- filter(tbl.scores,
                        locationID == input$rtnLocid)
     }
     else if (length(input$rtnLocid) > 1){
-      remote <- filter(tbl_scores,
+      remote <- filter(tbl.scores,
                        locationID %in% input$rtnLocid)
     }
     remote <- filter(remote,
@@ -79,11 +78,11 @@ shinyServer(function(input, output, session) {
     list.skill.scores <- input$rtnAllScoreTypes
 
     if (length(input$rtnLocid) == 1) {
-      remote <- filter(tbl_scores,
+      remote <- filter(tbl.scores,
                        locationID == input$rtnLocid)
     }
     else if (length(input$rtnLocid) > 1){
-      remote <- filter(tbl_scores,
+      remote <- filter(tbl.scores,
                        locationID %in% input$rtnLocid)
     }
     remote <- filter(remote,
