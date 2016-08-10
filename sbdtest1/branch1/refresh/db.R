@@ -1,6 +1,6 @@
 #ini file
 setwd("~/R/shinysb1/sbdtest1")
-readRenviron("~/R/other/.Renviron")
+readRenviron("~/R/.Renviron")
 REhost =     Sys.getenv('pgserver')
 REport =     Sys.getenv('pgport')
 REdbname =   Sys.getenv('pgdb')
@@ -8,7 +8,6 @@ REuser =     Sys.getenv('api_user')
 RElanguage = Sys.getenv('api_language')
 REpassword = Sys.getenv('pgpassword')
 
-setwd("~/R/shinysb1/sbdtest1")
 source("global.R")
 
 #db connections
@@ -30,8 +29,60 @@ db <- src_postgres(dbname = REdbname,
 tbl.scores <- tbl(db, "tblScores")
 tbl.interface <- tbl(db, "tblInterface")
 
+list.lots.basins.ehype <- c(
+  '8000100',
+  '8000133',
+  '8000179',
+  '8000190',
+  '9783018',
+  '9787525',
+  '9787915'
+)
 
-db$con <- NULL
+remote <- filter(tbl.scores, 
+                 scoreNA == FALSE &
+                   # locationID %in% list.lots.basins.ehype &
+                   locationID %in% c('8000179','8000190') &
+                   modelVariable == "Streamflow" &
+                   forecastType  == "Bias Correction 1" &
+                 # forecastType  == "Seasonal_EDMD_month" &
+                   scoreType    == "CRPS"
+                 # leadtimeValue %in% toto
+)
+getit <- structure(collect(remote))
+
+
+system1 <- getit$forecastSystem
+  
+system2 <- getit$forecastSystem
+  
+
+loc.sum <- summarySE(
+      getit, 
+      measurevar="scoreValue", 
+      groupvars=c("locationID", "leadtimeValue", "scoreType", "forecastType"), 
+      na.rm=TRUE)
+
+loc.sum$locationID <- as.factor(loc.sum$locationID)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# db$con <- NULL
 
 if (!is.null(db$con)){
   paste("Connected to ", db$info$host, " as ", db$info$user)
@@ -42,8 +93,6 @@ if (!is.null(db$con)){
 
 
 db$info$user
-
-
 db_list_tables(db)
 
 toto <- select(tbl.interface,
