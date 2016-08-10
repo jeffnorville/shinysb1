@@ -1,6 +1,6 @@
 #ini file
 setwd("~/R/shinysb1/sbdtest1")
-readRenviron("~/R/shinysb1/.Renviron")
+readRenviron("~/R/other/.Renviron")
 REhost =     Sys.getenv('pgserver')
 REport =     Sys.getenv('pgport')
 REdbname =   Sys.getenv('pgdb')
@@ -27,27 +27,47 @@ db <- src_postgres(dbname = REdbname,
                    port = REport,
                    user = REuser,
                    password = REpassword)
-tbl_scores <- tbl(db, "tblScores")
+tbl.scores <- tbl(db, "tblScores")
+tbl.interface <- tbl(db, "tblInterface")
+
+
+db$con <- NULL
+
+if (!is.null(db$con)){
+  paste("Connected to ", db$info$host, " as ", db$info$user)
+} else {
+  "database not connected, loading localdefault RDS file"
+}
+  
+
+
+db$info$user
+
+
+db_list_tables(db)
+
+toto <- select(tbl.interface,
+               ObjectName, ObjectItemName, ObjectInteger)
+
+toto <- filter(tbl.interface,
+               ObjectName=="Case Study") # , ObjectItemName, ObjectInteger
+
+toto <- collect(toto)
+
+a <- print(tbl_df(tbl.interface))
+
+tmpForecastSetup <-
+  select(tbl.scores, forecastSystem)
+ctlForecastSetup <- arrange_(distinct(collect(tmpForecastSetup, n=Inf)))
 
 
 
-# db "windows?
+tmpModelVariable <-
+  select(tbl.scores, modelVariable)
+ctlModelVariable <- arrange_(distinct(collect(tmpModelVariable, n=Inf)))
 
-# done in server.R (NON-REACTIVE QUERY):
-# ? vs ??
+ctlModelVariable$modelVariable
 
-#  TODO time the influence of breaking this into two calls
-int.list <- c(1:15)
-# toto <- as.numeric(int.list)
-# all.lead.times <- as.integer(unlist(int.list))  # strsplit(input$lead.times, split = ":"))
-# 
-# if (all.lead.times[1] == all.lead.times[2]) {
-#   toto = toto
-# } else {
-#   toto = all.lead.times[1]:all.lead.times[2]
-# }
-# doesn't make sense here, only with slider where [2] is the MAX of the series
-toto <- int.list
 
 
 list.lots.basins.ehype <- c(
@@ -62,7 +82,7 @@ list.lots.basins.ehype <- c(
 
 
 # broken into 2 
-remote <- filter(tbl_scores, 
+remote <- filter(tbl.scores, 
                    scoreNA == FALSE &
                    locationID %in% list.lots.basins.ehype &
                    # locationID %in% c('S2242510', 'L4411710') &

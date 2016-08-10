@@ -1,6 +1,6 @@
 #IMPREX Scoreboard v0.1
 setwd("~/R/shinysb1/sbdtest1")
-readRenviron("~/R/shinysb1/.Renviron")
+readRenviron("~/R/.Renviron")
 REhost =     Sys.getenv('pgserver')
 REport =     Sys.getenv('pgport')
 REdbname =   Sys.getenv('pgdb')
@@ -81,14 +81,14 @@ shinyUI(
           "rtnForecastSystem",
           "System:",
           c("ECMWF EFAS" = 1,
-            "E-HYPE" = 2,
+            "E-HYPE", #  = 2
             "System 3" = 3,
             "ECMWF LS Seasonal month" = 4,
             "ECMWF EDMD Seasonal month" = 5,
             "ECMWF LS Seasonal week" = 6,
             "ECMWF EDMD Seasonal week" = 7
           ),
-          selected = 2
+          selected = "E-HYPE"
         )
       ),
       
