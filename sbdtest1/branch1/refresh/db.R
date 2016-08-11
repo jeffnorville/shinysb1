@@ -29,6 +29,31 @@ db <- src_postgres(dbname = REdbname,
 tbl.scores <- tbl(db, "tblScores")
 tbl.interface <- tbl(db, "tblInterface")
 
+tmpLocationName <-
+  distinct(select(tbl.scores, locationID, caseStudy))
+ctlLocationName <- collect(tmpLocationName)
+ctlLocationName <-
+  arrange_(ctlLocationName, "caseStudy", "locationID")
+
+
+tmpCaseStudy <-
+  filter(tbl.interface,
+         ObjectName == "Case Study" & LanguageID == RElanguage)
+ctlCaseStudy <- collect(tmpCaseStudy)
+
+# if(is.null(ctlCaseStudy))
+#   return()
+# CaseStudy <- setNames(ctlCaseStudy$ObjectInteger, ctlCaseStudy$ObjectItemName)
+# # CaseStudy = paste(ctlCaseStudy$ObjectItemName, "\"=\"", ctlCaseStudy$ObjectInteger ) # not the way
+# selectInput("rtnCaseStudy", 
+#             paste("Case Study: (",length(unique(ctlCaseStudy$ObjectItemName)), ")"), choices = CaseStudy, multiple = F)
+
+
+ctlCaseStudy$ObjectItemName <- encodeString(ctlCaseStudy$ObjectItemName)
+
+
+
+
 list.lots.basins.ehype <- c(
   '8000100',
   '8000133',
@@ -55,6 +80,7 @@ getit <- structure(collect(remote))
 system1 <- getit$forecastSystem
   
 system2 <- getit$forecastSystem
+
   
 
 loc.sum <- summarySE(
