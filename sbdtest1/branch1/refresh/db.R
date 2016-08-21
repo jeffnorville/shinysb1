@@ -28,7 +28,73 @@ db <- src_postgres(dbname = REdbname,
                    password = REpassword)
 tbl.scores <- tbl(db, "tblScores")
 tbl.interface <- tbl(db, "tblInterface")
+tbl.forecastsetup <- tbl(db, "tblForecastSetup")
 
+
+
+fifi <- select(tbl.scores, c(forecastSystem, forecastSetup))
+# fifi2 <- select(tbl.forecastsetup, c(ID, forecastSetup))
+
+fifi <- filter(fifi, forecastSystem == "E-HYPE")
+fifi <- unique(collect(fifi, n=Inf))
+# fifi <- cbind(fifi, tbl.forecastsetup)
+
+Setup <- NULL
+Setup <- select(tbl.scores, c(caseStudy, forecastSystem, forecastSetup, forecastType))
+Setup <- filter(Setup, forecastSystem=="E-HYPE" & caseStudy=="1")
+Setup <- unique(collect(Setup, n=Inf))
+
+
+Setup <- Setup[Setup$forecastSetup == 1]
+# Setup <- Setup[Setup$forecastSetup == Setup$forecastSetup]
+Setup$
+
+# Setup <- filter(tbl.forecastsetup, ID==Setup$forecastSetup)
+# Setup <- filter(tbl.forecastsetup, ID==1)
+Setup <- collect(Setup)
+Setup[2]
+
+tbl.forecastsetup['ID'="1"]
+tbl.forecastsetup$forecastSetup
+
+
+
+Setup$forecastSetup
+# Setup <- cbind(fifi, tbl.forecastsetup)
+
+Setup$ID
+str(Setup)
+# from server.R, prod app
+
+tmpCaseStudy <-
+  filter(tbl.interface,
+         ObjectName == "Case Study" & LanguageID == RElanguage)
+ctlCaseStudy <- collect(tmpCaseStudy)
+
+tmpSystem <-
+  filter(tbl.interface,
+         ObjectName == "System" & LanguageID == RElanguage)
+ctlSystem <- collect(tmpSystem)
+
+# t.forecast.setup <- collect(db, tbl.forecastsetup)
+
+tmpSetup <- select(tbl.forecastsetup, ID, forecastSetup)
+ctlSetup <- collect(tmpSetup)
+
+# tmpForecastSetup <-
+#   select(tbl.scores, forecastSystem)
+# ctlForecastSetup <- arrange_(distinct(collect(tmpForecastSetup, n=Inf)))
+
+# directly from the score table
+tmpScoreType <-
+  select(tbl.scores, scoreType)
+ctlScoreType <- arrange_(distinct(collect(tmpScoreType, n=Inf)))
+
+tmpModelVariable <-
+  select(tbl.scores, modelVariable)
+ctlModelVariable <- arrange_(distinct(collect(tmpModelVariable, n=Inf)))
+
+# was filtering by multiple datapackageGUIDs before, not necessary now?
 tmpLocationName <-
   distinct(select(tbl.scores, locationID, caseStudy))
 ctlLocationName <- collect(tmpLocationName)
@@ -36,10 +102,145 @@ ctlLocationName <-
   arrange_(ctlLocationName, "caseStudy", "locationID")
 
 
-tmpCaseStudy <-
-  filter(tbl.interface,
-         ObjectName == "Case Study" & LanguageID == RElanguage)
-ctlCaseStudy <- collect(tmpCaseStudy)
+
+
+######################### plot skill scores
+compare.ss.plot <- filter(tbl.scores, 
+                            # locationID %in% list.lots.basins.ehype &
+                            caseStudy == 1 &
+                            locationID %in% c('9565063','9000963','9509300', '9563711') &
+                            modelVariable == "Streamflow" &
+                            # forecastType  == "Bias Correction 1" & # can be both
+                            scoreType    == "CRPS"
+                          # leadtimeValue %in% toto
+)
+toto1 <- structure(collect(compare.ss.plot))
+unique(toto1$forecastSystem)
+unique(toto1$locationID)
+
+#ERR - dff sizes df...
+unique(toto1$leadtimeValue) #voila
+toto1 <- filter(toto1, leadtimeValue %in% c(1,2,3,4,5,6))
+
+# ex. EHYPE is ref System, EFAS is "new"
+
+#step 0.5, build new column
+#n'oublie pas "ref"!
+toto1$ref = NA
+toto1$ref[toto1$forecastType=="Bias Correction 2"] = "ref"
+toto1$ref[toto1$forecastType!="Bias Correction 2"] = "new"
+# toto1 <- distinct(toto1)
+# length(toto1)
+
+  unique(toto1$forecastType) # =="Bias Correction 2"
+  
+  c <- table(unlist(toto1$ref))
+  # new ref 
+  # 576 288
+  
+#step 1, aggregate dataet
+agg <- c("forecastSetup", "forecastSystem", "forecastType", "locationID", "leadtimeValue", "scoreType", "ref")
+# fifi <- summarySE(tot_system, "scoreValue", agg, na.rm = T)
+toto2 <- summarySE(data = toto1, "scoreValue", agg, na.rm = T)
+glimpse(toto2)
+head(toto2)
+tail(toto2)
+
+#step 2, run thru new function
+toto3 <- skillScore(toto2)
+
+ggplot(toto3)
+
+toto3$
+  
+for (i=1:toto3$N) {
+toto4[[i]] <- toto3  
+}
+qplot()
+
+
+qplot(maths.on.this$leadtimeValue, 1-(system1$scoreValue/system2$scoreValue), col = maths.on.this$locationID)
+  
+tot_system = rbind(system1, system2)
+str(maths.on.this)
+
+tot_system$forecastSystem
+g <- c("locationID", "scoreType")
+toto <- skillScore(tot_system, g)
+
+agg <- c("forecastSetup", "forecastSystem", "forecastType", "locationID", "leadtimeValue", "scoreType", "ref")
+fifi <- summarySE(tot_system, "scoreValue", agg, na.rm = T)
+
+tot_system$scoreValue
+
+t2 <- skillScore(fifi)
+qplot(t2)
+rep(unique(toto1$leadtimeValue), length(unique(toto1$locationID)))
+?rep
+# skillScore <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
+# NOTE avoid "/ by 0" errors
+
+#3, run toto1 thru something like this to frame up
+toto5 = data.frame(LocationID = rep(unique(toto1$locationID), each = length(unique(toto1$leadtimeValue))), 
+                   leadtimeValue = rep(unique(toto1$leadtimeValue), times = length(unique(toto1$locationID))), 
+                   ScoreValue = toto4[3:26])
+
+
+
+
+
+forecastSystem=="E-HYPE"
+head(tot_system)
+
+
+# measurevar = "scoreValue",
+skillScore <- function(data, measurevar = "scoreValue", groupvars=NULL, na.rm=FALSE, .drop=TRUE) {
+  library(dplyr)
+  # check for "ref"
+  length2 <- function (x, na.rm=FALSE) {
+    if (na.rm) sum(!is.na(x))
+    else length(x)
+  }
+  
+  datac <- plyr::ddply(data, groupvars, .drop=.drop,
+                       .fun = function(xx, col, ref) {
+                         # print(xx[[col]])
+                         c(
+                         # N    = length2(xx[[col]], na.rm=na.rm),
+                           ss   = 1 - (xx[ref == "new", col] / xx[ref == "ref", col]) #,
+                           # mean = mean   (xx[[col]], na.rm=na.rm)
+                           # sd   = sd     (xx[[col]], na.rm=na.rm)
+                         )
+                       }, measurevar, data$ref 
+  )
+  
+  # Rename the "mean" column
+
+  # datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+  
+  # Confidence interval multiplier for standard error
+  # Calculate t-statistic for confidence interval: 
+  # e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+  # ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+  # datac$ci <- datac$se * ciMult
+  
+  return(datac)
+}
+
+######################### plot skill scores
+toto3 <- skillScore(toto2)
+
+
+
+tmpLocationName <-
+  distinct(select(tbl.scores, locationID, caseStudy))
+ctlLocationName <- collect(tmpLocationName)
+ctlLocationName <-
+  arrange_(ctlLocationName, "caseStudy", "locationID")
+
+glimpse(ctlLocationName)
+
+ctlLocationName["locationID"]
 
 # if(is.null(ctlCaseStudy))
 #   return()
@@ -48,11 +249,25 @@ ctlCaseStudy <- collect(tmpCaseStudy)
 # selectInput("rtnCaseStudy", 
 #             paste("Case Study: (",length(unique(ctlCaseStudy$ObjectItemName)), ")"), choices = CaseStudy, multiple = F)
 
-
+# enc2utf8(ctlCaseStudy$ObjectItemName)
 ctlCaseStudy$ObjectItemName <- encodeString(ctlCaseStudy$ObjectItemName)
 
+dbListConnections(RPostgreSQL()) list()
+
+library(RPostgreSQL)
+drv <- dbDriver("PostgreSQL")
+con <- dbConnect(PostgreSQL(), user=REuser, password=REpassword, dbname=REdbname) 
+# after working awhile...
+for(con in dbListConnections(drv)){
+   dbGetStatement(dbListResults(con))
+}
+
+dbGetQuery(credentials, "show variables like 'character_set%'")
+
+dbGetInfo(con)
 
 
+  Sys.getlocale()[1]
 
 list.lots.basins.ehype <- c(
   '8000100',
@@ -64,22 +279,18 @@ list.lots.basins.ehype <- c(
   '9787915'
 )
 
-remote <- filter(tbl.scores, 
+compare.ss.plot <- filter(tbl.scores, 
                  scoreNA == FALSE &
                    # locationID %in% list.lots.basins.ehype &
                    locationID %in% c('8000179','8000190') &
                    modelVariable == "Streamflow" &
-                   forecastType  == "Bias Correction 1" &
-                 # forecastType  == "Seasonal_EDMD_month" &
+                   # forecastType  == "Bias Correction 1" & # can be both
+                   # forecastType  == "Seasonal_EDMD_month" &
                    scoreType    == "CRPS"
                  # leadtimeValue %in% toto
 )
 getit <- structure(collect(remote))
 
-
-system1 <- getit$forecastSystem
-  
-system2 <- getit$forecastSystem
 
   
 

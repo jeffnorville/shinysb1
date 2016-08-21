@@ -17,8 +17,6 @@ tbl.scores <- readRDS("ehype.all.RDS")
 
 shinyServer(function(input, output, session) {
 
-  
-    
   initial.query <- reactive({
     
     if (length(input$rtnForecastSystem) == 1){
