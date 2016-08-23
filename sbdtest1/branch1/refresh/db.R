@@ -34,36 +34,37 @@ tbl.forecastsetup <- tbl(db, "tblForecastSetup")
 
 fifi <- select(tbl.scores, c(forecastSystem, forecastSetup))
 # fifi2 <- select(tbl.forecastsetup, c(ID, forecastSetup))
-
 fifi <- filter(fifi, forecastSystem == "E-HYPE")
 fifi <- unique(collect(fifi, n=Inf))
 # fifi <- cbind(fifi, tbl.forecastsetup)
 
-Setup <- NULL
-Setup <- select(tbl.scores, c(caseStudy, forecastSystem, forecastSetup, forecastType))
-Setup <- filter(Setup, forecastSystem=="E-HYPE" & caseStudy=="1")
-Setup <- unique(collect(Setup, n=Inf))
+Locations <- NULL
+Locations <- select(tbl.scores, c(locationID, caseStudy, forecastSystem, forecastType))
+Locations <- filter(Locations, caseStudy == "1" & forecastSystem == "E-HYPE" & forecastType == "Bias Correction 1")
+Locations <- select(Locations, locationID)
+Locations <- distinct(Locations)
+Locations <- collect(Locations, n=Inf)
+Locations <- structure(Locations)
+# Locations <- data.frame(unique(Locations$locationID))
 
 
-Setup <- Setup[Setup$forecastSetup == 1]
-# Setup <- Setup[Setup$forecastSetup == Setup$forecastSetup]
-Setup$
+# ### playing w Setup control(s)
+# Setup <- NULL
+# Setup <- select(tbl.scores, c(caseStudy, forecastSystem, forecastSetup, forecastType))
+# Setup <- filter(Setup, forecastSystem=="E-HYPE" & caseStudy=="1")
+# Setup <- unique(collect(Setup, n=Inf))
+# 
+# Setup <- Setup[Setup$forecastSetup == 1]
+# # Setup <- Setup[Setup$forecastSetup == Setup$forecastSetup]
+# 
+# # Setup <- filter(tbl.forecastsetup, ID==Setup$forecastSetup)
+# # Setup <- filter(tbl.forecastsetup, ID==1)
+# Setup <- collect(Setup)
+# Setup$forecastSetup
+# # Setup <- cbind(fifi, tbl.forecastsetup)
+# str(Setup)
 
-# Setup <- filter(tbl.forecastsetup, ID==Setup$forecastSetup)
-# Setup <- filter(tbl.forecastsetup, ID==1)
-Setup <- collect(Setup)
-Setup[2]
 
-tbl.forecastsetup['ID'="1"]
-tbl.forecastsetup$forecastSetup
-
-
-
-Setup$forecastSetup
-# Setup <- cbind(fifi, tbl.forecastsetup)
-
-Setup$ID
-str(Setup)
 # from server.R, prod app
 
 tmpCaseStudy <-
