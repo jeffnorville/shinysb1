@@ -38,6 +38,16 @@ fifi <- filter(fifi, forecastSystem == "E-HYPE")
 fifi <- unique(collect(fifi, n=Inf))
 # fifi <- cbind(fifi, tbl.forecastsetup)
 
+# TODO this won't work as filter, needs another nested SQL query
+OverlappingScoreTypes <- NULL
+OverlappingScoreTypes <- select(tbl.scores, c(locationID, caseStudy, forecastSystem, forecastType))
+OverlappingScoreTypes <- filter(OverlappingScoreTypes, caseStudy == "1" & forecastSystem == "E-HYPE" & forecastType == "Bias Correction 1")
+OverlappingScoreTypes <- select(OverlappingScoreTypes, locationID)
+OverlappingScoreTypes <- distinct(OverlappingScoreTypes)
+OverlappingScoreTypes <- collect(OverlappingScoreTypes, n=Inf)
+OverlappingScoreTypes <- structure(OverlappingScoreTypes)
+
+
 Locations <- NULL
 Locations <- select(tbl.scores, c(locationID, caseStudy, forecastSystem, forecastType))
 Locations <- filter(Locations, caseStudy == "1" & forecastSystem == "E-HYPE" & forecastType == "Bias Correction 1")
@@ -120,7 +130,8 @@ unique(toto1$forecastSystem)
 unique(toto1$locationID)
 
 #ERR - dff sizes df...
-unique(toto1$leadtimeValue) #voila
+unique(toto1$leadtimeValue) #voila, le probleme avec leadtimes 
+# TODO howto join these in R prod code??
 toto1 <- filter(toto1, leadtimeValue %in% c(1,2,3,4,5,6))
 
 # ex. EHYPE is ref System, EFAS is "new"
