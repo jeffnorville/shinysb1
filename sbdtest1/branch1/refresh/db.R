@@ -31,93 +31,6 @@ tbl.interface <- tbl(db, "tblInterface")
 tbl.forecastsetup <- tbl(db, "tblForecastSetup")
 
 
-
-fifi <- select(tbl.scores, c(forecastSystem, forecastSetup))
-# fifi2 <- select(tbl.forecastsetup, c(ID, forecastSetup))
-fifi <- filter(fifi, forecastSystem == "E-HYPE")
-fifi <- unique(collect(fifi, n=Inf))
-# fifi <- cbind(fifi, tbl.forecastsetup)
-
-# TODO this won't work as filter, needs another nested SQL query
-OverlappingScoreTypes <- NULL
-OverlappingScoreTypes <- select(tbl.scores, c(locationID, caseStudy, forecastSystem, forecastType))
-OverlappingScoreTypes <- filter(OverlappingScoreTypes, caseStudy == "1" & forecastSystem == "E-HYPE" & forecastType == "Bias Correction 1")
-OverlappingScoreTypes <- select(OverlappingScoreTypes, locationID)
-OverlappingScoreTypes <- distinct(OverlappingScoreTypes)
-OverlappingScoreTypes <- collect(OverlappingScoreTypes, n=Inf)
-OverlappingScoreTypes <- structure(OverlappingScoreTypes)
-
-
-
-
-
-Locations <- NULL
-Locations <- select(tbl.scores, c(locationID, caseStudy, forecastSystem, forecastType))
-Locations <- filter(Locations, caseStudy == "1" & forecastSystem == "E-HYPE" & forecastType == "Bias Correction 1")
-Locations <- select(Locations, locationID)
-Locations <- distinct(Locations)
-Locations <- collect(Locations, n=Inf)
-Locations <- structure(Locations)
-# Locations <- data.frame(unique(Locations$locationID))
-
-
-# ### playing w Setup control(s)
-# Setup <- NULL
-# Setup <- select(tbl.scores, c(caseStudy, forecastSystem, forecastSetup, forecastType))
-# Setup <- filter(Setup, forecastSystem=="E-HYPE" & caseStudy=="1")
-# Setup <- unique(collect(Setup, n=Inf))
-# 
-# Setup <- Setup[Setup$forecastSetup == 1]
-# # Setup <- Setup[Setup$forecastSetup == Setup$forecastSetup]
-# 
-# # Setup <- filter(tbl.forecastsetup, ID==Setup$forecastSetup)
-# # Setup <- filter(tbl.forecastsetup, ID==1)
-# Setup <- collect(Setup)
-# Setup$forecastSetup
-# # Setup <- cbind(fifi, tbl.forecastsetup)
-# str(Setup)
-
-
-# from server.R, prod app
-
-tmpCaseStudy <-
-  filter(tbl.interface,
-         ObjectName == "Case Study" & LanguageID == RElanguage)
-ctlCaseStudy <- collect(tmpCaseStudy)
-
-tmpSystem <-
-  filter(tbl.interface,
-         ObjectName == "System" & LanguageID == RElanguage)
-ctlSystem <- collect(tmpSystem)
-
-# t.forecast.setup <- collect(db, tbl.forecastsetup)
-
-tmpSetup <- select(tbl.forecastsetup, ID, forecastSetup)
-ctlSetup <- collect(tmpSetup)
-
-# tmpForecastSetup <-
-#   select(tbl.scores, forecastSystem)
-# ctlForecastSetup <- arrange_(distinct(collect(tmpForecastSetup, n=Inf)))
-
-# directly from the score table
-tmpScoreType <-
-  select(tbl.scores, scoreType)
-ctlScoreType <- arrange_(distinct(collect(tmpScoreType, n=Inf)))
-
-tmpModelVariable <-
-  select(tbl.scores, modelVariable)
-ctlModelVariable <- arrange_(distinct(collect(tmpModelVariable, n=Inf)))
-
-# was filtering by multiple datapackageGUIDs before, not necessary now?
-tmpLocationName <-
-  distinct(select(tbl.scores, locationID, caseStudy))
-ctlLocationName <- collect(tmpLocationName)
-ctlLocationName <-
-  arrange_(ctlLocationName, "caseStudy", "locationID")
-
-
-
-
 ######################### plot skill scores
 compare.ss.plot <- filter(tbl.scores, 
                             # locationID %in% list.lots.basins.ehype &
@@ -141,33 +54,49 @@ toto1 <- filter(toto1, leadtimeValue %in% c(1,2,3,4,5,6))
 
 #step 0.5, build new column
 #n'oublie pas "ref"!
-toto1$ref = NA
-toto1$ref[toto1$forecastType=="Bias Correction 2"] = "ref"
-toto1$ref[toto1$forecastType!="Bias Correction 2"] = "new"
+toto1$reference = NA
+toto1$reference[toto1$forecastType=="Bias Correction 2"] = "ref"
+toto1$reference[toto1$forecastType!="Bias Correction 2"] = "new"
 # toto1 <- distinct(toto1)
 # length(toto1)
 
   unique(toto1$forecastType) # =="Bias Correction 2"
   
-  c <- table(unlist(toto1$ref))
+  # c <- table(unlist(toto1$ref))
   # new ref 
   # 576 288
   
 #step 1, aggregate dataet
-agg <- c("forecastSetup", "forecastSystem", "forecastType", "locationID", "leadtimeValue", "scoreType", "ref")
+agg <- c("forecastSetup", "forecastSystem", "forecastType", "locationID", "leadtimeValue", "scoreType", "reference")
 # fifi <- summarySE(tot_system, "scoreValue", agg, na.rm = T)
 toto2 <- summarySE(data = toto1, "scoreValue", agg, na.rm = T)
 glimpse(toto2)
 head(toto2)
 tail(toto2)
+unique(toto2$locationID)
 
 #missed the LT filter, got
 # Warning message:
 #   In xx[ref == "new", col]/xx[ref == "ref", col] :
 #   longer object length is not a multiple of shorter object length
-toto2 <- filter(toto2, leadtimeValue %in% c(1,2,3,4,5,6))
+# toto2 <- filter(toto2, leadtimeValue %in% c(1,2,3,4,5,6))
 #step 2, run thru new function
+
+for (loc in unique(toto2$locationID)) {
+  print(paste("loc:", loc))
+  loc.out <- skillScore(toto2[toto2$locationID==loc, ])
+}
+
 toto3 <- skillScore(toto2)
+
+
+skillScore <- function(dl) {
+  data <- as.list(split(toto2[ , c("reference", "scoreValue")], f=as.factor(toto2$locationID)) )
+  list.out  <- lapply(data, function(x){  
+    ss   = 1 - (x[x$reference == "new", "scoreValue"] / x[x$reference == "ref", "scoreValue"])
+  })
+  return(list.out)
+}
 
 
 # skillScore <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
@@ -179,6 +108,57 @@ toto5 = data.frame(LocationID = rep(unique(toto2$locationID), each = length(uniq
                    ScoreValue = toto3[2:25]) # 25 - length(toto3)
 
 
+
+# works
+data <- as.list(split(toto2[ , c("reference", "scoreValue")], f=as.factor(toto2$locationID)) )
+list.out  <- lapply(data, function(x){  
+  ss   = 1 - (x[x$reference == "new", "scoreValue"] / x[x$reference == "ref", "scoreValue"])
+} )
+
+
+toto7 <- as.data.frame(list.out)
+#xformed to factors, drop the leading X
+names(toto7) <- sub(pattern = "X", replacement = "", colnames(toto7))
+
+
+colnames(toto7)[1:4]
+
+
+toto8 <- data.frame(LocationID = rep(colnames(toto7), each = length((rownames(toto7)))), 
+           leadtimeValue = rep(rownames(toto7), times = length(toto7)),
+           scoreValue = toto7[,1])
+
+library(ggplot2)
+qplot(toto8, leadtimeValue, scoreValue, col = LocationID)
+
+ggplot(toto8, aes(x = toto8$leadtimeValue, y = toto8$scoreValue, col = toto8$LocationID))
+ggplot(toto8, aes(x = leadtimeValue, y = scoreValue))
+
+
+
+plot(toto8$leadtimeValue, toto8$scoreValue, group_by(toto8$LocationID))
+
+cbind(toto8, t(toto7))
+
+,
+           scoreValue = toto7[,colnames(toto7)[1:4]])
+
+
+colnames(toto7)
+rownames(toto7)
+
+toto8 = data.frame(LocationID = colnames(toto7),
+                   each = rownames(toto7)), 
+                   leadtimeValue = rep(unique(rownames(toto7)), 
+                                       times = length(unique(toto2$locationID))), 
+                   ScoreValue = toto3[2:25]) # 25 - length(toto3)
+
+
+qplot(toto7, x = )
+
+
+
+
 plotInput <- 
   ggplot(toto5,  aes(color = locationID, x = leadtimeValue, y = scoreValue ))
 
@@ -186,6 +166,8 @@ toto5 <- data.frame(LocationID = rep(unique(toto2$locationID), each = 6),
                     leadtimeValue = rep(unique(toto2$leadtimeValue), times = length(unique(toto2$locationID))), 
                     ScoreValue = toto3[2:25]
                     )
+
+
 
 
 # toto5 = data.frame(LocationID = rep(unique(toto1$locationID), each = length(unique(toto1$leadtimeValue))), 
@@ -203,8 +185,8 @@ skillScore <- function(data, measurevar = "scoreValue", groupvars=NULL, na.rm=FA
   
   datac <- plyr::ddply(data, groupvars, .drop=.drop,
                        .fun = function(xx, col, ref) {
-                         # print(xx[[col]])
-                         c(
+                        print(xx[[col]])
+                        c(
                            # N    = length2(xx[[col]], na.rm=na.rm),
                            ss   = 1 - (xx[ref == "new", col] / xx[ref == "ref", col]) #,
                            # mean = mean   (xx[[col]], na.rm=na.rm)
@@ -216,10 +198,24 @@ skillScore <- function(data, measurevar = "scoreValue", groupvars=NULL, na.rm=FA
   return(datac)
 }
 
+
+qplot(list.out, x = )
+
+
+datac <- plyr::ddply(data, groupvars, .drop=.drop,
+                     .fun = function(xx, col, ref) {
+                       print(xx[[col]])
+                       c(
+                         # N    = length2(xx[[col]], na.rm=na.rm),
+                         ss   = 1 - (xx[ref == "new", col] / xx[ref == "ref", col]) #,
+                         # mean = mean   (xx[[col]], na.rm=na.rm)
+                         # sd   = sd     (xx[[col]], na.rm=na.rm)
+                       )
+                     }, measurevar, data$ref 
+)
+
+
 ######################### plot skill scores
-toto3 <- skillScore(toto2)
-
-
 
 tmpLocationName <-
   distinct(select(tbl.scores, locationID, caseStudy))
@@ -567,4 +563,81 @@ ma <- function(x, n=2, partial=TRUE){
   }
 }
   # ggp + facet_grid(scoreValue ~ leadtimeValue)
+
+
+
+
+
+# from server.R, prod app
+
+tmpCaseStudy <-
+  filter(tbl.interface,
+         ObjectName == "Case Study" & LanguageID == RElanguage)
+ctlCaseStudy <- collect(tmpCaseStudy)
+
+tmpSystem <-
+  filter(tbl.interface,
+         ObjectName == "System" & LanguageID == RElanguage)
+ctlSystem <- collect(tmpSystem)
+
+# t.forecast.setup <- collect(db, tbl.forecastsetup)
+
+tmpSetup <- select(tbl.forecastsetup, ID, forecastSetup)
+ctlSetup <- collect(tmpSetup)
+
+# tmpForecastSetup <-
+#   select(tbl.scores, forecastSystem)
+# ctlForecastSetup <- arrange_(distinct(collect(tmpForecastSetup, n=Inf)))
+
+# directly from the score table
+tmpScoreType <-
+  select(tbl.scores, scoreType)
+ctlScoreType <- arrange_(distinct(collect(tmpScoreType, n=Inf)))
+
+tmpModelVariable <-
+  select(tbl.scores, modelVariable)
+ctlModelVariable <- arrange_(distinct(collect(tmpModelVariable, n=Inf)))
+
+# was filtering by multiple datapackageGUIDs before, not necessary now?
+tmpLocationName <-
+  distinct(select(tbl.scores, locationID, caseStudy))
+ctlLocationName <- collect(tmpLocationName)
+ctlLocationName <-
+  arrange_(ctlLocationName, "caseStudy", "locationID")
+
+
+
+
+fifi <- select(tbl.scores, c(forecastSystem, forecastSetup))
+# fifi2 <- select(tbl.forecastsetup, c(ID, forecastSetup))
+fifi <- filter(fifi, forecastSystem == "E-HYPE")
+fifi <- unique(collect(fifi, n=Inf))
+# fifi <- cbind(fifi, tbl.forecastsetup)
+
+# Locations <- NULL
+# Locations <- select(tbl.scores, c(locationID, caseStudy, forecastSystem, forecastType))
+# Locations <- filter(Locations, caseStudy == "1" & forecastSystem == "E-HYPE" & forecastType == "Bias Correction 1")
+# Locations <- select(Locations, locationID)
+# Locations <- distinct(Locations)
+# Locations <- collect(Locations, n=Inf)
+# Locations <- structure(Locations)
+# # Locations <- data.frame(unique(Locations$locationID))
+
+
+# ### playing w Setup control(s)
+# Setup <- NULL
+# Setup <- select(tbl.scores, c(caseStudy, forecastSystem, forecastSetup, forecastType))
+# Setup <- filter(Setup, forecastSystem=="E-HYPE" & caseStudy=="1")
+# Setup <- unique(collect(Setup, n=Inf))
+# 
+# Setup <- Setup[Setup$forecastSetup == 1]
+# # Setup <- Setup[Setup$forecastSetup == Setup$forecastSetup]
+# 
+# # Setup <- filter(tbl.forecastsetup, ID==Setup$forecastSetup)
+# # Setup <- filter(tbl.forecastsetup, ID==1)
+# Setup <- collect(Setup)
+# Setup$forecastSetup
+# # Setup <- cbind(fifi, tbl.forecastsetup)
+# str(Setup)
+
 

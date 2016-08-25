@@ -1,12 +1,12 @@
 # global function file in IMPREX ScoreBoard
 
-sse <- function(x, series){
-  sum((series - x)^2)
-}
-
-mse <- function(x, series){
-  mean((series - x)^2)
-}
+# sse <- function(x, series){
+#   sum((series - x)^2)
+# }
+# 
+# mse <- function(x, series){
+#   mean((series - x)^2)
+# }
 
 ## Gives count, mean, standard deviation, standard error of the mean, and confidence interval (default 95%).
 ##   data: a data frame.
