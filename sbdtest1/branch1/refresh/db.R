@@ -48,6 +48,9 @@ OverlappingScoreTypes <- collect(OverlappingScoreTypes, n=Inf)
 OverlappingScoreTypes <- structure(OverlappingScoreTypes)
 
 
+
+
+
 Locations <- NULL
 Locations <- select(tbl.scores, c(locationID, caseStudy, forecastSystem, forecastType))
 Locations <- filter(Locations, caseStudy == "1" & forecastSystem == "E-HYPE" & forecastType == "Bias Correction 1")
@@ -158,52 +161,36 @@ glimpse(toto2)
 head(toto2)
 tail(toto2)
 
+#missed the LT filter, got
+# Warning message:
+#   In xx[ref == "new", col]/xx[ref == "ref", col] :
+#   longer object length is not a multiple of shorter object length
+toto2 <- filter(toto2, leadtimeValue %in% c(1,2,3,4,5,6))
 #step 2, run thru new function
 toto3 <- skillScore(toto2)
 
-ggplot(toto3)
 
-toto3$
-  
-for (i=1:toto3$N) {
-toto4[[i]] <- toto3  
-}
-qplot()
-
-
-qplot(maths.on.this$leadtimeValue, 1-(system1$scoreValue/system2$scoreValue), col = maths.on.this$locationID)
-  
-tot_system = rbind(system1, system2)
-str(maths.on.this)
-
-tot_system$forecastSystem
-g <- c("locationID", "scoreType")
-toto <- skillScore(tot_system, g)
-
-agg <- c("forecastSetup", "forecastSystem", "forecastType", "locationID", "leadtimeValue", "scoreType", "ref")
-fifi <- summarySE(tot_system, "scoreValue", agg, na.rm = T)
-
-tot_system$scoreValue
-
-t2 <- skillScore(fifi)
-qplot(t2)
-rep(unique(toto1$leadtimeValue), length(unique(toto1$locationID)))
-?rep
 # skillScore <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 # NOTE avoid "/ by 0" errors
 
 #3, run toto1 thru something like this to frame up
-toto5 = data.frame(LocationID = rep(unique(toto1$locationID), each = length(unique(toto1$leadtimeValue))), 
-                   leadtimeValue = rep(unique(toto1$leadtimeValue), times = length(unique(toto1$locationID))), 
-                   ScoreValue = toto4[3:26])
+toto5 = data.frame(LocationID = rep(unique(toto2$locationID), each = length(unique(toto2$leadtimeValue))), 
+                   leadtimeValue = rep(unique(toto2$leadtimeValue), times = length(unique(toto2$locationID))), 
+                   ScoreValue = toto3[2:25]) # 25 - length(toto3)
 
 
+plotInput <- 
+  ggplot(toto5,  aes(color = locationID, x = leadtimeValue, y = scoreValue ))
+
+toto5 <- data.frame(LocationID = rep(unique(toto2$locationID), each = 6),
+                    leadtimeValue = rep(unique(toto2$leadtimeValue), times = length(unique(toto2$locationID))), 
+                    ScoreValue = toto3[2:25]
+                    )
 
 
-
-forecastSystem=="E-HYPE"
-head(tot_system)
-
+# toto5 = data.frame(LocationID = rep(unique(toto1$locationID), each = length(unique(toto1$leadtimeValue))), 
+#                    leadtimeValue = rep(unique(toto1$leadtimeValue), times = length(unique(toto1$locationID))), 
+#                    ScoreValue = toto4[3:26])
 
 # measurevar = "scoreValue",
 skillScore <- function(data, measurevar = "scoreValue", groupvars=NULL, na.rm=FALSE, .drop=TRUE) {
@@ -218,24 +205,14 @@ skillScore <- function(data, measurevar = "scoreValue", groupvars=NULL, na.rm=FA
                        .fun = function(xx, col, ref) {
                          # print(xx[[col]])
                          c(
-                         # N    = length2(xx[[col]], na.rm=na.rm),
+                           # N    = length2(xx[[col]], na.rm=na.rm),
                            ss   = 1 - (xx[ref == "new", col] / xx[ref == "ref", col]) #,
                            # mean = mean   (xx[[col]], na.rm=na.rm)
                            # sd   = sd     (xx[[col]], na.rm=na.rm)
                          )
                        }, measurevar, data$ref 
   )
-  
-  # Rename the "mean" column
 
-  # datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
-  
-  # Confidence interval multiplier for standard error
-  # Calculate t-statistic for confidence interval: 
-  # e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
-  # ciMult <- qt(conf.interval/2 + .5, datac$N-1)
-  # datac$ci <- datac$se * ciMult
-  
   return(datac)
 }
 
