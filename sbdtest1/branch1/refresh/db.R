@@ -90,12 +90,20 @@ for (loc in unique(toto2$locationID)) {
 toto3 <- skillScore(toto2)
 
 
+
+
 skillScore <- function(dl) {
-  data <- as.list(split(toto2[ , c("reference", "scoreValue")], f=as.factor(toto2$locationID)) )
+  data <- as.list(split(dl[ , c("reference", "scoreValue")], f=as.factor(dl$locationID)) )
   list.out  <- lapply(data, function(x){  
     ss   = 1 - (x[x$reference == "new", "scoreValue"] / x[x$reference == "ref", "scoreValue"])
   })
-  return(list.out)
+  df <- as.data.frame(list.out)
+  #xformed to factors, drop the leading X
+  names(df) <- sub(pattern = "X", replacement = "", colnames(df))
+  df <- stack(df)
+  colnames(df) <- c("scoreValue", "locationID")
+  df$leadtimeValue <- rep(unique(dl$leadtimeValue), times = length(unique(dl$locationID)))
+  return(df)
 }
 
 
@@ -108,7 +116,8 @@ toto5 = data.frame(LocationID = rep(unique(toto2$locationID), each = length(uniq
                    ScoreValue = toto3[2:25]) # 25 - length(toto3)
 
 
-
+rep(1:6, times = length(locationID))
+    
 # works
 data <- as.list(split(toto2[ , c("reference", "scoreValue")], f=as.factor(toto2$locationID)) )
 list.out  <- lapply(data, function(x){  
@@ -127,6 +136,10 @@ colnames(toto7)[1:4]
 toto8 <- data.frame(LocationID = rep(colnames(toto7), each = length((rownames(toto7)))), 
            leadtimeValue = rep(rownames(toto7), times = length(toto7)),
            scoreValue = toto7[,1])
+
+toto9 <- stack(toto7, select(c(row.names(toto7))))
+
+colnames(toto9) <- c("scoreValue", "locationID")
 
 library(ggplot2)
 qplot(toto8, leadtimeValue, scoreValue, col = LocationID)
