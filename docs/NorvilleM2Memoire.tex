@@ -1,0 +1,677 @@
+%########################################################################
+% A command that output some latin text for demonstration purpose
+%########################################################################
+
+\def\dummytext{
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus blandit massa non tellus. Pellentesque blandit. Etiam sapien. Quisque sed massa ac tortor accumsan bibendum. Donec et orci quis mi sollicitudin consectetuer. Donec malesuada. Pellentesque bibendum pellentesque elit. Morbi et diam ac wisi auctor fringilla. Cras nec arcu sed velit dapibus blandit. Maecenas mollis aliquet quam. In eget sem nec orci fringilla sagittis. Suspendisse cursus placerat massa. Pellentesque non metus. Morbi congue tellus eget tellus. Suspendisse justo. Suspendisse potenti. Praesent interdum lorem in velit. Nullam sit amet nisl eget wisi consectetuer consequat. Mauris vel felis. Nulla sed neque.
+
+Nulla facilisi. Maecenas accumsan gravida wisi. Maecenas sodales gravida neque. Mauris in est a ante molestie gravida. In id neque. Ut augue. Duis fringilla ullamcorper risus. Nullam at lorem. Quisque consequat turpis ac libero. Ut auctor ante commodo magna. Donec in magna. Integer sodales. Donec ac nibh eu felis suscipit elementum.
+
+Fusce convallis dolor sit amet dolor. Nulla sit amet pede. Maecenas et ante vitae risus tempus facilisis. Nullam ut tellus et lacus sollicitudin condimentum. Maecenas vitae lorem. Quisque nec leo varius est euismod posuere. Integer ac diam in enim pellentesque pulvinar. Etiam sodales tristique eros. Curabitur non magna. Suspendisse blandit metus vitae purus. Phasellus nec sem vitae arcu consequat auctor. Donec nec dui. Donec sit amet lorem vel erat tristique laoreet. Duis ac felis tincidunt arcu consequat faucibus. Vestibulum ultrices porttitor purus. In semper consequat dolor. Nunc porta. Vestibulum nisl ipsum, rhoncus quis, adipiscing sed, sollicitudin ut, quam.
+}
+
+%########################################################################
+% Loading orsay-memoire with logos, parttoc and 2 additional languages
+%########################################################################
+
+%\documentclass[logos,parttoc,morelanguage=english,morelanguage=german,morelanguage=italian]{orsay-memoire}
+
+\documentclass[logos,parttoc,morelanguage=french,morelanguage=italian]{orsay-memoire}
+
+%########################################################################
+% Extensions
+%########################################################################
+
+%Text encoding and fonts
+% \usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
+\usepackage[xindy]{glossaries} 
+\usepackage[T1]{fontenc}
+\usepackage{minted}
+\usepackage{multirow}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{csquotes}
+\usepackage{graphicx} % also defined in CLS - conflict?
+\usepackage{hyperref} %caused probs ?
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+%  \usepackage[round]{natbib}
+\usepackage[backend=biber,
+	citestyle=authoryear,
+    style=alphabetic,
+    natbib=true,
+    url=false, 
+    doi=true,
+    eprint=false]{biblatex}
+% \bibliography{Mendeley_Norville2016Memoire}
+% \bibliography{primary}
+ \addbibresource{Mendeley_Norville2016Memoire.bib}
+ \addbibresource{primary.bib}
+
+
+%########################################################################
+% Title page
+%########################################################################
+
+%Thesis author
+\author{Jeffrey \textsc{NORVILLE}}
+
+%Title for main language (french)
+\title{Analyse de la performance des prévisions saisonnières en France et à l'échelle globale}
+%Titles for other languages
+\title[english]{Performance analysis of seasonal forecasts at the national level and globally}
+%\title[german]{My German thesis title}
+\title[italian]{My Italian thesis title}
+
+%Keywords for main language (french)
+\keywords{Météorologie, prévisions saisonnières}
+%Keywords for other languages languages
+\keywords[english]{Forecast verification, Seasonal forecasts, Hydrology, Meteorology}
+%\keywords[german]{Blabla, blabla, blabla, blabla, blabla, blabla, blabla}
+\keywords[italian]{Blabla, blabla, blabla, blabla, blabla, blabla, blabla}
+
+%Order number of the thesis
+\ordernumber{43}
+
+%Date of defense
+\date{18/09/2016} % 18 September 2016
+% \date{1/1/16} % 18 September 2016
+
+%You define the commission member list using \addcommissionmember (mandatory) with an optional role (eg: president, supervisor, etc...)
+\addcommissionmember{Mme. Dr.}{Véronique}{DURAND}
+\addcommissionmember{Mme. Dr.}{Christelle}{MARLIN}
+\addcommissionmember[Directeur de these]{Mme. Dr.}{Maria-Héléna}{RAMOS}
+\addcommissionmember{M. Dr.}{Guillaume}{THIREL}
+% \addcommissionmember[Président du jury]{M.}{Iiii}{Jjjjjjjjjjjj}
+% \addcommissionmember{M.}{Kkkkkkkkkkkk}{Llllll}
+
+%If some referees are not part of the commission, you can add them in a separate list with \addreferee (optional)
+% \addreferee{M.}{Mmmmmmmm}{Nnnnnnnn}
+% \addreferee{M.}{Oooooooooo}{Pppppppp}
+
+%########################################################################
+% Glossary TOC
+%########################################################################
+
+\addcontentsline{toc}{section}{Glossary of Terms}
+
+\input{glossary}
+\makeglossaries
+
+% \author{writeLaTeX}
+% \date{\today}
+
+% \newpage
+
+%########################################################################
+% Document start
+%########################################################################
+\begin{document}
+
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+
+%Print title NOW
+\maketitle%
+
+%Disable page numbering
+\pagestyle{empty}
+
+%########################################################################
+% Multilingual abstracts
+%########################################################################
+
+%French abstract:
+\begin{abstract}
+\dummytext
+\end{abstract}
+
+%Horizontal rule
+\noindent\hspace*{0.35\textwidth}\hrulefill\hspace*{0.35\textwidth}\\[-\bigskipamount]
+
+%English abstract:
+\begin{abstract}[english]
+\dummytext
+\end{abstract}
+
+% \pagebreak
+
+%German abstract:
+%\begin{abstract}[german]
+%\dummytext
+%\end{abstract}
+
+%Horizontal rule
+\noindent\hspace*{0.35\textwidth}\hrulefill\hspace*{0.35\textwidth}\\[-\bigskipamount]
+
+%Italian abstract:
+%\begin{abstract}[italian]
+%\dummytext
+%\end{abstract}
+
+%########################################################################
+% Acknowledgments / Remerciements
+%########################################################################
+
+\pagebreak\strut\newpage
+
+\section*{Acknowledgments}
+%Put the text vertically centered
+\vfill
+This thesis has it's origins in the support of many people. My mentors, peers and friends at IRSTEA -- specifically my advisors, Maria-Héléna Ramos and Guillaume Thirel, as well as the whole HBAN team of Charles Perrin; R guru Olivier Delaigue; and "les autres stagieres" who helped push along my verbal French.
+
+The team at ECMWF was also very supportive, and I have Louise Arnal to thank for the data received from the EFAS system. Florian Pappenberger and Paul Smith helped conceive of the scoreboard and particularly the PostgreSQL database, and there exists a fantastic opportunity to tie their SOAP web services with the scoreboard. Unfortunately the SOS database wasn't online in time to be used for this project.
+
+My participation in this Master's program is based on my French studies which began last year. U-PSUD professors Laurence Peyraud, Roselyn Debrick, and Annie Reavley were particularly supportive, challenging, and motivating. Though my personal expectations have remained relatively low, theirs were high, which pushed me to progress in one short year.
+
+Hydrogeology professors Véronique Durand and Christelle Marlin have also been particularly supportive; it was Véronique who introduced me to the language program in the first place. 
+
+Finally, it's my wife Elena, and our boys Oliver and Sebastian, who I've asked the most of during my continuing education and graduate project, and without their support and understanding I simply wouldn't be where I am. 
+
+\vfill
+% \newpage
+
+
+%########################################################################
+% Contents
+%########################################################################
+
+\strut\newpage
+
+\tableofcontents
+
+\newpage
+
+
+%########################################################################
+% Glossary
+%########################################################################
+
+% \section*{Glossary}
+% \par Terms and abbreviations noted here are used throughout the paper.
+
+\printglossaries
+
+% https://www.wmo.int/pages/prog/lsp/meteoterm_wmo_en.html
+
+% \vfill
+\newpage
+
+%########################################################################
+% Introduction
+%########################################################################
+
+%Enable page numbering
+\pagestyle{fancy}
+
+\section{Introduction}
+\addcontentsline{toc}{section}{Introduction}
+
+\par In the field a meteorology, the most famous example of the non-intuitive need for verification are the Finlay's Tornados.  Finlay 
+
+\par Forecasting as a science exists across many disciplines: hydrology and hydrogeology in my direct experience, meteorology of course, as well as in the financial markets, politics, and in retail systems. If a person can collect historical data and predict a future outcome by organizing it (modeling) in some way, they've made a forecast, or prediction.
+
+Terminology may differ across discipline. For instance, \gls{lead-time} can be a confusing topic, yet is fundamental to meteorological forecasts. 
+
+\par A forecast stakeholder is generally a person or entity interested in the use or outcome of a prediction. Stakeholders have different needs and terminology, not just across different disciplines but even within one discipline but considering a different application.
+
+\par A typical example from the northern latitudes might be for winter temperature forecasts: a power company might keep close watch on temperature fluctuations to anticipate changes in electricity consumption; however the highway and roadway maintenance sector might only care about which areas will drop below some threshold when their road de-icing begins. A nearby airport manager may want a similar temperature-based forecast but with different threshold values and more information on atmospheric profiles.
+
+Across Europe the \gls{imprex} project (IMproving PRedictions and management of hydrological EXtremes) seeks to improve peak discharge forecasts; team members include ECMWF's EFAS team. 
+
+As part of the IMPREX project, this scoreboard (TODO copy from IMRPEX doc).
+
+Verification scoreboards are commonly used within a forecasting organization to validate their models and help tune future development efforts (TODO add third thing I'm forgetting). 
+
+\gls{scoreboard-user} is the prospective consumer of the GUI.
+
+
+Bias is a common source of error in forecasting, and can be difficult to conceptualize due to the differences in applications of bias across disciplines. A classic optimistic bias from \cite{kahneman2011thinking} is the tendency to overemphasize rare events through the "representativeness heuristic". (TODO review applicable section of book)
+
+\gls{bias-correction} is another aspect of meteorological and hydrological forecasting, and is computed similarly to bias analyses in the cognitive sciences noted above.
+
+
+\begin{figure}
+\includegraphics[width=\textwidth]{images/concept_verifscoreboard.png}
+%   \includegraphics[width=\linewidth]{boat.jpg} % textwidth
+  \caption{Concept of a scoreboard.}
+  \label{fig:scoreboard concept}
+\end{figure}
+
+\textbf{Investigation questions}
+
+\par This thesis project, and our contribution to the IMPREX project, seeks to create a share-able back end database with an open, customizable front end to compare scores across systems.
+
+\textbf{Standardizing data input and display}
+
+Part of the scoreboard is the display; a bigger and more complex component is the "plumbing".
+
+Main challenges:
+\begin{itemize}
+\item Comparing comparable scores
+\item Comparing comparable locations
+\item Avoid misleading users
+\end{itemize}
+
+In order to create a usable scoreboard we have created a web-based scoreboard which connects to a centralized database. To facilitate the introduction of this utility we have released the scoreboard as a stand-alone tool, which connects either to a locally-managed database or a series of flat files.
+
+
+
+%########################################################################
+% First part - Forecast Verification
+%########################################################################
+
+\part{Verifying Forecasts, an Overview}
+
+% move down, Construction Approach (Methods)
+
+
+\section{Motivation}
+
+Why verify a forecast? 
+
+Skill scores may be calculated for economic, administrative, and other types of forecasts which use numerical formulae to gain insight into future trends. 
+
+\section{The Scores Themselves}
+
+My first introduction to forecast validation was through the classic example of the Finley's tornadoes (\cite{murphy1996finley}). 
+
+% by http://www.tablesgenerator.com/
+\begin{table}[]
+\centering
+%\caption{My caption}
+%\label{my-label}
+\begin{tabular}{lrccc}
+\hline
+ & \multicolumn{4}{c}{Observed} \\ \hline
+\multicolumn{1}{l|}{} & \multicolumn{1}{l|}{} & \multicolumn{1}{c|}{tornado} & \multicolumn{1}{c|}{no tornado} & \multicolumn{1}{c|}{\textbf{total}} \\ \cline{2-5} 
+\multicolumn{1}{l|}{} & \multicolumn{1}{r|}{tornado} & \multicolumn{1}{c|}{\cellcolor[HTML]{CBCEFB}28} & \multicolumn{1}{c|}{\cellcolor[HTML]{CBCEFB}72} & \multicolumn{1}{c|}{\cellcolor[HTML]{303498}{\color[HTML]{FFFFFF} \textbf{100}}} \\ \cline{2-5} 
+\multicolumn{1}{l|}{} & \multicolumn{1}{r|}{no tornado} & \multicolumn{1}{c|}{\cellcolor[HTML]{CBCEFB}23} & \multicolumn{1}{c|}{\cellcolor[HTML]{CBCEFB}2680} & \multicolumn{1}{c|}{\cellcolor[HTML]{303498}{\color[HTML]{FFFFFF} \textbf{2703}}} \\ \cline{2-5} 
+\multicolumn{1}{l|}{\multirow{-4}{*}{Forecast}} & \textbf{total} & \cellcolor[HTML]{303498}{\color[HTML]{FFFFFF} \textbf{51}} & \cellcolor[HTML]{303498}{\color[HTML]{FFFFFF} \textbf{2752}} & \cellcolor[HTML]{303498}{\color[HTML]{FFFFFF} \textbf{2803}} \\ \cline{2-5} 
+\end{tabular}
+\caption{Tornado Forecasts (1884 Finley)}
+\label{Tornado Forecasts}
+\end{table}
+
+Something about Finley tornado forecasts 
+
+first
+\cite{Teutschbein2012BiasMethods}
+
+
+
+	\begin{enumerate}
+		\item BS: Brier Score : quadratic 
+        \item ROC
+        \item CRPS
+     \end{enumerate}
+
+\subsection{Brier Score}
+
+
+What's today called the Brier Score originally came from \cite{brier1950verification}, and has been called the \textit{sample skill score} by \cite{Murphy1974sample}, which is when Murphy 
+
+
+discuss Brier Score, including "calibration-refinement factors":
+	\begin{enumerate}
+      \item reliability
+      \item resolution, and
+      \item uncertainty
+    \end {enumerate}
+
+including likelihood-base-rate factors:
+	\begin{enumerate}
+       \item Type-II conditional bias
+       \item discrimination, and
+       \item sharpness
+    \end {enumerate}
+
+
+
+\begin{equation}
+BS = \frac{1}{N}\sum_{t=1}^{N}\left ( f_t - o_t \right )^2
+\end{equation}
+
+\subsection{ROC score}
+
+The Relative Operating Characteristic (ROC) score 
+
+Relative Operating Characteristic, including the fitting of a smooth curve (bivariate normal model)
+ROC (Relative Operating Characteristic)
+
+Relative Operating Characteristic Score, including the integration of a fitted curve
+ROCS (Relative Operating Characteristic Score)
+
+
+
+\subsection{CRPS and CRPSS scores}
+Continuous Ranked Probability Score and its calibration-refinement factors
+CRPS (Continuous Ranked Probability Score) introduced in ~\cite{hersbach2000decomposition} and debiased in ~\cite{ferro2008effect}.
+
+Continuous Ranked Probability Skill Score and its calibration-refinement factors
+
+CRPSS (Continuous Ranked Probability Skill Score)
+
+\section{Regional Applications}
+
+\subsection{Europe}
+	\begin{enumerate}
+% href library was breaking stuff... jbn
+%		\item \href{http://www.emc.ncep.noaa.gov/gmb/wx24fy/vsdb/gfs2015/www/scorecard/mainindex.html}{NOAA NCEP Verification Scorecard}
+%        \item \href{http://www.emc.ncep.noaa.gov/gmb/wx24fy/vsdb/gfs2015/g2o/index.html}{Forecast Temperature Verified Against RAOBS Over CONUS}
+       \item ECMWF skill report: 
+       \item another example?
+     \end{enumerate}
+
+
+\subsection{North America}
+
+\subsection{Austral-Asia}
+
+\part{About Forecasts}
+
+\section{Meteorology}
+
+\section{Hydrology}
+
+\section{Hydrogeology}
+
+
+%########################################################################
+% Second part - Tools and Workflow
+%########################################################################
+
+\part{Design-Build of Scoreboard for Inter-Agency Comparison}
+
+Each major climate agency performs verification on their forecast systems; below I compare ECMWF and NOAA systems, for example. 
+%TODO every public agency verifies their own scores
+\cite{JolliffeIanT.andStephenson2012ForecastVerification}
+
+\section{Tools}
+
+The toolset for this project was not predefined; as noted above, not much about this project deliverable was clearly defined.
+
+After considering Python, Java, and even Microsoft tools (I have more experience with MySQL and the c\# web frameworks than R and friends frankly), the environment at IRSTEA and the individuals I met at the Reading Weather Center seemed to share an enthusiasm for R and RStudio.
+
+\begin{itemize}
+\item R
+\item RStudio
+\item postgresql
+\item git
+\item github
+\item QGIS
+\item Rmarkdown
+\item Overleaf
+\item Mendeley
+\item 
+
+
+\end{itemize}
+
+
+
+
+\section{Workflow}
+
+
+
+git and github
+
+RStudio
+
+
+
+\subsection{Propriétés}
+
+As Pappenberger points out ~\cite{pappenberger2015know} 
+
+NOT IN THIS PROJECT
+An important distinction should be made between model shortcomings, model errors and model biases ~\cite{teutschbein2013bias}
+
+
+
+
+
+% \subsection{Scoreboard Testing}
+
+\section{Scoreboard Testing}
+
+\subsection{SMHI Score Data}
+
+Swedish Meteorological and Hydrological Institute (SMHI) of Sweden (http://www.smhi.se/en) sent us score data calculated from their E-HYPE model (TODO describe). E-HYPE is a Pan-European hydrological model for seasonal streamflow forecasts that runs over 35000 sub-basins (median resolution=215 km²) across all of Europe.
+
+Daily streamflow forecasts were obtained using the System 4 seasonal precipitation forecasts from ECMWF as input to the E-HYPE hydrological model. The streamflow forecasts were verified by SMHI with a variety of numerical scores.
+
+Here, for illustrative purposes, we use the Continuous rank probability score (CRPS) and its corresponding skill score (CRPSS), the Root Mean Squared Error (RMSE) and the correlation coefficient (CORR). The E-HYPE score data were provided in RData file format. It contained scores and skill scores for 825 stations in Europe. The file had about 50 MB and contained scores for each month of the year, 6 lead months and each station (i.e., 12*6*825 data points per score).
+
+The geographical coordinates of all model data points were retrieved from the SMHI website TODO ... we reduced the full coordinate set to match available scores from the dataset received.
+
+\subsection{ECMWF Score Data}
+
+\gls{Sys4-EFAS} data was provided by the European Centre for Medium-Range Weather Forecasts (\href{http://www.ecmwf.int}{ECMWF}). Score data come from the evaluation of seasonal streamflow forecasts issued by EFAS (\href{https://www.efas.eu/about-efas.html}{European Flood Awareness System}).
+
+Daily streamflow forecasts were obtained using the System 4 seasonal precipitation forecasts from ECMWF as input to the daily LISFLOOD hydrological model, following its set up in Europe for the EFAS project. LISFLOOD is a GIS-based, distributed hydrological rainfall-runoff-routing model. It is run for all of Europe on a 5x5 km grid. Streamflow is simulated on a pixel basis.
+
+The streamflow forecasts were verified by ECMWF and we have collected CRPS values for the score database. The score data were provided in text file format for 74 basins over Europe. The scores are average scores over all the years of data, for each month for which the forecast is made and each month of lead time (up to 7 months). We have received score values for each basin (not for a station as in the E-HYPE data).  As it was explained to us, these scores come from the quality evaluation of average monthly discharge values over each basin. Daily discharges were first spatially averaged over each pixel inside the basin area, and then temporally averaged over a month, before proceeding to the forecast verification. Shape files were also provided for the geographical location of the basins.
+
+\subsection{Other Score Datasources}
+
+ECMWF also recently published an online observation consumption tool which publishes their model data as "predictions" using a SOAP or REST service through the SOS database products (North52 description TODO). 
+
+
+
+%########################################################################
+% III Decisions made while developing the scoreboard
+%########################################################################
+
+\part{Scoreboard Tech - Decisions}
+
+\section{Database}
+
+There are many different tools which may be used to develop and share a visual scoreboard today. After an early conversation with ECMWF, we appreciated their decision to stay with wholly open-source tools (python, Apache, R and RStudio)
+
+Notes on comparing NetCDF and a multidimensional array database for large hydrologic datasets...
+thesis by Haicheng Liu, TU Delft, 29 octobre 2014
+
+Alternatives to PostgreSQL considered:
+\begin{enumerate}
+\item MySQL
+\item NetCDF
+\item SOS database (used by ECMWF and implemented recently)
+\end{enumerate}
+
+While there are many potential users of this tool, we have only anticipated accommodating a few types of data, and they will generally be processed as score files. Since many collaborators already use R, we have developed a small file specification that, if matched, may be uploaded directly to the scoreboard database.
+
+In cases where the default schema cannot be matched, or the partner does not use R in-house, we can build a custom import tool. With each successive data import the import method becomes "smarter", adding a mapping for our database and allowing future automated imports.
+
+Essentially \textbf{scores} are measured at points on a grid (raster) where consistent, reliable, or redundant measuring points (observations) are available. Verifications are therefor a comparison about what the model said would happen at that point and what the sensor or weather stations observed.
+
+The reforecasts we work with cover the range (for example) from January 1981 to April 2010, a period of nearly 30 years; finding "observation" points which have collected comparable, consistent values for the same period of record, and have been minimally influenced by local development, is difficult [TODO {citation???] (Bowler 2007). \cite{bowler2008accounting}
+
+\subsection{Compromises}
+
+Our system needs to account not for time-series data in every case, but also for data on different timescales; for this reason we've included two different "scales" of dates in the database, technically a "no-no" for a database administrator, but a necessary evil to accommodate our potential users.
+
+What our database looked like at first:
+
+
+What our database looks like at the project winds down:
+\begin{minted}{SQL}
+CREATE TABLE "tblScores"
+(
+  "row.names" text,
+  "locationID" text,
+  "scoreValue" double precision,
+  "forecastType" text,
+  "dateValue" date,
+  "datePartValue" numeric, -- valid numeric values: 12 (month), 51 (week)
+  "datePartUnit" text, -- valid values: "month", "week"
+  "leadtimeValue" integer,
+  "leadtimeUnit" text, -- daily weekly monthly
+  "scoreNA" boolean, -- if scoreValue == NA then TRUE
+  "scoreType" text, -- lookup to other table of forecast types
+  "modelVariable" text,
+  "dataPackageGUID" text
+)
+\end{minted}
+
+Fields for 
+
+
+After importing the SMHI packages, which had already averaged to monthly lead time values:
+
+
+\begin{itemize}
+\item 
+\end{itemize}
+
+
+
+\subsection{Notations}
+
+Testing here to see how (well) minted package handles R code... nicely!
+\begin{minted}{R}
+
+require(dplyr)
+thing1 <- filter(fifi4, locationID %in% basin.list[1:9])
+ggplot(thing1, aes(x = leadtimeValue, y = scoreValue)) +
+  geom_boxplot() +
+  facet_wrap(~ locationID) +
+  xlab("Lead Times") + ylab("RMSE Scores")
+\end{minted}
+
+
+
+
+\subsection{Propriétés}
+
+\dummytext
+
+\subsection{Théorème}
+
+\dummytext
+
+\section{R Shiny}
+
+For graphical output and statistical models, R appears to be winning the open-source -- and even among the proprietary -- toolsets in popular circulation today.
+
+Specific to this project, the creators of RStudio (a popular IDE, integrated development environment) have released a package called Shiny, which facilitates interactive webpage design.
+
+Other tools considered for the interface:
+\begin{enumerate}
+	\item JavaScript
+    \item python
+    \item Access / MySQL
+\end{enumerate}
+
+
+\subsection{Notations}
+
+
+\subsection{Propriétés}
+
+\dummytext
+
+\subsection{Théorème}
+
+\dummytext
+
+%########################################################################
+% Fourth part
+%########################################################################
+
+\part{Analysis of scores}
+
+\section{Quantitative Analysis}
+
+\begin{equation}\label{SkillscoreEquation}
+skillscore =  \frac{score_{forecast} - score_{reference} }{score_{perfect.forecast} - score_{reference}}
+\end{equation}
+
+\subsection{Notations}
+
+
+\subsection{Bias Discussion}
+
+\begin{equation}\label{BiasEquation}
+bias =  \frac{ hits + false alarms }{ hits + misses }
+\end{equation}
+
+
+Type I and Type II errors in hypothesis testing:
+
+Type II : Discarded negative hypothesis
+
+\begin{tabular}{|p{5cm}|p{4cm}|p{4cm}|}
+    \hline
+     & H $_{\text{0}}$ = TRUE & H $_{\text{0}}$ = FALSE\\
+    \hline
+    H $_{\text{0}}$ not rejected & Correct & Type II error\\
+    \hline
+    H $_{\text{0}}$ rejected & Type I error & Correct\\
+    \hline
+\end{tabular}
+
+Bias correction methods in common use for hydrology include the six following from  ~\cite{teutschbein2013bias}.
+
+
+\begin{table} %[]
+\centering
+\caption{Comparison of bias correction methods}
+\label{compare-bias-correction}
+\begin{tabular}{lllll} %{|p{2cm}|pp{2cm}|pp{2cm}|pp{2cm}|pp{2cm}|}
+linear transformations & Precipitation &  &  &  \\
+LOCI                   & Precipitation &  &  &  \\
+power transformation   &               &  &  &  \\
+variance scaling       &               &  &  & \\
+distribution mapping   &               &  &  & \\
+delta-change approach  &               &  &  & 
+\end{tabular}
+\end{table}
+
+\begin{enumerate}
+	\item one
+    \item deux
+    
+\end{enumerate}
+
+Piani \cite{Piani2010StatisticalEurope} points out that bias correction is ... 
+
+\newpage
+
+%########################################################################
+% Annexes / Appendices
+%########################################################################
+
+\part{Score Dataset Comparison}
+
+\section{Spatial analysis}
+
+\subsection{Notations}
+
+
+
+%########################################################################
+% Bibliography
+%########################################################################
+
+\thispagestyle{empty}
+\strut\newpage
+
+\addcontentsline{toc}{section}{References}
+% \addcontentsline{toc}{section}{Références}
+
+\begin{thebibliography}{100}
+\labelwidth=4em
+\addtolength\leftskip{25pt}
+\setlength\labelsep{0pt}
+\addtolength\parskip{\smallskipamount}
+% \bibitem[AAA]{AAA}{Blablabla, blablablabla, blablablabla, blablablabla.}
+\printbibliography 
+
+
+\end{thebibliography}
+
+\end{document}
+
+%########################################################################
+% Document end
+%########################################################################
