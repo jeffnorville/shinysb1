@@ -7,7 +7,7 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-readRenviron("~/R/shinysb1/.Renviron")
+readRenviron("~/R/.Renviron")
 REdbname = Sys.getenv('pgdb')
 REuser = Sys.getenv('api_user')
 REpassword = Sys.getenv('pgpassword')
@@ -38,7 +38,8 @@ This (short 3 day) week I have these goals:
 
 
 ```{r db}
-dbsub <- filter(tbl.scores, dateValue > "2005-01-01" & dateValue < "2005-12-31")
+# dbsub <- filter(tbl.scores, dateValue > "2005-01-01" & dateValue < "2005-12-31")
+dbsub <- filter(tbl_scores, datePartValue == 5 & dataPackageGUID == "SMHI2222")
 db2005 <- collect(dbsub)
 summary(db2005)
 ```
@@ -47,7 +48,7 @@ summary(db2005)
 
 Subset of data:
 ```{r }
-sm <- subset(db2005, locationID %in% c('S2242510') & scoreType == "Seasonal_LS_month")
+sm <- subset(db2005, locationID %in% c('9504667', '9540863') ) # & scoreType == "Seasonal_LS_month" c('S2242510')
 summary(sm)
 
 ```
@@ -56,9 +57,9 @@ summary(sm)
 My plot de jour:
 
 ```{r lead time plot, echo=FALSE}
-ggplot(sm,aes(x = LT / 7, y = dateValue)) +
+ggplot(sm,aes(x = leadtimeValue , y = datePartValue)) +
   geom_point(aes(color = scoreValue), size=3) +
-  scale_x_continuous("Lead Time (weeks)") + scale_y_date("Months of 2005 (January omitted)") +
+  scale_x_continuous("Lead Time (weeks)") + # scale_y_date("Months of 2005 (January omitted)") +
   scale_color_gradient(low="yellow", high="darkgreen")
 ```
 
@@ -98,3 +99,4 @@ ggplot(smsub,aes(y = (smsub$scoreValue-mean(smsub$scoreValue))/mean(smsub$scoreV
 
 Note - perhaps x axis should be time from start rather than an actual date ?
 
+Note 2016-09-04 - attempted to "update" from final database version, but since LC's daily ECMWF data is no longer in DB it's really not an interesting effort

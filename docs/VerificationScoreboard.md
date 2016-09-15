@@ -1,3 +1,6 @@
+---
+output: pdf_document
+---
 VerificationScoreboard
 ========================================================
 author: RAMOS Maria-Héléna, NORVILLE Jeff
